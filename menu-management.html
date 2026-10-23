@@ -1,0 +1,341 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>FoodHub Admin — Menu Management</title>
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" rel="stylesheet">
+<style>
+:root{--red:#E94B35;--orange:#F59E0B;--green:#3A7D44;--bg:#FFF8F0;--card:#FFFFFF;--text:#292524;--muted:#78716c;--line:#f0e4d6;--shadow:0 6px 24px rgba(41,37,36,.07);--sw:250px}
+[data-theme=dark]{--bg:#161412;--card:#241f1d;--text:#f5f0ea;--muted:#a8a29e;--line:#3a3430;--shadow:0 6px 24px rgba(0,0,0,.4)}
+body{font-family:'Poppins','Cairo',sans-serif;background:var(--bg);color:var(--text);transition:background .3s,color .3s}
+a{text-decoration:none}.text-muted{color:var(--muted)!important}h1,h2,h3,h4,h5,h6{font-weight:700}
+:focus-visible{outline:3px solid var(--orange);outline-offset:2px}
+.btn-red{background:var(--red);color:#fff;border:0;border-radius:12px;font-weight:600;padding:10px 20px;transition:.2s}.btn-red:hover{background:#c93a26;color:#fff}
+.btn-soft{background:var(--card);border:1px solid var(--line);color:var(--text);border-radius:12px;font-weight:500;padding:9px 16px;font-size:.88rem;transition:.2s}.btn-soft:hover{border-color:var(--red);color:var(--red)}
+.btn-green{background:var(--green);color:#fff;border:0;border-radius:12px;font-weight:600}.btn-green:hover{background:#2e6636;color:#fff}
+#side{position:fixed;inset:0 auto 0 0;width:var(--sw);background:var(--card);border-right:1px solid var(--line);z-index:1040;display:flex;flex-direction:column;transition:width .3s,transform .3s;overflow:hidden}
+.brand{padding:20px;font-weight:800;font-size:1.45rem;color:var(--text);white-space:nowrap;display:flex;align-items:center;gap:10px}
+.brand i,.brand span{color:var(--red)}.brand small{font-size:.65rem;background:var(--red);color:#fff;padding:2px 8px;border-radius:50px;font-weight:600}
+#side nav{padding:8px 12px;flex:1;overflow-y:auto}
+.nl{display:flex;align-items:center;gap:14px;padding:11px 14px;border-radius:12px;color:var(--text);font-weight:500;font-size:.9rem;margin-bottom:4px;white-space:nowrap;transition:.2s}
+.nl i{width:20px;text-align:center;color:var(--muted)}.nl:hover{background:var(--bg)}.nl.on{background:rgba(233,75,53,.1);color:var(--red)}.nl.on i{color:var(--red)}
+.sec-t{font-size:.7rem;color:var(--muted);padding:14px 14px 6px;white-space:nowrap}
+body.collapsed{--sw:80px}body.collapsed .nl span,body.collapsed .brand span,body.collapsed .brand small,body.collapsed .sec-t{display:none}body.collapsed .nl{justify-content:center}
+#main{margin-left:var(--sw);transition:margin .3s;min-height:100vh}
+.topbar{position:sticky;top:0;z-index:1030;background:var(--card);border-bottom:1px solid var(--line);padding:12px 24px;display:flex;align-items:center;gap:14px}
+.ib{background:var(--bg);border:1px solid var(--line);color:var(--text);width:40px;height:40px;border-radius:12px;display:inline-flex;align-items:center;justify-content:center;flex:none;transition:.2s}.ib:hover{border-color:var(--red);color:var(--red)}
+.av{width:40px;height:40px;border-radius:50%;background:linear-gradient(135deg,var(--red),var(--orange));color:#fff;font-weight:700;display:flex;align-items:center;justify-content:center;border:0}
+.content{padding:24px}
+.note{border-radius:12px;padding:10px 14px;font-size:.8rem}
+.n-warn{background:#fff4d6;color:#7a4b00;border:1px solid #f5d98b}[data-theme=dark] .n-warn{background:#3b2f10;color:#fcd98a;border-color:#6b5316}
+.card-x{background:var(--card);border-radius:20px;box-shadow:var(--shadow);padding:22px;height:100%}
+.kpi{display:flex;align-items:center;gap:14px}.kpi .ic{width:48px;height:48px;border-radius:14px;display:flex;align-items:center;justify-content:center;font-size:1.2rem;flex:none}
+.kpi b{font-size:1.6rem;display:block;line-height:1.1}.kpi small{color:var(--muted)}
+.form-control,.form-select{background-color:var(--bg);color:var(--text);border:1px solid var(--line);border-radius:12px;padding:9px 14px;font-size:.88rem}
+.form-control:focus,.form-select:focus{background-color:var(--bg);color:var(--text);border-color:var(--red);box-shadow:0 0 0 .2rem rgba(233,75,53,.15)}
+.form-control::placeholder{color:var(--muted)}.form-label{font-weight:500;font-size:.84rem;margin-bottom:4px}
+.form-check-input:checked{background-color:var(--green);border-color:var(--green)}
+.tbl{width:100%;font-size:.87rem;border-collapse:collapse}
+.tbl th{color:var(--muted);font-weight:500;font-size:.76rem;padding:10px 12px;border-bottom:1px solid var(--line);white-space:nowrap}
+.tbl td{padding:12px;border-bottom:1px solid var(--line);vertical-align:middle}.tbl tbody tr:hover{background:var(--bg)}.tbl tr:last-child td{border:0}
+.pt{display:flex;align-items:center;gap:12px;min-width:200px}
+.pt img{width:54px;height:54px;border-radius:14px;object-fit:cover;background:var(--line);flex:none}
+.pt small{display:block;color:var(--muted);font-size:.74rem}
+.bdg{font-size:.72rem;font-weight:600;padding:4px 11px;border-radius:50px;white-space:nowrap}
+.b-ok{background:rgba(58,125,68,.14);color:var(--green)}.b-no{background:rgba(233,75,53,.12);color:var(--red)}.b-ft{background:rgba(245,158,11,.18);color:#b45309}.b-cat{background:var(--bg);color:var(--text);border:1px solid var(--line)}
+[data-theme=dark] .b-ft{color:#fbbf24}
+.stars{color:var(--orange);font-size:.8rem}
+.act button{width:34px;height:34px;border-radius:10px;border:1px solid var(--line);background:var(--card);color:var(--text);margin-right:4px;transition:.2s}
+.act .v:hover{color:#2563eb;border-color:#2563eb}.act .e:hover{color:var(--green);border-color:var(--green)}.act .d:hover{color:var(--red);border-color:var(--red)}
+.pager{display:flex;gap:6px;flex-wrap:wrap}.pager button{border:1px solid var(--line);background:var(--card);color:var(--text);border-radius:10px;min-width:36px;height:36px;font-size:.84rem}
+.pager button.on{background:var(--red);border-color:var(--red);color:#fff}.pager button:disabled{opacity:.4}
+.empty{text-align:center;padding:40px;color:var(--muted)}
+.chip{display:inline-flex;align-items:center;gap:8px;background:var(--bg);border:1px solid var(--line);border-radius:50px;padding:6px 8px 6px 14px;font-size:.84rem;margin:0 8px 8px 0}
+.chip button{border:0;background:rgba(233,75,53,.12);color:var(--red);width:22px;height:22px;border-radius:50%;font-size:.7rem}
+.chip small{color:var(--muted)}
+.modal-content{background:var(--card);color:var(--text);border-radius:24px;border:0}
+[data-theme=dark] .btn-close{filter:invert(1)}
+.drop{border:2px dashed var(--line);border-radius:16px;padding:22px;text-align:center;cursor:pointer;transition:.2s;display:block;background:var(--bg)}
+.drop:hover,.drop.over{border-color:var(--red);background:rgba(233,75,53,.05)}
+.drop i{font-size:1.8rem;color:var(--red)}
+.prev{display:grid;grid-template-columns:repeat(auto-fill,minmax(104px,1fr));gap:10px;margin-top:12px}
+.pv{position:relative;aspect-ratio:1;border-radius:14px;overflow:hidden;background:var(--line);border:3px solid transparent}
+.pv.main{border-color:var(--green)}
+.pv img{width:100%;height:100%;object-fit:cover}
+.pv .rm{position:absolute;top:5px;right:5px;width:26px;height:26px;border:0;border-radius:50%;background:rgba(0,0,0,.65);color:#fff;font-size:.72rem}
+.pv .rm:hover{background:var(--red)}
+.pv .mk{position:absolute;bottom:0;left:0;right:0;border:0;background:rgba(0,0,0,.6);color:#fff;font-size:.68rem;padding:3px}
+.pv .tag{position:absolute;bottom:0;left:0;right:0;background:var(--green);color:#fff;font-size:.68rem;text-align:center;padding:3px;font-weight:600}
+.rowi{display:flex;gap:8px;margin-bottom:8px}.rowi .form-control{min-width:0}
+.vimg{width:100%;aspect-ratio:4/3;object-fit:cover;border-radius:18px;background:var(--line)}
+.vth{display:flex;gap:8px;margin-top:8px}.vth img{width:68px;height:54px;object-fit:cover;border-radius:10px;cursor:pointer;opacity:.7;border:3px solid transparent;background:var(--line)}.vth img.on{opacity:1;border-color:var(--red)}
+.toast-fh{position:fixed;bottom:24px;left:50%;transform:translate(-50%,120px);background:var(--text);color:var(--bg);padding:12px 24px;border-radius:50px;transition:.35s;z-index:2000;font-size:.9rem;max-width:92vw;text-align:center}.toast-fh.show{transform:translate(-50%,0)}
+#scrim{display:none}
+@media(max-width:991px){#side{transform:translateX(-100%);width:260px}body.open #side{transform:none}#main{margin-left:0}
+ body.open #scrim{display:block;position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:1035}
+ body.collapsed{--sw:260px}body.collapsed .nl span,body.collapsed .brand span,body.collapsed .brand small,body.collapsed .sec-t{display:inline}body.collapsed .nl{justify-content:flex-start}
+ .topbar{padding:10px 14px}.content{padding:16px}}
+@media(prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+</head>
+<body>
+<aside id="side" aria-label="Admin navigation">
+ <a class="brand" href="index.html"><i class="fa-solid fa-utensils"></i><span>Food<span>Hub</span></span><small>Admin</small></a>
+ <nav>
+  <div class="sec-t">MAIN</div>
+  <a class="nl" href="admin-dashboard.html"><i class="fa-solid fa-gauge-high"></i><span>Dashboard</span></a>
+  <a class="nl" href="#" data-soon><i class="fa-solid fa-receipt"></i><span>Orders</span></a>
+  <a class="nl on" href="menu-management.html"><i class="fa-solid fa-burger"></i><span>Menu items</span></a>
+  <a class="nl" href="#" data-soon><i class="fa-regular fa-calendar-check"></i><span>Reservations</span></a>
+  <a class="nl" href="#" data-soon><i class="fa-solid fa-users"></i><span>Customers</span></a>
+  <div class="sec-t">OPERATIONS</div>
+  <a class="nl" href="#" data-soon><i class="fa-solid fa-boxes-stacked"></i><span>Inventory</span></a>
+  <a class="nl" href="#" data-soon><i class="fa-solid fa-chart-column"></i><span>Reports</span></a>
+  <a class="nl" href="#" data-soon><i class="fa-solid fa-gear"></i><span>Settings</span></a>
+  <div class="sec-t">SITE</div>
+  <a class="nl" href="menu.html"><i class="fa-solid fa-arrow-up-right-from-square"></i><span>View public menu</span></a>
+ </nav>
+</aside>
+<div id="scrim"></div>
+<div id="main">
+ <header class="topbar">
+  <button class="ib" id="toggle" aria-label="Toggle sidebar"><i class="fa-solid fa-bars"></i></button>
+  <nav aria-label="breadcrumb" class="small text-muted d-none d-sm-block">Admin / <b style="color:var(--text)">Menu management</b></nav>
+  <div class="ms-auto d-flex align-items-center gap-2">
+   <button class="ib" id="themeBtn" aria-label="Toggle dark mode"><i class="fa-solid fa-moon"></i></button>
+   <div class="dropdown"><button class="av" data-bs-toggle="dropdown" aria-label="Admin profile" aria-expanded="false">SA</button>
+    <ul class="dropdown-menu dropdown-menu-end p-2"><li class="px-3 py-2"><b>Sara Admin</b><br><small class="text-muted">Restaurant manager</small></li><li><hr class="dropdown-divider"></li><li><a class="dropdown-item" href="admin-dashboard.html">Dashboard</a></li><li><a class="dropdown-item" href="index.html">Back to website</a></li></ul></div>
+  </div>
+ </header>
+ 
+ <main class="content">
+  <div class="d-flex flex-wrap justify-content-between align-items-center gap-3 mb-3">
+   <div><h4 class="mb-0">Menu management</h4><small class="text-muted">Add, edit and organise the dishes customers see.</small></div>
+   <button class="btn btn-red" id="addDish"><i class="fa-solid fa-plus me-2"></i>Add New Dish</button>
+  </div>
+  <div class="note n-warn mb-4"><i class="fa-solid fa-flask me-2"></i><b>Prototype storage.</b> Dishes and uploaded images are saved only in this browser (localStorage). Uploaded images are shrunk and stored as text, which limits how many you can keep. In the production .NET application, images are uploaded to server-side storage or Azure Blob Storage, and only their URLs are saved in SQL Server.</div>
+ 
+  <div class="row g-3 mb-4" id="kpis"></div>
+ 
+  <div class="card-x mb-4">
+   <div class="row g-2 mb-3">
+    <div class="col-lg-4"><label class="visually-hidden" for="q">Search</label><input class="form-control" id="q" type="search" placeholder="Search dishes or ingredients…"></div>
+    <div class="col-6 col-lg-3"><label class="visually-hidden" for="fCat">Category</label><select class="form-select" id="fCat"></select></div>
+    <div class="col-6 col-lg-2"><label class="visually-hidden" for="fAv">Availability</label><select class="form-select" id="fAv"><option value="">All availability</option><option value="1">Available</option><option value="0">Out of stock</option></select></div>
+    <div class="col-12 col-lg-3"><label class="visually-hidden" for="sort">Sort</label><select class="form-select" id="sort"><option value="new">Newest first</option><option value="name">Name A–Z</option><option value="lo">Price: low to high</option><option value="hi">Price: high to low</option><option value="rate">Rating</option></select></div>
+   </div>
+   <div style="overflow-x:auto"><table class="tbl"><thead><tr><th>Dish</th><th>Category</th><th>Price</th><th>Availability</th><th>Rating</th><th class="text-end">Actions</th></tr></thead><tbody id="rows"></tbody></table></div>
+   <div class="d-flex justify-content-between align-items-center flex-wrap gap-2 mt-3"><small class="text-muted" id="info"></small><div class="pager" id="pager"></div></div>
+  </div>
+ 
+  <div class="row g-3">
+   <div class="col-lg-4"><div class="card-x"><h6 class="mb-3">Categories</h6><div id="catList"></div>
+    <form id="catForm" class="d-flex gap-2 mt-2"><input class="form-control" id="catName" placeholder="New category name" aria-label="New category name"><button class="btn btn-green px-3" aria-label="Add category"><i class="fa-solid fa-plus"></i></button></form></div></div>
+   <div class="col-lg-4"><div class="card-x"><h6 class="mb-1">Default sizes</h6><small class="text-muted d-block mb-3">Price adjustment in EGP, added to the base price.</small><div id="sizeList"></div>
+    <form id="sizeForm" class="d-flex gap-2 mt-2"><input class="form-control" id="sizeName" placeholder="Size name" aria-label="Size name"><input class="form-control" id="sizeAdj" type="number" step="1" placeholder="± EGP" style="max-width:95px" aria-label="Price adjustment"><button class="btn btn-green px-3" aria-label="Add size"><i class="fa-solid fa-plus"></i></button></form></div></div>
+   <div class="col-lg-4"><div class="card-x"><h6 class="mb-1">Default add-ons</h6><small class="text-muted d-block mb-3">Extras customers can add to a dish.</small><div id="addonList"></div>
+    <form id="addonForm" class="d-flex gap-2 mt-2"><input class="form-control" id="addonName" placeholder="Add-on name" aria-label="Add-on name"><input class="form-control" id="addonPrice" type="number" min="0" step="1" placeholder="EGP" style="max-width:95px" aria-label="Add-on price"><button class="btn btn-green px-3" aria-label="Add add-on"><i class="fa-solid fa-plus"></i></button></form></div></div>
+  </div>
+ </main>
+</div>
+ 
+<!-- add/edit modal -->
+<div class="modal fade" id="dishModal" tabindex="-1" aria-labelledby="dTitle" aria-hidden="true" data-bs-backdrop="static">
+ <div class="modal-dialog modal-xl modal-dialog-centered modal-dialog-scrollable"><div class="modal-content">
+  <form id="dishForm" novalidate>
+  <div class="modal-header border-0"><h5 class="modal-title" id="dTitle">Add New Dish</h5><button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button></div>
+  <div class="modal-body"><div class="row g-4">
+   <div class="col-lg-7"><div class="row g-3">
+    <div class="col-md-8"><label class="form-label" for="fName">Dish name</label><input class="form-control" id="fName" maxlength="60"><div class="invalid-feedback">Enter a dish name (at least 3 characters).</div></div>
+    <div class="col-md-4"><label class="form-label" for="fCatSel">Category</label><select class="form-select" id="fCatSel"></select><div class="invalid-feedback">Choose a category.</div></div>
+    <div class="col-12"><label class="form-label" for="fDesc">Description</label><textarea class="form-control" id="fDesc" rows="2" maxlength="220"></textarea><div class="invalid-feedback">Add a short description.</div></div>
+    <div class="col-6 col-md-4"><label class="form-label" for="fPrice">Base price (EGP)</label><input class="form-control" id="fPrice" type="number" min="1" step="1"><div class="invalid-feedback">Enter a price above 0.</div></div>
+    <div class="col-6 col-md-4"><label class="form-label" for="fPrep">Prep time (min)</label><input class="form-control" id="fPrep" type="number" min="1" max="180" value="15"><div class="invalid-feedback">Enter 1–180 minutes.</div></div>
+    <div class="col-12 col-md-4"><label class="form-label" for="fIng">Ingredients</label><input class="form-control" id="fIng" placeholder="Comma separated"></div>
+    <div class="col-12"><div class="d-flex flex-wrap gap-4">
+     <div class="form-check form-switch"><input class="form-check-input" type="checkbox" id="fVeg"><label class="form-check-label" for="fVeg">Vegetarian</label></div>
+     <div class="form-check form-switch"><input class="form-check-input" type="checkbox" id="fVegan"><label class="form-check-label" for="fVegan">Vegan</label></div>
+     <div class="form-check form-switch"><input class="form-check-input" type="checkbox" id="fAvail" checked><label class="form-check-label" for="fAvail">Available</label></div>
+     <div class="form-check form-switch"><input class="form-check-input" type="checkbox" id="fFeat"><label class="form-check-label" for="fFeat">Featured dish</label></div></div></div>
+    <div class="col-md-6"><div class="d-flex justify-content-between align-items-center mb-1"><label class="form-label mb-0">Sizes &amp; price adjustments</label><button type="button" class="btn btn-link btn-sm p-0 text-decoration-none" id="addSizeRow" style="color:var(--red)">+ Add</button></div><div id="sizeRows"></div></div>
+    <div class="col-md-6"><div class="d-flex justify-content-between align-items-center mb-1"><label class="form-label mb-0">Add-ons &amp; prices</label><button type="button" class="btn btn-link btn-sm p-0 text-decoration-none" id="addAddonRow" style="color:var(--red)">+ Add</button></div><div id="addonRows"></div></div>
+   </div></div>
+   <div class="col-lg-5">
+    <label class="form-label">Dish images</label>
+    <label class="drop" id="drop" for="files"><i class="fa-solid fa-cloud-arrow-up"></i><div class="fw-semibold mt-1">Click to choose or drag images here</div><small class="text-muted">JPG, PNG, WebP or GIF · up to 5 MB each · max 6 images</small></label>
+    <input type="file" id="files" accept="image/*" multiple class="visually-hidden">
+    <div class="text-danger small mt-2 d-none" id="imgErr" role="alert"></div>
+    <div class="prev" id="prev"></div>
+    <small class="text-muted d-block mt-2">The first image is the main photo. Use "Make main" to change it.</small>
+   </div>
+  </div></div>
+  <div class="modal-footer border-0"><button type="button" class="btn btn-soft" data-bs-dismiss="modal">Cancel</button><button class="btn btn-red" type="submit" id="saveBtn">Save dish</button></div>
+  </form>
+ </div></div>
+</div>
+<!-- view modal -->
+<div class="modal fade" id="viewModal" tabindex="-1" aria-labelledby="vTitle" aria-hidden="true"><div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable"><div class="modal-content">
+ <div class="modal-header border-0"><h5 class="modal-title" id="vTitle"></h5><button class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button></div>
+ <div class="modal-body" id="vBody"></div></div></div></div>
+<!-- delete modal -->
+<div class="modal fade" id="delModal" tabindex="-1" aria-labelledby="delTitle" aria-hidden="true"><div class="modal-dialog modal-dialog-centered modal-sm"><div class="modal-content text-center p-3">
+ <div class="modal-body"><i class="fa-solid fa-trash-can fa-2x mb-3" style="color:var(--red)"></i><h6 id="delTitle">Delete this dish?</h6><p class="small text-muted" id="delTxt"></p>
+ <button class="btn btn-soft me-2" data-bs-dismiss="modal">Cancel</button><button class="btn btn-red" id="delOk">Delete</button></div></div></div></div>
+<div class="toast-fh" id="toast" role="status"></div>
+ 
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+const IMG=(id,w=700)=>`https://images.unsplash.com/${id}?auto=format&fit=crop&w=${w}&q=75`;
+const FALLBACK='data:image/svg+xml;utf8,'+encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" width="400" height="400"><rect width="400" height="400" fill="#f5e6d3"/><text x="200" y="240" font-size="130" text-anchor="middle">🍽️</text></svg>');
+const $=s=>document.querySelector(s);
+const esc=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const num=n=>Math.round(n).toLocaleString('en-US');
+function fb(e){e.onerror=null;e.src=FALLBACK}window.fb=fb;
+function toast(m){const t=$('#toast');t.textContent=m;t.classList.add('show');clearTimeout(t._t);t._t=setTimeout(()=>t.classList.remove('show'),2600)}
+document.querySelectorAll('[data-soon]').forEach(a=>a.addEventListener('click',e=>{e.preventDefault();toast('This admin page is not part of the demo yet')}));
+/* ---------- seed data ---------- */
+const S3=[{name:'Small',adj:-20},{name:'Medium',adj:0},{name:'Large',adj:30}];
+const AD=[{name:'Extra cheese',price:20},{name:'Extra sauce',price:10},{name:'Bacon topping',price:25}];
+const U=(id)=>'https://images.unsplash.com/'+id+'?auto=format&fit=crop&w=700&q=75';
+const d=(id,n,c,price,r,img,desc,ing,prep,o={})=>({id,name:n,cat:c,price,rating:r,images:[U(img)],desc,ing,prep,veg:!!o.veg,vegan:!!o.vegan,avail:o.av!==0,feat:!!o.ft,sizes:S3,addons:AD.slice(0,2)});
+function seed(){return{
+ cats:['Burgers','Pizza','Grilled Food','Pasta','Salads','Desserts','Drinks'],sizes:S3,addons:AD,
+ dishes:[
+  d(1,'Classic Cheeseburger','Burgers',140,4.8,'photo-1568901346375-23c9450c58cd','Juicy beef patty with cheddar, pickles and house sauce.',['Beef','Cheddar','Pickles','Brioche'],15,{ft:1}),
+  d(2,'Bacon BBQ Burger','Burgers',175,4.7,'photo-1550547660-d9450f859349','Double beef, crispy bacon and smoky BBQ sauce.',['Beef','Bacon','BBQ sauce'],18),
+  d(3,'Veggie Bean Burger','Burgers',120,4.4,'photo-1520072959219-c595dc870360','Black bean and corn patty with avocado.',['Black beans','Corn','Avocado'],14,{veg:1,vegan:1}),
+  d(4,'Margherita Pizza','Pizza',160,4.9,'photo-1574071318508-1cdbab80d002','Wood-fired crust with tomato, mozzarella and basil.',['Tomato','Mozzarella','Basil'],20,{veg:1,ft:1}),
+  d(5,'Pepperoni Pizza','Pizza',195,4.7,'photo-1628840042765-356cda07504e','Spicy pepperoni on a thin crispy base.',['Pepperoni','Mozzarella'],20),
+  d(6,'Mixed Grill Platter','Grilled Food',320,4.7,'photo-1529692236671-f1f6cf9683ba','Chicken, kofta and lamb chops with garlic dip.',['Chicken','Kofta','Lamb'],30),
+  d(7,'Grilled Salmon','Grilled Food',360,4.6,'photo-1467003909585-2f8a72700288','Atlantic salmon with lemon butter and asparagus.',['Salmon','Lemon','Asparagus'],25,{av:0}),
+  d(8,'Fettuccine Alfredo','Pasta',150,4.6,'photo-1621996346565-e3dbc646d9a9','Fresh fettuccine in creamy parmesan sauce.',['Fettuccine','Cream','Parmesan'],18),
+  d(9,'Penne Arrabbiata','Pasta',120,4.5,'photo-1563379926898-05f4575a45d8','Penne in spicy tomato and garlic sauce.',['Penne','Tomato','Chili'],15,{veg:1,vegan:1}),
+  d(10,'Garden Quinoa Salad','Salads',110,4.5,'photo-1512621776951-a57141f2eefd','Quinoa, avocado, tomato and lemon dressing.',['Quinoa','Avocado','Tomato'],10,{veg:1,vegan:1}),
+  d(11,'Chocolate Lava Cake','Desserts',85,4.9,'photo-1606313564200-e75d5e30476c','Warm chocolate cake with a molten centre.',['Chocolate','Eggs','Butter'],12,{veg:1,ft:1}),
+  d(12,'Fresh Mango Smoothie','Drinks',60,4.6,'photo-1544145945-f90425340c7e','Ripe mango blended with yogurt and mint.',['Mango','Yogurt','Mint'],5,{veg:1}),
+  d(13,'Fresh Lemon Mint','Drinks',45,4.4,'photo-1497534446932-c925b458314e','Squeezed lemon with mint and ice.',['Lemon','Mint'],4,{veg:1,vegan:1,av:0})]}}
+let DB;try{DB=JSON.parse(localStorage.getItem('fh_admin_menu'))}catch(e){}
+if(!DB||!DB.dishes)DB=seed();
+function save(){try{localStorage.setItem('fh_admin_menu',JSON.stringify(DB));return true}catch(e){toast('Browser storage is full. Remove some images and try again.');return false}}
+/* ---------- table ---------- */
+let page=1;const PER=8;
+const stars=r=>r?[1,2,3,4,5].map(x=>`<i class="${x<=Math.round(r)?'fa-solid':'fa-regular'} fa-star"></i>`).join('')+` <small class="text-muted">${r.toFixed(1)}</small>`:'<small class="text-muted">New</small>';
+function filtered(){
+ const q=$('#q').value.trim().toLowerCase(),c=$('#fCat').value,a=$('#fAv').value;
+ let L=DB.dishes.filter(x=>(!c||x.cat===c)&&(a===''||(+x.avail)===+a)&&(!q||(x.name+' '+x.desc+' '+x.ing.join(' ')+' '+x.cat).toLowerCase().includes(q)));
+ const s=$('#sort').value;
+ L.sort((a,b)=>s==='name'?a.name.localeCompare(b.name):s==='lo'?a.price-b.price:s==='hi'?b.price-a.price:s==='rate'?b.rating-a.rating:b.id-a.id);
+ return L}
+function render(){
+ const all=DB.dishes,L=filtered(),pages=Math.max(1,Math.ceil(L.length/PER));if(page>pages)page=pages;
+ const kp=(ic,bg,c,v,l)=>`<div class="col-6 col-xl-3"><div class="card-x"><div class="kpi"><span class="ic" style="background:${bg};color:${c}"><i class="fa-solid ${ic}"></i></span><div><b>${v}</b><small>${l}</small></div></div></div></div>`;
+ $('#kpis').innerHTML=kp('fa-utensils','rgba(233,75,53,.12)','var(--red)',all.length,'Total dishes')+kp('fa-circle-check','rgba(58,125,68,.14)','var(--green)',all.filter(x=>x.avail).length,'Available dishes')+kp('fa-layer-group','rgba(245,158,11,.18)','#d97706',DB.cats.length,'Categories')+kp('fa-ban','rgba(233,75,53,.12)','var(--red)',all.filter(x=>!x.avail).length,'Out of stock');
+ const cur=$('#fCat').value;$('#fCat').innerHTML='<option value="">All categories</option>'+DB.cats.map(c=>`<option ${c===cur?'selected':''}>${esc(c)}</option>`).join('');
+ const rows=L.slice((page-1)*PER,page*PER);
+ $('#rows').innerHTML=rows.length?rows.map(x=>`<tr><td><div class="pt"><img src="${esc(x.images[0]||FALLBACK)}" alt="${esc(x.name)}" loading="lazy" onerror="fb(this)"><div><b>${esc(x.name)}</b>${x.feat?' <span class="bdg b-ft"><i class="fa-solid fa-star me-1"></i>Featured</span>':''}<small>${x.vegan?'Vegan':x.veg?'Vegetarian':'Contains meat/fish'} · ${x.prep} min</small></div></div></td><td><span class="bdg b-cat">${esc(x.cat)}</span></td><td><b>${num(x.price)} EGP</b></td><td><div class="form-check form-switch"><input class="form-check-input" type="checkbox" data-av="${x.id}" ${x.avail?'checked':''} aria-label="Availability of ${esc(x.name)}"><span class="bdg ${x.avail?'b-ok':'b-no'} ms-1">${x.avail?'Available':'Out of stock'}</span></div></td><td class="text-nowrap"><span class="stars">${stars(x.rating)}</span></td><td class="text-end text-nowrap act"><button class="v" data-v="${x.id}" aria-label="View ${esc(x.name)}"><i class="fa-regular fa-eye"></i></button><button class="e" data-e="${x.id}" aria-label="Edit ${esc(x.name)}"><i class="fa-solid fa-pen"></i></button><button class="d" data-d="${x.id}" aria-label="Delete ${esc(x.name)}"><i class="fa-regular fa-trash-can"></i></button></td></tr>`).join(''):'<tr><td colspan="6" class="empty"><i class="fa-solid fa-bowl-food fa-2x mb-2 d-block"></i>No dishes match your filters.</td></tr>';
+ $('#info').textContent=L.length?`Showing ${(page-1)*PER+1}–${Math.min(page*PER,L.length)} of ${L.length} dishes`:'0 dishes';
+ $('#pager').innerHTML=pages>1?`<button data-p="${page-1}" ${page==1?'disabled':''} aria-label="Previous page"><i class="fa-solid fa-chevron-left"></i></button>`+Array.from({length:pages},(_,i)=>`<button data-p="${i+1}" class="${i+1===page?'on':''}">${i+1}</button>`).join('')+`<button data-p="${page+1}" ${page==pages?'disabled':''} aria-label="Next page"><i class="fa-solid fa-chevron-right"></i></button>`:'';
+ /* management panels */
+ $('#catList').innerHTML=DB.cats.map(c=>{const n=DB.dishes.filter(x=>x.cat===c).length;return `<span class="chip">${esc(c)} <small>${n}</small><button data-rc="${esc(c)}" aria-label="Remove category ${esc(c)}"><i class="fa-solid fa-xmark"></i></button></span>`}).join('')||'<small class="text-muted">No categories yet.</small>';
+ $('#sizeList').innerHTML=DB.sizes.map((s,i)=>`<span class="chip">${esc(s.name)} <small>${s.adj>0?'+':''}${s.adj} EGP</small><button data-rs="${i}" aria-label="Remove size ${esc(s.name)}"><i class="fa-solid fa-xmark"></i></button></span>`).join('')||'<small class="text-muted">No sizes yet.</small>';
+ $('#addonList').innerHTML=DB.addons.map((a,i)=>`<span class="chip">${esc(a.name)} <small>+${a.price} EGP</small><button data-ra="${i}" aria-label="Remove add-on ${esc(a.name)}"><i class="fa-solid fa-xmark"></i></button></span>`).join('')||'<small class="text-muted">No add-ons yet.</small>';
+}
+['q','fCat','fAv','sort'].forEach(i=>$('#'+i).addEventListener(i==='q'?'input':'change',()=>{page=1;render()}));
+/* ---------- categories / sizes / addons ---------- */
+$('#catForm').onsubmit=e=>{e.preventDefault();const v=$('#catName').value.trim();if(v.length<2)return toast('Enter a category name');if(DB.cats.some(c=>c.toLowerCase()===v.toLowerCase()))return toast('That category already exists');DB.cats.push(v);save();$('#catName').value='';render();toast('Category added')};
+$('#sizeForm').onsubmit=e=>{e.preventDefault();const n=$('#sizeName').value.trim(),a=+$('#sizeAdj').value||0;if(!n)return toast('Enter a size name');if(DB.sizes.some(s=>s.name.toLowerCase()===n.toLowerCase()))return toast('That size already exists');DB.sizes.push({name:n,adj:a});save();$('#sizeName').value=$('#sizeAdj').value='';render();toast('Size added')};
+$('#addonForm').onsubmit=e=>{e.preventDefault();const n=$('#addonName').value.trim(),p=+$('#addonPrice').value;if(!n||!(p>=0)||$('#addonPrice').value==='')return toast('Enter an add-on name and price');if(DB.addons.some(a=>a.name.toLowerCase()===n.toLowerCase()))return toast('That add-on already exists');DB.addons.push({name:n,price:p});save();$('#addonName').value=$('#addonPrice').value='';render();toast('Add-on added')};
+/* ---------- table actions ---------- */
+const dm=new bootstrap.Modal($('#dishModal')),vm=new bootstrap.Modal($('#viewModal')),xm=new bootstrap.Modal($('#delModal'));
+let delId=null;
+document.addEventListener('click',e=>{
+ const g=s=>e.target.closest(s);let b;
+ if(b=g('[data-p]')){page=+b.dataset.p;render();return}
+ if(b=g('[data-v]'))return viewDish(+b.dataset.v);
+ if(b=g('[data-e]'))return openForm(+b.dataset.e);
+ if(b=g('[data-d]')){delId=+b.dataset.d;$('#delTxt').textContent=`"${DB.dishes.find(x=>x.id===delId).name}" will be removed from the menu. This can't be undone.`;return xm.show()}
+ if(b=g('[data-rc]')){const c=b.dataset.rc,n=DB.dishes.filter(x=>x.cat===c).length;if(n)return toast(`Can't remove "${c}": ${n} dish${n>1?'es use':' uses'} it. Move or delete them first.`);DB.cats=DB.cats.filter(x=>x!==c);save();render();return toast('Category removed')}
+ if(b=g('[data-rs]')){DB.sizes.splice(+b.dataset.rs,1);save();render();return toast('Size removed')}
+ if(b=g('[data-ra]')){DB.addons.splice(+b.dataset.ra,1);save();render();return toast('Add-on removed')}
+});
+document.addEventListener('change',e=>{const t=e.target.closest('[data-av]');if(!t)return;const x=DB.dishes.find(y=>y.id==t.dataset.av);x.avail=t.checked;save();render();toast(`${x.name} is now ${x.avail?'available':'out of stock'}`)});
+$('#delOk').onclick=()=>{DB.dishes=DB.dishes.filter(x=>x.id!==delId);save();xm.hide();render();toast('Dish deleted')};
+/* ---------- view ---------- */
+function viewDish(id){
+ const x=DB.dishes.find(y=>y.id===id),imgs=x.images.length?x.images:[FALLBACK];
+ $('#vTitle').textContent=x.name;
+ $('#vBody').innerHTML=`<div class="row g-4"><div class="col-md-6"><img class="vimg" id="vMain" src="${esc(imgs[0])}" alt="${esc(x.name)}" onerror="fb(this)"><div class="vth">${imgs.map((s,i)=>`<img src="${esc(s)}" class="${i?'':'on'}" alt="${esc(x.name)} photo ${i+1}" data-vs="${i}" onerror="fb(this)">`).join('')}</div></div><div class="col-md-6"><span class="bdg b-cat">${esc(x.cat)}</span> <span class="bdg ${x.avail?'b-ok':'b-no'}">${x.avail?'Available':'Out of stock'}</span>${x.feat?' <span class="bdg b-ft">Featured</span>':''}<h4 class="mt-3" style="color:var(--red)">${num(x.price)} EGP</h4><div class="stars mb-2">${stars(x.rating)}</div><p class="text-muted">${esc(x.desc)}</p><p class="small mb-1"><b>Ingredients:</b> ${esc(x.ing.join(', ')||'—')}</p><p class="small mb-1"><b>Prep time:</b> ${x.prep} min · ${x.vegan?'Vegan':x.veg?'Vegetarian':'Not vegetarian'}</p><p class="small mb-1"><b>Sizes:</b> ${x.sizes.map(s=>`${esc(s.name)} (${s.adj>0?'+':''}${s.adj})`).join(', ')||'—'}</p><p class="small mb-0"><b>Add-ons:</b> ${x.addons.map(a=>`${esc(a.name)} (+${a.price})`).join(', ')||'—'}</p></div></div>`;
+ vm.show();
+}
+$('#vBody').addEventListener('click',e=>{const t=e.target.closest('[data-vs]');if(!t)return;$('#vMain').src=t.src;document.querySelectorAll('.vth img').forEach(i=>i.classList.toggle('on',i===t))});
+/* ---------- add / edit form ---------- */
+let editId=null,imgs=[];
+function rowHtml(kind,n='',v=''){return `<div class="rowi"><input class="form-control" data-k="${kind}n" value="${esc(n)}" placeholder="${kind==='s'?'Size':'Add-on'}" aria-label="${kind==='s'?'Size name':'Add-on name'}"><input class="form-control" data-k="${kind}v" type="number" value="${v}" placeholder="EGP" style="max-width:90px" aria-label="Price"><button type="button" class="btn btn-soft px-2" data-rr aria-label="Remove row"><i class="fa-solid fa-xmark"></i></button></div>`}
+$('#addSizeRow').onclick=()=>$('#sizeRows').insertAdjacentHTML('beforeend',rowHtml('s'));
+$('#addAddonRow').onclick=()=>$('#addonRows').insertAdjacentHTML('beforeend',rowHtml('a'));
+$('#dishForm').addEventListener('click',e=>{const r=e.target.closest('[data-rr]');if(r)r.parentElement.remove()});
+function drawPrev(){
+ $('#prev').innerHTML=imgs.map((s,i)=>`<div class="pv ${i?'':'main'}"><img src="${esc(s)}" alt="Dish image ${i+1}" onerror="fb(this)"><button type="button" class="rm" data-ri="${i}" aria-label="Remove image ${i+1}"><i class="fa-solid fa-xmark"></i></button>${i?`<button type="button" class="mk" data-mk="${i}">Make main</button>`:'<span class="tag">Main image</span>'}</div>`).join('');
+}
+$('#prev').addEventListener('click',e=>{const r=e.target.closest('[data-ri]'),m=e.target.closest('[data-mk]');if(r)imgs.splice(+r.dataset.ri,1);if(m)imgs.unshift(imgs.splice(+m.dataset.mk,1)[0]);if(r||m)drawPrev()});
+const OK=['image/jpeg','image/png','image/webp','image/gif'];
+function shrink(file){return new Promise((res,rej)=>{const fr=new FileReader();fr.onerror=()=>rej();fr.onload=()=>{const im=new Image();im.onerror=()=>rej();im.onload=()=>{const M=800,k=Math.min(1,M/Math.max(im.width,im.height)),c=document.createElement('canvas');c.width=Math.round(im.width*k);c.height=Math.round(im.height*k);const x=c.getContext('2d');x.fillStyle='#fff';x.fillRect(0,0,c.width,c.height);x.drawImage(im,0,0,c.width,c.height);res(c.toDataURL('image/jpeg',.72))};im.src=fr.result};fr.readAsDataURL(file)})}
+async function addFiles(list){
+ const err=$('#imgErr');err.classList.add('d-none');const msgs=[];
+ for(const f of [...list]){
+  if(!OK.includes(f.type)){msgs.push(`${f.name}: not a supported image type (use JPG, PNG, WebP or GIF).`);continue}
+  if(f.size>5*1024*1024){msgs.push(`${f.name}: larger than 5 MB.`);continue}
+  if(imgs.length>=6){msgs.push('Maximum 6 images per dish.');break}
+  try{imgs.push(await shrink(f));drawPrev()}catch(x){msgs.push(`${f.name}: couldn't be read as an image.`)}
+ }
+ if(msgs.length){err.innerHTML=msgs.map(esc).join('<br>');err.classList.remove('d-none')}
+ $('#files').value='';
+}
+$('#files').addEventListener('change',e=>addFiles(e.target.files));
+const drop=$('#drop');
+['dragenter','dragover'].forEach(v=>drop.addEventListener(v,e=>{e.preventDefault();drop.classList.add('over')}));
+['dragleave','drop'].forEach(v=>drop.addEventListener(v,e=>{e.preventDefault();drop.classList.remove('over')}));
+drop.addEventListener('drop',e=>addFiles(e.dataTransfer.files));
+$('#fVegan').onchange=e=>{if(e.target.checked)$('#fVeg').checked=true};
+$('#fVeg').onchange=e=>{if(!e.target.checked)$('#fVegan').checked=false};
+function openForm(id){
+ editId=id||null;const x=id?DB.dishes.find(y=>y.id===id):null;
+ $('#dTitle').textContent=x?'Edit Dish':'Add New Dish';$('#saveBtn').textContent=x?'Save changes':'Add dish';
+ $('#fCatSel').innerHTML='<option value="">Choose category</option>'+DB.cats.map(c=>`<option ${x&&x.cat===c?'selected':''}>${esc(c)}</option>`).join('');
+ $('#fName').value=x?x.name:'';$('#fDesc').value=x?x.desc:'';$('#fPrice').value=x?x.price:'';$('#fPrep').value=x?x.prep:15;$('#fIng').value=x?x.ing.join(', '):'';
+ $('#fVeg').checked=x?x.veg:false;$('#fVegan').checked=x?x.vegan:false;$('#fAvail').checked=x?x.avail:true;$('#fFeat').checked=x?x.feat:false;
+ const sz=x?x.sizes:DB.sizes,ad=x?x.addons:[];
+ $('#sizeRows').innerHTML=sz.map(s=>rowHtml('s',s.name,s.adj)).join('');$('#addonRows').innerHTML=ad.map(a=>rowHtml('a',a.name,a.price)).join('');
+ imgs=x?[...x.images]:[];drawPrev();$('#imgErr').classList.add('d-none');
+ document.querySelectorAll('#dishForm .is-invalid').forEach(i=>i.classList.remove('is-invalid'));
+ dm.show();
+}
+$('#addDish').onclick=()=>openForm(0);
+const rowsOf=k=>[...document.querySelectorAll(`[data-k="${k}n"]`)].map((n,i)=>({n:n.value.trim(),v:+document.querySelectorAll(`[data-k="${k}v"]`)[i].value||0})).filter(r=>r.n);
+$('#dishForm').onsubmit=e=>{
+ e.preventDefault();
+ const v={name:$('#fName').value.trim(),cat:$('#fCatSel').value,desc:$('#fDesc').value.trim(),price:+$('#fPrice').value,prep:+$('#fPrep').value};
+ const ok={fName:v.name.length>=3,fCatSel:!!v.cat,fDesc:v.desc.length>=5,fPrice:v.price>0,fPrep:v.prep>=1&&v.prep<=180};
+ let first=null;for(const k in ok){const el=$('#'+k);el.classList.toggle('is-invalid',!ok[k]);if(!ok[k]&&!first)first=el}
+ if(first){first.focus();return}
+ const rec={name:v.name,cat:v.cat,desc:v.desc,price:Math.round(v.price),prep:v.prep,ing:$('#fIng').value.split(',').map(s=>s.trim()).filter(Boolean),veg:$('#fVeg').checked,vegan:$('#fVegan').checked,avail:$('#fAvail').checked,feat:$('#fFeat').checked,images:[...imgs],sizes:rowsOf('s').map(r=>({name:r.n,adj:r.v})),addons:rowsOf('a').map(r=>({name:r.n,price:r.v}))};
+ const backup=JSON.stringify(DB);
+ if(editId)Object.assign(DB.dishes.find(x=>x.id===editId),rec);else DB.dishes.push({id:Date.now(),rating:0,...rec});
+ if(!save()){DB=JSON.parse(backup);return}
+ dm.hide();page=1;render();toast(editId?'Dish updated':'Dish added to the menu');
+};
+/* ---------- layout / theme ---------- */
+$('#toggle').onclick=()=>{if(innerWidth<992)document.body.classList.toggle('open');else document.body.classList.toggle('collapsed')};
+$('#scrim').onclick=()=>document.body.classList.remove('open');
+const root=document.documentElement;
+function theme(t){root.setAttribute('data-theme',t);$('#themeBtn').innerHTML=t==='dark'?'<i class="fa-solid fa-sun"></i>':'<i class="fa-solid fa-moon"></i>';try{localStorage.setItem('fh_theme',t)}catch(e){}}
+let th='light';try{th=localStorage.getItem('fh_theme')||'light'}catch(e){}
+theme(th);$('#themeBtn').onclick=()=>theme(root.getAttribute('data-theme')==='dark'?'light':'dark');
+render();
+</script>
+</body>
+</html>
+ 

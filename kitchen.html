@@ -1,0 +1,312 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>FoodHub — Kitchen Display System</title>
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" rel="stylesheet">
+<style>
+:root{--red:#E94B35;--orange:#F59E0B;--green:#3A7D44;--blue:#2563eb;--purple:#7c3aed;--bg:#FFF8F0;--card:#FFFFFF;--text:#292524;--muted:#78716c;--line:#f0e4d6;--shadow:0 6px 22px rgba(41,37,36,.08)}
+[data-theme=dark]{--bg:#161412;--card:#241f1d;--text:#f5f0ea;--muted:#a8a29e;--line:#3a3430;--shadow:0 6px 22px rgba(0,0,0,.4)}
+body{font-family:'Poppins','Cairo',sans-serif;background:var(--bg);color:var(--text);transition:background .3s,color .3s}
+a{text-decoration:none}.text-muted{color:var(--muted)!important}h1,h2,h3,h4,h5,h6{font-weight:700}
+:focus-visible{outline:3px solid var(--orange);outline-offset:2px}
+.top{background:var(--card);border-bottom:1px solid var(--line);padding:10px 20px;display:flex;align-items:center;gap:14px;position:sticky;top:0;z-index:1030;flex-wrap:wrap}
+.brand{font-weight:800;font-size:1.35rem;color:var(--text);display:flex;align-items:center;gap:8px}.brand i,.brand span{color:var(--red)}
+.brand small{font-size:.62rem;background:var(--green);color:#fff;padding:2px 9px;border-radius:50px;font-weight:600}
+.ib{background:var(--bg);border:1px solid var(--line);color:var(--text);height:42px;min-width:42px;padding:0 12px;border-radius:12px;display:inline-flex;align-items:center;justify-content:center;gap:8px;font-size:.85rem;font-weight:500;transition:.2s}
+.ib:hover{border-color:var(--red);color:var(--red)}.ib.on{background:rgba(58,125,68,.13);border-color:var(--green);color:var(--green)}
+.clock{font-weight:700;font-variant-numeric:tabular-nums}
+.sim{background:#fff4d6;color:#7a4b00;border:1px solid #f5d98b;border-radius:12px;padding:9px 14px;font-size:.8rem}
+[data-theme=dark] .sim{background:#3b2f10;color:#fcd98a;border-color:#6b5316}
+.dot{display:inline-block;width:9px;height:9px;border-radius:50%;background:var(--red);margin-right:6px}
+.wrap{display:flex;gap:20px;padding:20px}
+.side{width:190px;flex:none;display:flex;flex-direction:column;gap:6px;position:sticky;top:84px;align-self:flex-start}
+.side button{display:flex;align-items:center;gap:12px;border:0;background:var(--card);color:var(--text);padding:14px 16px;border-radius:14px;font-weight:600;font-size:.92rem;box-shadow:var(--shadow);text-align:left;transition:.2s}
+.side button i{width:20px;color:var(--muted);text-align:center}
+.side button.on{background:var(--red);color:#fff}.side button.on i{color:#fff}
+.side .cnt{margin-left:auto;background:rgba(0,0,0,.12);border-radius:50px;font-size:.72rem;padding:1px 9px}
+.mainc{flex:1;min-width:0}
+@media(max-width:991px){.wrap{flex-direction:column;padding:14px}.side{width:100%;flex-direction:row;position:static;overflow-x:auto}.side button{flex:1;justify-content:center;white-space:nowrap;padding:12px}.side .cnt{margin-left:0}.top{padding:10px 14px}}
+.view{display:none}.view.show{display:block}
+.sc{background:var(--card);border-radius:18px;box-shadow:var(--shadow);padding:14px 16px;border:2px solid transparent;width:100%;text-align:left;color:var(--text);transition:.2s;display:flex;align-items:center;gap:12px}
+.sc:hover{transform:translateY(-2px)}.sc.on{border-color:var(--red)}
+.sc b{font-size:1.7rem;line-height:1;display:block}.sc small{color:var(--muted);font-size:.78rem}
+.sc .ic{width:42px;height:42px;border-radius:12px;display:flex;align-items:center;justify-content:center;flex:none}
+.tabs{display:flex;gap:8px;overflow-x:auto;padding:4px 0 8px}
+.tabs button{border:1px solid var(--line);background:var(--card);color:var(--text);border-radius:50px;padding:9px 18px;font-size:.86rem;font-weight:500;white-space:nowrap;min-height:42px}
+.tabs button.on{background:var(--text);color:var(--bg);border-color:var(--text)}
+.tabs button small{opacity:.7;margin-left:4px}
+.form-select{background-color:var(--card);color:var(--text);border:1px solid var(--line);border-radius:12px;min-height:42px;font-size:.86rem}
+.form-select:focus{border-color:var(--red);box-shadow:0 0 0 .2rem rgba(233,75,53,.15);background-color:var(--card);color:var(--text)}
+.oc{background:var(--card);border-radius:20px;box-shadow:var(--shadow);height:100%;display:flex;flex-direction:column;border-top:6px solid var(--line);overflow:hidden}
+.oc.s-Pending{border-color:var(--red)}.oc.s-Confirmed{border-color:var(--blue)}.oc.s-Preparing{border-color:var(--orange)}.oc.s-Ready{border-color:var(--green)}.oc.s-OutforDelivery{border-color:var(--purple)}.oc.s-Delivered,.oc.s-Completed{border-color:#a8a29e}.oc.s-Cancelled{border-color:#57534e;opacity:.75}
+.oc.pulse{animation:flash 1.6s 2}
+@keyframes flash{50%{box-shadow:0 0 0 5px rgba(233,75,53,.4)}}
+.oc .hd{padding:14px 16px 8px}.oc .bd{padding:0 16px;flex:1}.oc .ft{padding:12px 16px 16px;display:flex;gap:8px;flex-wrap:wrap}
+.num{font-size:1.15rem;font-weight:800}
+.bdg{font-size:.7rem;font-weight:600;padding:4px 11px;border-radius:50px;white-space:nowrap;display:inline-block}
+.st-Pending{background:rgba(233,75,53,.13);color:var(--red)}.st-Confirmed{background:rgba(37,99,235,.13);color:var(--blue)}.st-Preparing{background:rgba(245,158,11,.2);color:#b45309}.st-Ready{background:rgba(58,125,68,.15);color:var(--green)}.st-OutforDelivery{background:rgba(124,58,237,.14);color:var(--purple)}.st-Delivered,.st-Completed{background:rgba(120,113,108,.18);color:var(--muted)}.st-Cancelled{background:rgba(87,83,78,.2);color:var(--muted)}
+[data-theme=dark] .st-Preparing{color:#fbbf24}[data-theme=dark] .st-Confirmed{color:#60a5fa}[data-theme=dark] .st-OutforDelivery{color:#a78bfa}
+.pr-Rush{background:var(--red);color:#fff}.pr-High{background:var(--orange);color:#fff}.pr-Normal{background:var(--bg);color:var(--muted);border:1px solid var(--line)}
+.ty{font-size:.78rem;color:var(--muted)}.ty i{color:var(--red);margin-right:4px}
+.el{font-weight:700;font-variant-numeric:tabular-nums;border-radius:10px;padding:3px 10px;font-size:.82rem}
+.el.ok{background:rgba(58,125,68,.14);color:var(--green)}.el.warn{background:rgba(245,158,11,.2);color:#b45309}.el.late{background:rgba(233,75,53,.15);color:var(--red)}.el.done{background:var(--bg);color:var(--muted)}
+[data-theme=dark] .el.warn{color:#fbbf24}
+.it{display:flex;gap:10px;align-items:flex-start;padding:7px 0;border-top:1px dashed var(--line)}
+.it img{width:40px;height:40px;border-radius:11px;object-fit:cover;background:var(--line);flex:none}
+.it b{font-size:.88rem}.it small{display:block;color:var(--muted);font-size:.74rem;line-height:1.35}
+.it .q{font-weight:800;color:var(--red);min-width:26px}
+.onote{background:rgba(245,158,11,.14);border-left:4px solid var(--orange);border-radius:8px;padding:7px 10px;font-size:.78rem;margin:6px 0}
+.act{border:0;border-radius:12px;min-height:44px;padding:0 16px;font-weight:600;font-size:.86rem;flex:1;transition:.2s;color:#fff;white-space:nowrap}
+.act:hover:not(:disabled){filter:brightness(.92)}.act:disabled{opacity:.45;cursor:not-allowed}
+.a-Pending{background:var(--blue)}.a-Confirmed{background:var(--orange)}.a-Preparing{background:var(--green)}.a-Ready{background:var(--purple)}.a-OutforDelivery{background:var(--green)}
+.act.ghost{background:none;border:1px solid var(--line);color:var(--text);flex:0 0 auto}.act.ghost:hover{border-color:var(--red);color:var(--red)}
+.act.cx{background:none;border:1px solid rgba(233,75,53,.4);color:var(--red);flex:0 0 auto}
+.panel{background:var(--card);border-radius:20px;box-shadow:var(--shadow);padding:18px}
+.panel h6{margin-bottom:12px}
+.nf{display:flex;gap:10px;padding:8px 0;border-bottom:1px solid var(--line);font-size:.8rem}.nf:last-child{border:0}
+.nf .i{width:30px;height:30px;border-radius:9px;display:flex;align-items:center;justify-content:center;flex:none;font-size:.78rem}
+.drv{display:flex;align-items:center;gap:10px;padding:8px 0;font-size:.84rem;border-bottom:1px solid var(--line)}.drv:last-child{border:0}
+.drv .av{width:36px;height:36px;border-radius:50%;background:linear-gradient(135deg,var(--green),#5aa365);color:#fff;font-weight:700;display:flex;align-items:center;justify-content:center;flex:none;font-size:.8rem}
+.need{background:var(--bg);border:1px solid var(--line);border-radius:14px;padding:10px 12px;margin-bottom:8px;font-size:.82rem}
+.tbl{width:100%;font-size:.87rem;border-collapse:collapse}.tbl th{color:var(--muted);font-weight:500;font-size:.76rem;padding:10px;border-bottom:1px solid var(--line);white-space:nowrap}.tbl td{padding:12px 10px;border-bottom:1px solid var(--line);vertical-align:middle}
+.modal-content{background:var(--card);color:var(--text);border-radius:24px;border:0}[data-theme=dark] .btn-close{filter:invert(1)}
+.tl{display:flex;margin:10px 0 4px}.tl .p{flex:1;text-align:center;font-size:.68rem;color:var(--muted);position:relative}
+.tl .p::before{content:"";position:absolute;top:13px;left:-50%;width:100%;height:3px;background:var(--line)}.tl .p:first-child::before{display:none}
+.tl .p b{position:relative;z-index:1;width:28px;height:28px;border-radius:50%;background:var(--card);border:3px solid var(--line);display:flex;align-items:center;justify-content:center;margin:0 auto 4px;font-size:.65rem}
+.tl .p.d::before,.tl .p.n::before{background:var(--green)}.tl .p.d b{background:var(--green);border-color:var(--green);color:#fff}.tl .p.n b{border-color:var(--orange);color:var(--orange)}.tl .p.d,.tl .p.n{color:var(--text)}
+.empty{text-align:center;padding:50px 10px;color:var(--muted)}
+.toasts{position:fixed;bottom:20px;right:20px;z-index:2000;display:flex;flex-direction:column;gap:8px;max-width:min(360px,92vw)}
+.tt{background:var(--text);color:var(--bg);padding:12px 16px;border-radius:14px;font-size:.85rem;box-shadow:var(--shadow);animation:in .3s;display:flex;gap:10px;align-items:center}
+@keyframes in{from{transform:translateY(20px);opacity:0}}
+@media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+</style>
+</head>
+<body>
+<header class="top">
+ <a class="brand" href="index.html"><i class="fa-solid fa-utensils"></i><span>Food<span>Hub</span></span><small>Staff</small></a>
+ <div class="ms-lg-3 clock" id="clock"></div>
+ <div class="ms-auto d-flex gap-2 flex-wrap">
+  <span class="ib" title="Real-time sync needs an ASP.NET Core SignalR hub" style="cursor:default"><span class="dot"></span>SignalR: not connected</span>
+  <button class="ib" id="simBtn" aria-pressed="true"><i class="fa-solid fa-pause"></i><span class="d-none d-md-inline">Pause simulation</span></button>
+  <button class="ib" id="sndBtn" aria-pressed="false" aria-label="Notification sound"><i class="fa-solid fa-volume-xmark"></i><span class="d-none d-md-inline">Sound off</span></button>
+  <button class="ib" id="themeBtn" aria-label="Toggle dark mode"><i class="fa-solid fa-moon"></i></button>
+  <a class="ib" href="admin-dashboard.html" aria-label="Admin dashboard"><i class="fa-solid fa-gauge-high"></i></a>
+ </div>
+</header>
+ 
+<div class="wrap">
+ <nav class="side" aria-label="Staff areas">
+  <button class="on" data-view="kitchen"><i class="fa-solid fa-fire-burner"></i>Kitchen<span class="cnt" id="cK"></span></button>
+  <button data-view="cashier"><i class="fa-solid fa-cash-register"></i>Cashier<span class="cnt" id="cC"></span></button>
+  <button data-view="delivery"><i class="fa-solid fa-motorcycle"></i>Delivery<span class="cnt" id="cD"></span></button>
+ </nav>
+ <div class="mainc">
+  <div class="sim mb-3"><i class="fa-solid fa-flask me-2"></i><b>Simulated live feed.</b> New orders and status updates are generated in your browser for this prototype. Real-time synchronization between kitchen, cashier and customers requires an ASP.NET Core SignalR hub, which is not connected here.</div>
+ 
+  <!-- KITCHEN -->
+  <section class="view show" id="v-kitchen">
+   <div class="d-flex flex-wrap justify-content-between align-items-center gap-2 mb-3">
+    <div><h4 class="mb-0">Kitchen display</h4><small class="text-muted">Tap a status card or tab to filter. Oldest orders are shown first by default.</small></div>
+    <button class="ib" id="newBtn"><i class="fa-solid fa-plus"></i>Simulate new order</button>
+   </div>
+   <div class="row g-2 mb-3" id="cards"></div>
+   <div class="d-flex flex-wrap gap-2 align-items-center justify-content-between">
+    <div class="tabs" id="tabs" role="tablist"></div>
+    <div class="d-flex gap-2"><label class="visually-hidden" for="fType">Order type</label><select class="form-select" id="fType"><option value="">All types</option><option>Delivery</option><option>Pickup</option><option>Dine-in</option></select>
+     <label class="visually-hidden" for="fSort">Sort</label><select class="form-select" id="fSort"><option value="old">Oldest first</option><option value="new">Newest first</option><option value="pri">Priority</option></select></div>
+   </div>
+   <div class="row g-3 mt-1">
+    <div class="col-xl-9"><div class="row g-3" id="grid"></div></div>
+    <div class="col-xl-3"><div class="d-flex flex-column gap-3">
+     <div class="panel"><h6><i class="fa-regular fa-bell me-2" style="color:var(--red)"></i>Notifications</h6><div id="notes"></div></div>
+     <div class="panel"><h6><i class="fa-solid fa-motorcycle me-2" style="color:var(--green)"></i>Delivery assignment</h6><div id="dPanel"></div></div>
+    </div></div>
+   </div>
+  </section>
+ 
+  <!-- CASHIER -->
+  <section class="view" id="v-cashier"><h4 class="mb-3">Cashier</h4><div class="row g-3 mb-3" id="cashCards"></div><div class="panel" style="overflow-x:auto"><table class="tbl"><thead><tr><th>Order</th><th>Customer / table</th><th>Type</th><th>Status</th><th>Method</th><th>Total</th><th>Payment</th></tr></thead><tbody id="cashRows"></tbody></table></div></section>
+ 
+  <!-- DELIVERY -->
+  <section class="view" id="v-delivery"><h4 class="mb-3">Delivery</h4><div class="row g-3"><div class="col-lg-8"><div class="panel"><h6>Delivery orders</h6><div id="dList"></div></div></div><div class="col-lg-4"><div class="panel"><h6>Drivers</h6><div id="drivers"></div></div></div></div></section>
+ </div>
+</div>
+ 
+<div class="modal fade" id="oModal" tabindex="-1" aria-labelledby="oTitle" aria-hidden="true"><div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable"><div class="modal-content">
+ <div class="modal-header border-0"><h5 class="modal-title" id="oTitle"></h5><button class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button></div>
+ <div class="modal-body" id="oBody"></div><div class="modal-footer border-0 flex-wrap" id="oFoot"></div></div></div></div>
+<div class="modal fade" id="cxModal" tabindex="-1" aria-labelledby="cxT" aria-hidden="true"><div class="modal-dialog modal-dialog-centered modal-sm"><div class="modal-content p-2"><div class="modal-body text-center">
+ <i class="fa-solid fa-triangle-exclamation fa-2x mb-2" style="color:var(--red)"></i><h6 id="cxT">Cancel this order?</h6><p class="small text-muted" id="cxTxt"></p>
+ <label class="visually-hidden" for="cxWhy">Reason</label><select class="form-select mb-3" id="cxWhy"><option>Customer request</option><option>Item out of stock</option><option>Kitchen can't fulfil</option><option>Other</option></select>
+ <button class="btn btn-sm px-3 me-2" style="border:1px solid var(--line);color:var(--text)" data-bs-dismiss="modal">Keep order</button><button class="btn btn-sm px-3" style="background:var(--red);color:#fff" id="cxOk">Cancel order</button></div></div></div></div>
+<div class="toasts" id="toasts" aria-live="polite"></div>
+ 
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+const IMG=(id,w=120)=>`https://images.unsplash.com/${id}?auto=format&fit=crop&w=${w}&q=70`;
+const FALLBACK='data:image/svg+xml;utf8,'+encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" width="120" height="120"><rect width="120" height="120" fill="#f5e6d3"/><text x="60" y="78" font-size="52" text-anchor="middle">🍽️</text></svg>');
+const $=s=>document.querySelector(s);
+const esc=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const key=s=>s.replace(/\s/g,'');
+function fb(e){e.onerror=null;e.src=FALLBACK}window.fb=fb;
+const P={burger:'photo-1568901346375-23c9450c58cd',bbq:'photo-1550547660-d9450f859349',marg:'photo-1574071318508-1cdbab80d002',pep:'photo-1628840042765-356cda07504e',grill:'photo-1529692236671-f1f6cf9683ba',alfredo:'photo-1621996346565-e3dbc646d9a9',penne:'photo-1563379926898-05f4575a45d8',salad:'photo-1512621776951-a57141f2eefd',lava:'photo-1606313564200-e75d5e30476c',cake:'photo-1533134242443-d4fd215305ad',mango:'photo-1544145945-f90425340c7e',lemon:'photo-1497534446932-c925b458314e',veg:'photo-1520072959219-c595dc870360'};
+const FLOW={Delivery:['Pending','Confirmed','Preparing','Ready','Out for Delivery','Delivered'],Pickup:['Pending','Confirmed','Preparing','Ready','Completed'],'Dine-in':['Pending','Confirmed','Preparing','Ready','Completed']};
+const FINAL=['Delivered','Completed','Cancelled'];
+const TYPE_ICON={Delivery:'fa-motorcycle',Pickup:'fa-bag-shopping','Dine-in':'fa-chair'};
+const PRI={Rush:3,High:2,Normal:1};
+const DRIVERS=['Hany Mahmoud','Mahmoud Saeed','Ali Ibrahim'];
+const it=(n,img,q,v,a,note)=>({n,img,q,v:v||'Medium',a:a||[],note:note||''});
+const now=()=>Date.now(),MIN=60000;
+let seq=2041,O=[],N=[],filter='All',sim=true,sound=false,actx=null;
+function mk(no,type,ref,ago,st,prio,items,note,pay,total,driver,paid){
+ const flow=FLOW[type],idx=Math.max(0,flow.indexOf(st)),t0=now()-ago*MIN,step=Math.min(4,ago/(idx+1)),hist={};
+ for(let i=0;i<=idx;i++)hist[flow[i]]=t0+i*step*MIN;
+ const o={id:no,no:'#'+no,type,ref,t0,status:st,prio,items,note:note||'',pay,total,driver:driver||'',paid:!!paid,hist,phone:'010'+(10000000+no*137%89999999),doneAt:FINAL.includes(st)?t0+Math.min(ago,idx*step)*MIN:0};
+ if(st==='Cancelled'){o.hist={Pending:t0};o.doneAt=t0+2*MIN}
+ return o}
+O=[
+ mk(2041,'Delivery','Mona Adel',4,'Pending','High',[it('Classic Cheeseburger',P.burger,2,'Medium',['Extra cheese'],'No pickles on one burger'),it('Fresh Lemon Mint',P.lemon,2)],'Ring the bell, dog at home.','Cash on delivery',285,'',0),
+ mk(2040,'Dine-in','Table 5',9,'Confirmed','Normal',[it('Margherita Pizza',P.marg,1,'Large'),it('Penne Arrabbiata',P.penne,1,'Medium',[],'Extra spicy')],'','Pay at table',392,'',0),
+ mk(2039,'Pickup','Youssef Ali',14,'Preparing','Normal',[it('Pepperoni Pizza',P.pep,1,'Large',['Extra cheese']),it('Fresh Mango Smoothie',P.mango,1,'Small')],'','Card',322,'',1),
+ mk(2038,'Delivery','Layla Hassan',22,'Preparing','Rush',[it('Mixed Grill Platter',P.grill,1,'Medium',[],'No garlic dip')],'ALLERGY: garlic. Use clean utensils.','Online payment',410,'',1),
+ mk(2037,'Delivery','Omar Khaled',27,'Ready','Normal',[it('Fettuccine Alfredo',P.alfredo,1),it('Strawberry Cheesecake',P.cake,1)],'','Cash on delivery',290,'',0),
+ mk(2036,'Delivery','Hana Mostafa',35,'Out for Delivery','Normal',[it('Garden Quinoa Salad',P.salad,1,'Medium',['Fresh veggies']),it('Chocolate Lava Cake',P.lava,1)],'','Card',236,DRIVERS[0],1),
+ mk(2035,'Dine-in','Table 2',41,'Ready','High',[it('Bacon BBQ Burger',P.bbq,2,'Large',['Bacon topping']),it('Fresh Lemon Mint',P.lemon,2)],'Serve drinks first.','Pay at table',420,'',0),
+ mk(2034,'Pickup','Karim Samir',52,'Completed','Normal',[it('Veggie Bean Burger',P.veg,1)],'','Card',150,'',1),
+ mk(2033,'Delivery','Tarek Fouad',70,'Delivered','Normal',[it('Margherita Pizza',P.marg,1),it('Classic Cheeseburger',P.burger,1)],'','Cash on delivery',365,DRIVERS[1],1),
+ mk(2032,'Pickup','Nada Fawzy',80,'Cancelled','Normal',[it('Pepperoni Pizza',P.pep,1)],'','Card',195,'',0)];
+/* ---------- helpers ---------- */
+const hm=t=>new Date(t).toLocaleTimeString('en-GB',{hour:'2-digit',minute:'2-digit'});
+function fmt(ms){const s=Math.max(0,Math.floor(ms/1000)),m=Math.floor(s/60);return m>=60?`${Math.floor(m/60)}h ${String(m%60).padStart(2,'0')}m`:`${String(m).padStart(2,'0')}:${String(s%60).padStart(2,'0')}`}
+function elInfo(o){const fin=FINAL.includes(o.status),ms=(fin?o.doneAt:now())-o.t0,m=ms/MIN;return{txt:fmt(ms),cls:fin?'done':m<10?'ok':m<20?'warn':'late'}}
+const nextOf=o=>{const f=FLOW[o.type],i=f.indexOf(o.status);return i>=0&&i<f.length-1?f[i+1]:null};
+const canCancel=o=>['Pending','Confirmed'].includes(o.status);
+const egp=n=>Math.round(n).toLocaleString('en-US')+' EGP';
+function toast(m,ic='fa-circle-check'){const t=document.createElement('div');t.className='tt';t.innerHTML=`<i class="fa-solid ${ic}"></i><span>${esc(m)}</span>`;$('#toasts').appendChild(t);setTimeout(()=>t.remove(),3200)}
+function beep(){if(!sound)return;try{actx=actx||new (window.AudioContext||window.webkitAudioContext)();const o=actx.createOscillator(),g=actx.createGain();o.type='sine';o.frequency.value=880;g.gain.setValueAtTime(.15,actx.currentTime);g.gain.exponentialRampToValueAtTime(.001,actx.currentTime+.4);o.connect(g);g.connect(actx.destination);o.start();o.stop(actx.currentTime+.4)}catch(e){}}
+function note(text,icon,color,loud){N.unshift({ts:now(),text,icon,color});N=N.slice(0,25);if(loud)beep();renderNotes()}
+/* ---------- actions ---------- */
+function setStatus(id,to,silent){
+ const o=O.find(x=>x.id===id);if(!o)return;
+ if(to==='Out for Delivery'&&!o.driver){toast('Assign a driver before sending this order out','fa-triangle-exclamation');return}
+ o.status=to;o.hist[to]=now();if(FINAL.includes(to))o.doneAt=now();
+ if(!silent){toast(`${o.no} → ${to}`);}
+ note(`${o.no} ${o.ref}: ${to}`,to==='Ready'?'fa-bell-concierge':'fa-arrow-right',to==='Ready'?'var(--green)':'var(--blue)',to==='Ready');
+ renderAll();
+}
+function assign(id,drv){const o=O.find(x=>x.id===id);if(!drv)return toast('Choose a driver first','fa-triangle-exclamation');o.driver=drv;toast(`${drv} assigned to ${o.no}`,'fa-motorcycle');note(`${drv} assigned to ${o.no} (demo)`,'fa-motorcycle','var(--green)');renderAll()}
+const cxM=new bootstrap.Modal($('#cxModal'));let cxId=null;
+function askCancel(id){const o=O.find(x=>x.id===id);if(!canCancel(o))return toast('This order can no longer be cancelled once preparation starts','fa-ban');cxId=id;$('#cxTxt').textContent=`${o.no} for ${o.ref} will be cancelled and removed from the kitchen queue.`;cxM.show()}
+$('#cxOk').onclick=()=>{const o=O.find(x=>x.id===cxId);if(!o||!canCancel(o)){cxM.hide();return}o.status='Cancelled';o.doneAt=now();o.hist.Cancelled=now();cxM.hide();bootstrap.Modal.getInstance($('#oModal'))?.hide();toast(`${o.no} cancelled: ${$('#cxWhy').value}`,'fa-ban');note(`${o.no} cancelled (${$('#cxWhy').value})`,'fa-ban','var(--red)');renderAll()};
+/* ---------- render ---------- */
+const TABS=['All','Pending','Confirmed','Preparing','Ready','Out for Delivery','Completed'];
+const inTab=(o,t)=>t==='All'||(t==='Completed'?['Completed','Delivered'].includes(o.status):o.status===t);
+function actionsHtml(o,modal){
+ const n=nextOf(o);let h='';
+ if(n&&o.status!=='Cancelled'){
+  const lbl={Pending:'Confirm order',Confirmed:'Start preparing',Preparing:'Mark ready',Ready:o.type==='Delivery'?'Send out for delivery':o.type==='Pickup'?'Handed over':'Mark served','Out for Delivery':'Mark delivered'}[o.status];
+  const dis=o.status==='Ready'&&o.type==='Delivery'&&!o.driver;
+  h+=`<button class="act a-${key(o.status)}" data-adv="${o.id}" ${dis?'disabled title="Assign a driver first"':''}>${lbl}</button>`;
+ }
+ if(canCancel(o))h+=`<button class="act cx" data-cx="${o.id}">Cancel</button>`;
+ if(!modal)h+=`<button class="act ghost" data-view-o="${o.id}" aria-label="Order details ${o.no}"><i class="fa-regular fa-eye"></i></button>`;
+ return h}
+function card(o){
+ const e=elInfo(o);
+ return `<div class="col-md-6 col-xxl-4"><article class="oc s-${key(o.status)}" id="oc${o.id}"><div class="hd"><div class="d-flex justify-content-between align-items-start gap-2"><div><span class="num">${o.no}</span> <span class="bdg pr-${o.prio}">${o.prio}</span><div class="ty mt-1"><i class="fa-solid ${TYPE_ICON[o.type]}"></i>${o.type} · ${esc(o.ref)}</div></div><span class="bdg st-${key(o.status)}">${o.status}</span></div>
+ <div class="d-flex justify-content-between align-items-center mt-2"><small class="text-muted"><i class="fa-regular fa-clock me-1"></i>Received ${hm(o.t0)}</small><span class="el ${e.cls}" data-el="${o.id}" title="Elapsed time"><i class="fa-solid fa-stopwatch me-1"></i>${e.txt}</span></div></div>
+ <div class="bd">${o.items.map(i=>`<div class="it"><img src="${IMG(i.img)}" alt="${esc(i.n)}" loading="lazy" onerror="fb(this)"><span class="q">${i.q}×</span><div><b>${esc(i.n)}</b><small>${esc(i.v)}${i.a.length?' · + '+esc(i.a.join(', ')):''}</small>${i.note?`<small style="color:var(--red)"><i class="fa-solid fa-comment-dots me-1"></i>${esc(i.note)}</small>`:''}</div></div>`).join('')}
+ ${o.note?`<div class="onote"><i class="fa-solid fa-triangle-exclamation me-1"></i>${esc(o.note)}</div>`:''}${o.driver?`<div class="small text-muted mb-2"><i class="fa-solid fa-motorcycle me-1" style="color:var(--green)"></i>Driver: <b>${esc(o.driver)}</b></div>`:''}</div>
+ <div class="ft">${actionsHtml(o)}</div></article></div>`}
+function renderGrid(){
+ const t=$('#fType').value,s=$('#fSort').value;
+ let L=O.filter(o=>inTab(o,filter)&&(!t||o.type===t));
+ L.sort((a,b)=>s==='new'?b.t0-a.t0:s==='pri'?(PRI[b.prio]-PRI[a.prio])||a.t0-b.t0:a.t0-b.t0);
+ $('#grid').innerHTML=L.length?L.map(card).join(''):'<div class="col-12"><div class="empty"><i class="fa-solid fa-kitchen-set fa-2x mb-2 d-block"></i>No orders here right now.</div></div>';
+ $('#tabs').innerHTML=TABS.map(x=>`<button role="tab" class="${x===filter?'on':''}" data-tab="${x}">${x}<small>${O.filter(o=>inTab(o,x)&&(!t||o.type===t)).length}</small></button>`).join('');
+}
+function renderCards(){
+ const c=(lbl,st,ic,col)=>{const n=O.filter(o=>inTab(o,st)).length;return `<div class="col-6 col-md"><button class="sc ${filter===st?'on':''}" data-tab="${st}"><span class="ic" style="background:${col}22;color:${col}"><i class="fa-solid ${ic}"></i></span><span><b>${n}</b><small>${lbl}</small></span></button></div>`};
+ $('#cards').innerHTML=c('Pending','Pending','fa-hourglass-half','#E94B35')+c('Confirmed','Confirmed','fa-circle-check','#2563eb')+c('Preparing','Preparing','fa-fire-burner','#F59E0B')+c('Ready','Ready','fa-bell-concierge','#3A7D44')+c('Completed','Completed','fa-flag-checkered','#78716c');
+ const active=O.filter(o=>!FINAL.includes(o.status)).length;$('#cK').textContent=active;$('#cC').textContent=O.filter(o=>!o.paid&&o.status!=='Cancelled').length;$('#cD').textContent=O.filter(o=>o.type==='Delivery'&&!FINAL.includes(o.status)).length;
+}
+function renderNotes(){$('#notes').innerHTML=N.length?N.slice(0,7).map(n=>`<div class="nf"><span class="i" style="background:${n.color}22;color:${n.color}"><i class="fa-solid ${n.icon}"></i></span><div>${esc(n.text)}<br><small class="text-muted">${hm(n.ts)}</small></div></div>`).join(''):'<small class="text-muted">No notifications yet.</small>'}
+const busy=n=>O.some(o=>o.driver===n&&o.status==='Out for Delivery');
+function driverSel(o){return `<div class="d-flex gap-2 mt-2"><select class="form-select form-select-sm" id="ds${o.id}" aria-label="Driver for ${o.no}"><option value="">Choose driver</option>${DRIVERS.map(d=>`<option ${o.driver===d?'selected':''}>${d}${busy(d)?' (on delivery)':''}</option>`).join('')}</select><button class="btn btn-sm px-3" style="background:var(--green);color:#fff" data-as="${o.id}">Assign</button></div>`}
+const roster=()=>DRIVERS.map(d=>`<div class="drv"><span class="av">${d.split(' ').map(w=>w[0]).join('')}</span><div class="flex-grow-1"><b>${d}</b><br><small class="text-muted">${O.filter(o=>o.driver===d&&o.status==='Out for Delivery').length?'On delivery':'Available'}</small></div><span class="bdg ${busy(d)?'st-OutforDelivery':'st-Ready'}">${busy(d)?'Busy':'Free'}</span></div>`).join('');
+function renderDelivery(){
+ const need=O.filter(o=>o.type==='Delivery'&&['Confirmed','Preparing','Ready'].includes(o.status)&&!o.driver);
+ $('#dPanel').innerHTML=(need.length?need.map(o=>`<div class="need"><b>${o.no}</b> · ${esc(o.ref)} <span class="bdg st-${key(o.status)} ms-1">${o.status}</span>${driverSel(o)}</div>`).join(''):'<small class="text-muted d-block mb-2">No orders waiting for a driver.</small>')+'<div class="mt-2">'+roster()+'</div>';
+ const D=O.filter(o=>o.type==='Delivery'&&o.status!=='Cancelled').sort((a,b)=>FINAL.includes(a.status)-FINAL.includes(b.status)||a.t0-b.t0);
+ $('#dList').innerHTML=D.map(o=>`<div class="need d-flex flex-wrap align-items-center gap-3"><div class="thumbs d-flex">${o.items.slice(0,3).map(i=>`<img src="${IMG(i.img,80)}" alt="${esc(i.n)}" style="width:38px;height:38px;border-radius:10px;object-fit:cover;margin-right:-8px;border:2px solid var(--card)" onerror="fb(this)">`).join('')}</div><div class="flex-grow-1" style="min-width:170px"><b>${o.no}</b> · ${esc(o.ref)} <span class="bdg st-${key(o.status)} ms-1">${o.status}</span><br><small class="text-muted">${o.driver?'Driver: '+esc(o.driver):'No driver yet'} · ${egp(o.total)}</small></div>${!FINAL.includes(o.status)&&o.status!=='Pending'&&o.status!=='Out for Delivery'?driverSel(o).replace('mt-2',''):''}${o.status==='Out for Delivery'?`<button class="act a-OutforDelivery" style="flex:0 0 auto" data-adv="${o.id}">Mark delivered</button>`:''}${o.status==='Ready'&&o.driver?`<button class="act a-Ready" style="flex:0 0 auto" data-adv="${o.id}">Send out</button>`:''}</div>`).join('')||'<div class="empty">No delivery orders.</div>';
+ $('#drivers').innerHTML=roster();
+}
+function renderCash(){
+ const A=O.filter(o=>o.status!=='Cancelled'),paid=A.filter(o=>o.paid).reduce((t,o)=>t+o.total,0),out=A.filter(o=>!o.paid).reduce((t,o)=>t+o.total,0);
+ const c=(l,v,ic,col)=>`<div class="col-6 col-md-4"><div class="sc" style="cursor:default"><span class="ic" style="background:${col}22;color:${col}"><i class="fa-solid ${ic}"></i></span><span><b style="font-size:1.25rem">${v}</b><small>${l}</small></span></div></div>`;
+ $('#cashCards').innerHTML=c('Collected',egp(paid),'fa-sack-dollar','#3A7D44')+c('Outstanding',egp(out),'fa-hand-holding-dollar','#F59E0B')+c('Open orders',A.filter(o=>!FINAL.includes(o.status)).length,'fa-receipt','#E94B35');
+ $('#cashRows').innerHTML=O.map(o=>`<tr><td><b>${o.no}</b></td><td>${esc(o.ref)}</td><td>${o.type}</td><td><span class="bdg st-${key(o.status)}">${o.status}</span></td><td>${o.pay}</td><td><b>${egp(o.total)}</b></td><td>${o.status==='Cancelled'?'<span class="text-muted">—</span>':o.paid?'<span class="bdg st-Ready">Paid</span>':`<button class="btn btn-sm px-3" style="background:var(--green);color:#fff" data-pay="${o.id}">Mark paid</button>`}</td></tr>`).join('');
+}
+function renderAll(){renderCards();renderGrid();renderDelivery();renderCash();renderNotes()}
+/* ---------- modal ---------- */
+const oM=new bootstrap.Modal($('#oModal'));
+function openOrder(id){
+ const o=O.find(x=>x.id===id),f=FLOW[o.type],idx=f.indexOf(o.status);
+ $('#oTitle').innerHTML=`Order ${o.no} <span class="bdg st-${key(o.status)} ms-2">${o.status}</span> <span class="bdg pr-${o.prio}">${o.prio}</span>`;
+ $('#oBody').innerHTML=`<div class="row g-3 mb-3"><div class="col-sm-6 small"><b>${o.type}</b> · ${esc(o.ref)}<br><span class="text-muted">Phone (demo): ${o.phone}</span><br><span class="text-muted">Received ${hm(o.t0)} · Elapsed ${elInfo(o).txt}</span></div><div class="col-sm-6 small"><span class="text-muted">Payment:</span> ${o.pay} · ${o.paid?'Paid':'Unpaid'}<br><span class="text-muted">Driver:</span> ${o.driver?esc(o.driver):'—'}<br><span class="text-muted">Total:</span> <b>${egp(o.total)}</b></div></div>
+ ${o.status==='Cancelled'?'<div class="sim mb-3">This order was cancelled.</div>':`<div class="tl">${f.map((s,i)=>`<div class="p ${i<idx?'d':i===idx?'n':''}"><b>${i<idx?'<i class="fa-solid fa-check"></i>':i+1}</b>${s}${o.hist[s]?`<br>${hm(o.hist[s])}`:''}</div>`).join('')}</div>`}
+ <h6 class="mt-3">Items</h6>${o.items.map(i=>`<div class="it"><img src="${IMG(i.img,160)}" alt="${esc(i.n)}" style="width:56px;height:56px" onerror="fb(this)"><span class="q">${i.q}×</span><div><b>${esc(i.n)}</b><small>${esc(i.v)}${i.a.length?' · + '+esc(i.a.join(', ')):' · no add-ons'}</small>${i.note?`<small style="color:var(--red)">Note: ${esc(i.note)}</small>`:''}</div></div>`).join('')}${o.note?`<div class="onote mt-3">${esc(o.note)}</div>`:''}`;
+ $('#oFoot').innerHTML=actionsHtml(o,true)+'<button class="act ghost" data-bs-dismiss="modal">Close</button>';
+ oM.show();
+}
+/* ---------- events ---------- */
+document.addEventListener('click',e=>{
+ const g=s=>e.target.closest(s);let b;
+ if(b=g('[data-adv]')){const o=O.find(x=>x.id==b.dataset.adv);setStatus(o.id,nextOf(o));if($('#oModal').classList.contains('show'))oM.hide();return}
+ if(b=g('[data-cx]'))return askCancel(+b.dataset.cx);
+ if(b=g('[data-view-o]'))return openOrder(+b.dataset.viewO);
+ if(b=g('[data-tab]')){filter=b.dataset.tab;renderCards();renderGrid();return}
+ if(b=g('[data-as]'))return assign(+b.dataset.as,document.getElementById('ds'+b.dataset.as).value.replace(/ \(on delivery\)$/,''));
+ if(b=g('[data-pay]')){const o=O.find(x=>x.id==b.dataset.pay);o.paid=true;toast(`${o.no} marked as paid (demo)`);renderAll();return}
+ if(b=g('[data-view]')){document.querySelectorAll('.view').forEach(v=>v.classList.toggle('show',v.id==='v-'+b.dataset.view));document.querySelectorAll('.side button').forEach(x=>x.classList.toggle('on',x===b))}
+});
+['fType','fSort'].forEach(i=>$('#'+i).addEventListener('change',renderGrid));
+$('#sndBtn').onclick=()=>{sound=!sound;const b=$('#sndBtn');b.classList.toggle('on',sound);b.setAttribute('aria-pressed',sound);b.innerHTML=`<i class="fa-solid ${sound?'fa-volume-high':'fa-volume-xmark'}"></i><span class="d-none d-md-inline">Sound ${sound?'on':'off'}</span>`;if(sound)beep();try{localStorage.setItem('fh_kds_sound',sound?1:0)}catch(x){}};
+$('#simBtn').onclick=()=>{sim=!sim;const b=$('#simBtn');b.setAttribute('aria-pressed',sim);b.innerHTML=`<i class="fa-solid ${sim?'fa-pause':'fa-play'}"></i><span class="d-none d-md-inline">${sim?'Pause':'Resume'} simulation</span>`;toast(sim?'Simulation resumed':'Simulation paused','fa-flask')};
+/* ---------- simulation ---------- */
+const TPL=[
+ ['Delivery','Nour Ibrahim',[it('Classic Cheeseburger',P.burger,1,'Large',['Bacon topping']),it('Fresh Mango Smoothie',P.mango,1)],'','Card',245],
+ ['Dine-in','Table 7',[it('Margherita Pizza',P.marg,2,'Medium',['Extra sauce']),it('Garden Quinoa Salad',P.salad,1)],'Birthday: bring a candle with dessert.','Pay at table',480],
+ ['Pickup','Sherif Adel',[it('Fettuccine Alfredo',P.alfredo,2,'Medium',[],'Sauce on the side')],'','Online payment',300],
+ ['Delivery','Dina Magdy',[it('Mixed Grill Platter',P.grill,1),it('Strawberry Cheesecake',P.cake,2)],'Leave at the door.','Cash on delivery',560],
+ ['Pickup','Amr Tawfik',[it('Veggie Bean Burger',P.veg,2,'Medium',[],'Vegan: no mayo'),it('Fresh Lemon Mint',P.lemon,2)],'','Card',270]];
+function incoming(){
+ const t=TPL[Math.floor(Math.random()*TPL.length)],o=mk(++seq,t[0],t[1],0,'Pending',Math.random()<.25?'High':'Normal',t[2].map(x=>({...x,a:[...x.a]})),t[3],t[4],t[5],'',t[4]!=='Cash on delivery'&&t[4]!=='Pay at table');
+ o.t0=now();o.hist={Pending:now()};O.push(o);
+ toast(`New order ${o.no} from ${o.ref} (simulated)`,'fa-bell');note(`New ${o.type.toLowerCase()} order ${o.no} from ${o.ref} (simulated)`,'fa-bell','var(--red)',true);
+ renderAll();const c=document.getElementById('oc'+o.id);if(c)c.classList.add('pulse');
+}
+$('#newBtn').onclick=incoming;
+setInterval(()=>{if(sim&&O.filter(o=>o.status==='Pending').length<5)incoming()},30000);
+setInterval(()=>{if(!sim)return;const l=O.filter(o=>o.status==='Out for Delivery');if(l.length){const o=l[0];note(`Driver app reported ${o.no} delivered (simulated)`,'fa-motorcycle','var(--purple)');setStatus(o.id,'Delivered',true)}},50000);
+/* timers + clock */
+function tick(){
+ $('#clock').textContent=new Date().toLocaleTimeString('en-GB',{hour:'2-digit',minute:'2-digit',second:'2-digit'});
+ document.querySelectorAll('[data-el]').forEach(el=>{const o=O.find(x=>x.id==el.dataset.el);if(!o)return;const e=elInfo(o);el.className='el '+e.cls;el.innerHTML=`<i class="fa-solid fa-stopwatch me-1"></i>${e.txt}`});
+}
+setInterval(tick,1000);
+/* theme + prefs */
+const root=document.documentElement;
+function theme(t){root.setAttribute('data-theme',t);$('#themeBtn').innerHTML=t==='dark'?'<i class="fa-solid fa-sun"></i>':'<i class="fa-solid fa-moon"></i>';try{localStorage.setItem('fh_theme',t)}catch(e){}}
+let th='light';try{th=localStorage.getItem('fh_theme')||'light'}catch(e){}
+theme(th);$('#themeBtn').onclick=()=>theme(root.getAttribute('data-theme')==='dark'?'light':'dark');
+note('Kitchen display started (simulated feed)','fa-fire-burner','var(--green)');
+renderAll();tick();
+</script>
+</body>
+</html>
+ 

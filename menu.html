@@ -1,0 +1,282 @@
+!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>FoodHub — Explore Our Menu</title>
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" rel="stylesheet">
+<style>
+:root{--red:#E94B35;--orange:#F59E0B;--green:#3A7D44;--bg:#FFF8F0;--card:#FFFFFF;--text:#292524;--muted:#78716c;--line:#f0e4d6;--shadow:0 8px 28px rgba(41,37,36,.08)}
+[data-theme=dark]{--bg:#1c1917;--card:#292524;--text:#f5f0ea;--muted:#a8a29e;--line:#3d3733;--shadow:0 8px 28px rgba(0,0,0,.4)}
+html{scroll-behavior:smooth}
+body{font-family:'Poppins','Cairo',sans-serif;background:var(--bg);color:var(--text);transition:background .3s,color .3s}
+a{text-decoration:none}.text-muted{color:var(--muted)!important}
+h1,h2,h3,h4,h5{font-weight:700}
+:focus-visible{outline:3px solid var(--orange);outline-offset:2px}
+.btn-red{background:var(--red);color:#fff;border:0;border-radius:50px;padding:12px 28px;font-weight:600;transition:.25s}
+.btn-red:hover{background:#c93a26;color:#fff;transform:translateY(-2px)}
+.btn-line{border:2px solid var(--text);color:var(--text);border-radius:50px;font-weight:600}
+.btn-line:hover{background:var(--text);color:var(--bg)}
+.navbar{background:var(--card);box-shadow:0 2px 16px rgba(0,0,0,.06);padding:12px 0}
+.navbar-brand{font-weight:800;font-size:1.6rem;color:var(--text)!important}
+.navbar-brand i,.navbar-brand span{color:var(--red)}
+.nav-link{color:var(--text)!important;font-weight:500;padding:8px 14px!important}
+.nav-link:hover,.nav-link.active{color:var(--red)!important}
+.navbar-toggler{border:0;color:var(--text)}.navbar-toggler:focus{box-shadow:none}
+.icon-btn{background:var(--bg);border:1px solid var(--line);color:var(--text);width:42px;height:42px;border-radius:50%;display:inline-flex;align-items:center;justify-content:center;position:relative;transition:.25s}
+.icon-btn:hover{background:var(--red);color:#fff;border-color:var(--red)}
+.cart-count{position:absolute;top:-5px;right:-5px;background:var(--orange);color:#fff;font-size:.7rem;font-weight:700;min-width:20px;height:20px;border-radius:50px;display:flex;align-items:center;justify-content:center}
+.page-head{padding:56px 0 30px;background:radial-gradient(circle at 90% 0,rgba(245,158,11,.18),transparent 45%),var(--bg)}
+.page-head h1{font-size:clamp(2rem,4.5vw,3rem);font-weight:800}
+.search-box{background:var(--card);border-radius:50px;box-shadow:var(--shadow);padding:8px 8px 8px 24px;display:flex;align-items:center;gap:12px;max-width:640px}
+.search-box input{flex:1;border:0;background:transparent;color:var(--text);outline:0;min-width:0}
+.search-box i{color:var(--muted)}
+.cats{display:flex;gap:16px;overflow-x:auto;padding:14px 4px 18px;scrollbar-width:thin}
+.cat{flex:0 0 96px;text-align:center;cursor:pointer;background:none;border:0;color:var(--text)}
+.cat .ring{width:84px;height:84px;border-radius:50%;overflow:hidden;margin:0 auto 8px;border:3px solid transparent;box-shadow:var(--shadow);background:var(--line);transition:.25s}
+.cat img{width:100%;height:100%;object-fit:cover}
+.cat:hover .ring{transform:translateY(-3px)}
+.cat.active .ring{border-color:var(--red)}.cat.active span{color:var(--red)}
+.cat span{font-size:.82rem;font-weight:600}
+.filters{background:var(--card);border-radius:22px;box-shadow:var(--shadow);padding:24px}
+.filters h6{font-weight:700;margin:20px 0 10px}.filters h6:first-of-type{margin-top:0}
+.form-check-input:checked{background-color:var(--green);border-color:var(--green)}
+.form-range::-webkit-slider-thumb{background:var(--red)}.form-range::-moz-range-thumb{background:var(--red)}
+.form-select,.form-control{background-color:var(--card);color:var(--text);border-color:var(--line)}
+.form-select:focus,.form-control:focus{background-color:var(--card);color:var(--text);border-color:var(--red);box-shadow:0 0 0 .2rem rgba(233,75,53,.15)}
+.dish{background:var(--card);border-radius:22px;overflow:hidden;box-shadow:var(--shadow);height:100%;display:flex;flex-direction:column;transition:transform .3s,box-shadow .3s}
+.dish:hover{transform:translateY(-6px);box-shadow:0 18px 40px rgba(233,75,53,.16)}
+.pic{position:relative;aspect-ratio:4/3;overflow:hidden;background:var(--line);cursor:pointer}
+.pic img{width:100%;height:100%;object-fit:cover;transition:transform .5s}
+.dish:hover .pic img{transform:scale(1.07)}
+.badge-off{position:absolute;top:12px;left:12px;background:var(--red);color:#fff;font-size:.75rem;font-weight:700;padding:5px 12px;border-radius:50px}
+.fav{position:absolute;top:10px;right:10px;width:38px;height:38px;border-radius:50%;border:0;background:rgba(255,255,255,.92);color:#78716c;transition:.25s}
+.fav.on{color:var(--red)}.fav:hover{transform:scale(1.12)}
+.dish .body{padding:18px;display:flex;flex-direction:column;flex:1}
+.dish h5{font-size:1.05rem;margin:0 0 4px;cursor:pointer}.dish h5:hover{color:var(--red)}
+.dish p{color:var(--muted);font-size:.85rem;flex:1;margin-bottom:10px}
+.stars{color:var(--orange);font-size:.8rem}
+.avail{font-size:.75rem;font-weight:600}.avail.in{color:var(--green)}.avail.out{color:var(--red)}
+.avail::before{content:"";display:inline-block;width:8px;height:8px;border-radius:50%;background:currentColor;margin-right:5px}
+.price{font-weight:700;font-size:1.1rem;color:var(--red)}.price s{color:var(--muted);font-weight:400;font-size:.8rem;margin-right:4px}
+.add-btn{background:var(--red);color:#fff;border:0;border-radius:50px;padding:8px 16px;font-size:.85rem;font-weight:600;transition:.25s}
+.add-btn:hover:not(:disabled){background:var(--green)}.add-btn:disabled{background:#a8a29e;cursor:not-allowed}
+.dietary{font-size:.7rem;color:var(--green);font-weight:600}
+.empty{text-align:center;padding:60px 20px;background:var(--card);border-radius:22px;box-shadow:var(--shadow)}
+.empty i{font-size:3rem;color:var(--orange);margin-bottom:12px}
+/* modal */
+.modal-content{background:var(--card);color:var(--text);border-radius:26px;border:0;overflow:hidden}
+.modal .btn-close{position:absolute;right:16px;top:16px;z-index:5;background-color:#fff;border-radius:50%;padding:10px;opacity:1}
+.main-img{aspect-ratio:4/3;width:100%;object-fit:cover;border-radius:18px;background:var(--line)}
+.thumbs{display:flex;gap:10px;margin-top:10px}
+.thumbs img{width:76px;height:60px;object-fit:cover;border-radius:12px;cursor:pointer;border:3px solid transparent;opacity:.7;transition:.2s}
+.thumbs img.on,.thumbs img:hover{opacity:1;border-color:var(--red)}
+.opt{display:flex;gap:8px;flex-wrap:wrap}
+.opt input{display:none}
+.opt label{border:2px solid var(--line);border-radius:14px;padding:8px 16px;cursor:pointer;font-size:.88rem;font-weight:500;transition:.2s}
+.opt input:checked+label{border-color:var(--red);background:rgba(233,75,53,.08);color:var(--red)}
+.addon{display:flex;justify-content:space-between;padding:6px 0;font-size:.9rem}
+.qty{display:inline-flex;align-items:center;border:2px solid var(--line);border-radius:50px}
+.qty button{border:0;background:none;color:var(--text);width:38px;height:38px;font-size:1rem}
+.qty button:hover{color:var(--red)}.qty span{min-width:30px;text-align:center;font-weight:600}
+.ing span{display:inline-block;background:var(--bg);border:1px solid var(--line);padding:3px 12px;border-radius:50px;font-size:.78rem;margin:0 6px 6px 0}
+.total{font-size:1.5rem;font-weight:800;color:var(--red)}
+.toast-fh{position:fixed;bottom:24px;left:50%;transform:translate(-50%,120px);background:var(--text);color:var(--bg);padding:12px 24px;border-radius:50px;transition:.35s;z-index:2000;font-size:.9rem}
+.toast-fh.show{transform:translate(-50%,0)}
+.offcanvas{background:var(--bg);color:var(--text)}
+@media(min-width:992px){.filters-col{position:sticky;top:90px;align-self:flex-start}}
+@media(prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+</head>
+<body>
+<nav class="navbar navbar-expand-lg sticky-top">
+ <div class="container">
+  <a class="navbar-brand" href="index.html"><i class="fa-solid fa-utensils"></i> Food<span>Hub</span></a>
+  <button class="navbar-toggler" data-bs-toggle="collapse" data-bs-target="#nav" aria-label="Toggle navigation"><i class="fa-solid fa-bars fa-lg"></i></button>
+  <div class="collapse navbar-collapse" id="nav">
+   <ul class="navbar-nav mx-auto">
+    <li class="nav-item"><a class="nav-link" href="index.html">Home</a></li>
+    <li class="nav-item"><a class="nav-link active" href="menu.html">Menu</a></li>
+    <li class="nav-item"><a class="nav-link" href="index.html#reservations">Reservations</a></li>
+    <li class="nav-item"><a class="nav-link" href="index.html#about">About</a></li>
+    <li class="nav-item"><a class="nav-link" href="index.html#contact">Contact</a></li>
+   </ul>
+   <div class="d-flex align-items-center gap-2">
+    <button class="icon-btn" id="themeBtn" aria-label="Toggle dark mode"><i class="fa-solid fa-moon"></i></button>
+    <a href="#" class="btn btn-line btn-sm px-3" onclick="toast('Login page coming soon');return false">Login</a>
+    <a href="#" class="icon-btn" aria-label="Cart" onclick="toast('Cart page coming soon');return false"><i class="fa-solid fa-cart-shopping"></i><span class="cart-count" id="cartCount">0</span></a>
+   </div>
+  </div>
+ </div>
+</nav>
+ 
+<header class="page-head">
+ <div class="container">
+  <h1>Explore Our Menu</h1>
+  <p class="text-muted mb-4" style="max-width:520px">Fresh dishes made to order. Search by name or ingredient, filter by diet and price, then tap a dish for sizes and add-ons.</p>
+  <div class="search-box"><i class="fa-solid fa-magnifying-glass"></i><input id="search" type="search" placeholder="Search dishes or ingredients (e.g. cheese, mango)" aria-label="Search dishes and ingredients"></div>
+  <div class="cats mt-3" id="cats"></div>
+ </div>
+</header>
+ 
+<main class="container pb-5">
+ <div class="row g-4">
+  <div class="col-lg-3 filters-col">
+   <button class="btn btn-line w-100 d-lg-none mb-2" data-bs-toggle="offcanvas" data-bs-target="#filterPanel"><i class="fa-solid fa-sliders me-2"></i>Filters</button>
+   <div class="offcanvas-lg offcanvas-start" tabindex="-1" id="filterPanel" style="--bs-offcanvas-width:320px">
+    <div class="offcanvas-header"><h5 class="mb-0">Filters</h5><button class="btn-close" data-bs-dismiss="offcanvas" data-bs-target="#filterPanel" aria-label="Close"></button></div>
+    <div class="offcanvas-body p-3 p-lg-0 d-block">
+     <div class="filters">
+      <h6>Max price: <span class="text-danger" id="priceVal">500</span> EGP</h6>
+      <input type="range" class="form-range" id="price" min="40" max="500" step="10" value="500">
+      <h6>Minimum rating</h6>
+      <select class="form-select" id="rating"><option value="0">Any rating</option><option value="4">4.0 &amp; up</option><option value="4.5">4.5 &amp; up</option><option value="4.8">4.8 &amp; up</option></select>
+      <h6>Dietary</h6>
+      <div class="form-check"><input class="form-check-input" type="checkbox" id="veg"><label class="form-check-label" for="veg">Vegetarian</label></div>
+      <div class="form-check"><input class="form-check-input" type="checkbox" id="vegan"><label class="form-check-label" for="vegan">Vegan</label></div>
+      <h6>Availability</h6>
+      <div class="form-check"><input class="form-check-input" type="checkbox" id="avail"><label class="form-check-label" for="avail">Available now only</label></div>
+      <button class="btn btn-line btn-sm w-100 mt-4" id="reset">Reset filters</button>
+     </div>
+    </div>
+   </div>
+  </div>
+  <div class="col-lg-9">
+   <div class="d-flex justify-content-between align-items-center flex-wrap gap-2 mb-3">
+    <span class="text-muted" id="count"></span>
+    <div class="d-flex align-items-center gap-2"><label for="sort" class="small text-muted">Sort by</label>
+     <select class="form-select form-select-sm" id="sort" style="width:auto"><option value="pop">Popularity</option><option value="lo">Price: low to high</option><option value="hi">Price: high to low</option><option value="rate">Rating</option></select></div>
+   </div>
+   <div class="row g-4" id="grid"></div>
+  </div>
+ </div>
+</main>
+ 
+<div class="modal fade" id="dishModal" tabindex="-1" aria-labelledby="mTitle" aria-hidden="true">
+ <div class="modal-dialog modal-xl modal-dialog-centered modal-dialog-scrollable"><div class="modal-content">
+  <button class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+  <div class="modal-body p-3 p-md-4"><div class="row g-4">
+   <div class="col-md-5"><img class="main-img" id="mImg" alt=""><div class="thumbs" id="mThumbs"></div></div>
+   <div class="col-md-7">
+    <span class="dietary" id="mDiet"></span>
+    <h3 id="mTitle" class="mb-1"></h3>
+    <div class="stars mb-2" id="mStars"></div>
+    <p class="text-muted" id="mDesc"></p>
+    <div class="ing mb-3" id="mIng"></div>
+    <h6>Size</h6><div class="opt mb-3" id="mSizes"></div>
+    <h6>Add-ons</h6><div class="mb-3" id="mAddons"></div>
+    <h6>Special instructions</h6><textarea class="form-control mb-3" id="mNotes" rows="2" placeholder="e.g. no onions, sauce on the side"></textarea>
+    <div class="d-flex justify-content-between align-items-center flex-wrap gap-3">
+     <div class="qty"><button id="qMinus" aria-label="Decrease quantity"><i class="fa-solid fa-minus"></i></button><span id="qVal">1</span><button id="qPlus" aria-label="Increase quantity"><i class="fa-solid fa-plus"></i></button></div>
+     <div class="total" id="mTotal"></div>
+     <button class="btn btn-red" id="mAdd"><i class="fa-solid fa-cart-plus me-2"></i>Add to Cart</button>
+    </div>
+   </div>
+  </div></div>
+ </div></div>
+</div>
+<div class="toast-fh" id="toast" role="status"></div>
+ 
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+/* ---- Configurable images: change IMG_BASE or any photo ID below ---- */
+const IMG_BASE='https://images.unsplash.com/';
+const IMG=(id,w)=>`${IMG_BASE}${id}?auto=format&fit=crop&w=${w}&q=75`;
+const FALLBACK='data:image/svg+xml;utf8,'+encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" width="600" height="450"><rect width="600" height="450" fill="#f5e6d3"/><text x="300" y="240" font-size="72" text-anchor="middle">🍽️</text></svg>');
+const CATS=[
+ {k:'all',n:'All',i:'photo-1504674900247-0877df9cc836'},
+ {k:'burgers',n:'Burgers',i:'photo-1568901346375-23c9450c58cd'},
+ {k:'pizza',n:'Pizza',i:'photo-1513104890138-7c749659a591'},
+ {k:'grilled',n:'Grilled Food',i:'photo-1529692236671-f1f6cf9683ba'},
+ {k:'pasta',n:'Pasta',i:'photo-1621996346565-e3dbc646d9a9'},
+ {k:'salads',n:'Salads',i:'photo-1512621776951-a57141f2eefd'},
+ {k:'desserts',n:'Desserts',i:'photo-1551024601-bec78aea704b'},
+ {k:'drinks',n:'Drinks',i:'photo-1544145945-f90425340c7e'}];
+/* gallery extras per category (thumbnails in modal) */
+const GAL={burgers:['photo-1550547660-d9450f859349','photo-1572802419224-296b0aeee0d9'],pizza:['photo-1513104890138-7c749659a591','photo-1565299624946-b28f40a0ae38'],grilled:['photo-1555939594-58d7cb561ad1','photo-1544025162-d76694265947'],pasta:['photo-1473093295043-cdd812d0e601','photo-1551183053-bf91a1d81141'],salads:['photo-1546069901-ba9599a7e63c','photo-1540189549336-e6e99c3679fe'],desserts:['photo-1551024601-bec78aea704b','photo-1563729784474-d77dbb933a9e'],drinks:['photo-1497534446932-c925b458314e','photo-1544145945-f90425340c7e']};
+const D=[
+ {id:1,n:'Classic Cheeseburger',c:'burgers',p:140,r:4.8,pop:98,img:'photo-1568901346375-23c9450c58cd',d:'Juicy beef patty with cheddar, pickles, lettuce and house sauce on a brioche bun.',ing:['Beef','Cheddar','Pickles','Lettuce','Brioche'],av:1},
+ {id:2,n:'Bacon BBQ Burger',c:'burgers',p:175,r:4.7,pop:90,img:'photo-1550547660-d9450f859349',off:15,d:'Double beef, crispy bacon, onion rings and smoky BBQ sauce.',ing:['Beef','Bacon','Onion rings','BBQ sauce'],av:1},
+ {id:3,n:'Veggie Bean Burger',c:'burgers',p:120,r:4.4,pop:60,img:'photo-1520072959219-c595dc870360',d:'Black bean and corn patty with avocado, tomato and vegan mayo.',ing:['Black beans','Corn','Avocado','Tomato'],av:1,veg:1,vegan:1},
+ {id:4,n:'Margherita Pizza',c:'pizza',p:160,r:4.9,pop:99,img:'photo-1574071318508-1cdbab80d002',d:'Wood-fired crust with San Marzano tomato, mozzarella and fresh basil.',ing:['Tomato','Mozzarella','Basil','Olive oil'],av:1,veg:1},
+ {id:5,n:'Pepperoni Pizza',c:'pizza',p:195,r:4.7,pop:92,img:'photo-1628840042765-356cda07504e',off:10,d:'Spicy pepperoni, mozzarella and tomato sauce on a thin crispy base.',ing:['Pepperoni','Mozzarella','Tomato sauce'],av:1},
+ {id:6,n:'Mixed Grill Platter',c:'grilled',p:320,r:4.7,pop:85,img:'photo-1529692236671-f1f6cf9683ba',d:'Chicken, kofta and lamb chops with grilled vegetables and garlic dip.',ing:['Chicken','Kofta','Lamb','Peppers','Garlic'],av:1},
+ {id:7,n:'Grilled Salmon',c:'grilled',p:360,r:4.6,pop:70,img:'photo-1467003909585-2f8a72700288',d:'Atlantic salmon fillet with lemon butter, asparagus and baby potatoes.',ing:['Salmon','Lemon','Asparagus','Potato'],av:0},
+ {id:8,n:'Fettuccine Alfredo',c:'pasta',p:150,r:4.6,pop:80,img:'photo-1621996346565-e3dbc646d9a9',d:'Fresh fettuccine in parmesan cream sauce with grilled chicken.',ing:['Fettuccine','Cream','Parmesan','Chicken'],av:1},
+ {id:9,n:'Penne Arrabbiata',c:'pasta',p:120,r:4.5,pop:65,img:'photo-1563379926898-05f4575a45d8',d:'Penne in a spicy tomato and garlic sauce, finished with parsley.',ing:['Penne','Tomato','Chili','Garlic'],av:1,veg:1,vegan:1},
+ {id:10,n:'Garden Quinoa Salad',c:'salads',p:110,r:4.5,pop:55,img:'photo-1512621776951-a57141f2eefd',d:'Quinoa, avocado, cherry tomato, cucumber and lemon dressing.',ing:['Quinoa','Avocado','Tomato','Cucumber'],av:1,veg:1,vegan:1},
+ {id:11,n:'Caesar Salad',c:'salads',p:105,r:4.3,pop:58,img:'photo-1550304943-4f24f54ddde9',off:20,d:'Crisp romaine, parmesan, croutons and creamy Caesar dressing.',ing:['Romaine','Parmesan','Croutons','Caesar dressing'],av:1,veg:1},
+ {id:12,n:'Chocolate Lava Cake',c:'desserts',p:85,r:4.9,pop:94,img:'photo-1606313564200-e75d5e30476c',d:'Warm dark chocolate cake with a molten centre and vanilla ice cream.',ing:['Dark chocolate','Eggs','Butter','Vanilla'],av:1,veg:1},
+ {id:13,n:'Strawberry Cheesecake',c:'desserts',p:95,r:4.7,pop:75,img:'photo-1533134242443-d4fd215305ad',d:'Creamy New York cheesecake with a fresh strawberry compote.',ing:['Cream cheese','Strawberry','Biscuit base'],av:1,veg:1},
+ {id:14,n:'Fresh Mango Smoothie',c:'drinks',p:60,r:4.6,pop:72,img:'photo-1544145945-f90425340c7e',d:'Ripe mango blended with yogurt, honey and a touch of mint.',ing:['Mango','Yogurt','Honey','Mint'],av:1,veg:1},
+ {id:15,n:'Fresh Lemon Mint',c:'drinks',p:45,r:4.4,pop:68,img:'photo-1497534446932-c925b458314e',d:'Freshly squeezed lemon with mint leaves and crushed ice.',ing:['Lemon','Mint','Sugar','Ice'],av:1,veg:1,vegan:1}];
+const SIZES=[{k:'Small',m:.8},{k:'Medium',m:1},{k:'Large',m:1.3}];
+const ADDONS=[{n:'Extra cheese',p:20},{n:'Extra sauce',p:10},{n:'Bacon topping',p:25},{n:'Fresh veggies',p:15}];
+const $=s=>document.querySelector(s);
+const stars=r=>[1,2,3,4,5].map(x=>`<i class="${x<=Math.round(r)?'fa-solid':'fa-regular'} fa-star"></i>`).join('');
+const eff=d=>Math.round(d.p*(1-(d.off||0)/100));
+const catName=k=>CATS.find(c=>c.k===k).n;
+function fb(e){e.onerror=null;e.src=FALLBACK}window.fb=fb;
+function toast(m){const t=$('#toast');t.textContent=m;t.classList.add('show');clearTimeout(t._t);t._t=setTimeout(()=>t.classList.remove('show'),2200)}window.toast=toast;
+let count=0,favs=[],active='all';
+try{count=+localStorage.getItem('fh_cart')||0;favs=JSON.parse(localStorage.getItem('fh_favs')||'[]')}catch(e){}
+const save=()=>{$('#cartCount').textContent=count;try{localStorage.setItem('fh_cart',count);localStorage.setItem('fh_favs',JSON.stringify(favs))}catch(e){}};
+$('#cats').innerHTML=CATS.map(c=>`<button class="cat ${c.k==='all'?'active':''}" data-k="${c.k}"><div class="ring"><img src="${IMG(c.i,200)}" alt="${c.n}" loading="lazy" onerror="fb(this)"></div><span>${c.n}</span></button>`).join('');
+function render(){
+ const q=$('#search').value.trim().toLowerCase(),mp=+$('#price').value,mr=+$('#rating').value;
+ $('#priceVal').textContent=mp;
+ let L=D.filter(d=>(active==='all'||d.c===active)&&eff(d)<=mp&&d.r>=mr&&(!$('#veg').checked||d.veg)&&(!$('#vegan').checked||d.vegan)&&(!$('#avail').checked||d.av)&&(!q||(d.n+' '+d.d+' '+d.ing.join(' ')+' '+catName(d.c)).toLowerCase().includes(q)));
+ const s=$('#sort').value;
+ L.sort((a,b)=>s==='lo'?eff(a)-eff(b):s==='hi'?eff(b)-eff(a):s==='rate'?b.r-a.r:b.pop-a.pop);
+ $('#count').textContent=`Showing ${L.length} of ${D.length} dishes`;
+ $('#grid').innerHTML=L.length?L.map(d=>`<div class="col-sm-6 col-xl-4"><article class="dish"><div class="pic" data-open="${d.id}">${d.off?`<span class="badge-off">-${d.off}%</span>`:''}<button class="fav ${favs.includes(d.id)?'on':''}" data-fav="${d.id}" aria-label="Toggle favorite for ${d.n}"><i class="${favs.includes(d.id)?'fa-solid':'fa-regular'} fa-heart"></i></button><img src="${IMG(d.img,700)}" alt="${d.n}: ${d.d}" loading="lazy" onerror="fb(this)"></div><div class="body"><div class="d-flex justify-content-between"><span class="dietary">${d.vegan?'Vegan':d.veg?'Vegetarian':catName(d.c)}</span><span class="avail ${d.av?'in':'out'}">${d.av?'Available':'Sold out'}</span></div><h5 data-open="${d.id}">${d.n}</h5><p>${d.d}</p><div class="stars mb-2">${stars(d.r)} <span class="text-muted ms-1">${d.r}</span></div><div class="d-flex justify-content-between align-items-center"><span class="price">${d.off?`<s>${d.p}</s>`:''}${eff(d)} EGP</span><button class="add-btn" data-add="${d.id}" ${d.av?'':'disabled'}><i class="fa-solid fa-plus me-1"></i>Add to Cart</button></div></div></article></div>`).join(''):`<div class="col-12"><div class="empty"><i class="fa-solid fa-bowl-food"></i><h5>No dishes found</h5><p class="text-muted">Try a different search term or loosen your filters.</p><button class="btn btn-red" onclick="resetAll()">Clear all filters</button></div></div>`;
+}
+function resetAll(){$('#search').value='';$('#price').value=500;$('#rating').value=0;['veg','vegan','avail'].forEach(i=>$('#'+i).checked=false);$('#sort').value='pop';active='all';document.querySelectorAll('.cat').forEach(c=>c.classList.toggle('active',c.dataset.k==='all'));render()}
+window.resetAll=resetAll;
+$('#cats').onclick=e=>{const b=e.target.closest('.cat');if(!b)return;active=b.dataset.k;document.querySelectorAll('.cat').forEach(x=>x.classList.toggle('active',x===b));render()};
+['search','price','rating','veg','vegan','avail','sort'].forEach(i=>$('#'+i).addEventListener(i==='search'||i==='price'?'input':'change',render));
+$('#reset').onclick=resetAll;
+$('#grid').onclick=e=>{
+ const f=e.target.closest('[data-fav]');
+ if(f){const id=+f.dataset.fav;favs=favs.includes(id)?favs.filter(x=>x!==id):[...favs,id];save();render();toast(favs.includes(id)?'Saved to favorites':'Removed from favorites');return}
+ const a=e.target.closest('[data-add]');
+ if(a){const d=D.find(x=>x.id==a.dataset.add);count++;save();toast(d.n+' added to cart');return}
+ const o=e.target.closest('[data-open]');if(o)openModal(+o.dataset.open)};
+/* modal */
+const modal=new bootstrap.Modal($('#dishModal'));let cur,qty=1;
+function openModal(id){
+ cur=D.find(x=>x.id===id);qty=1;
+ $('#mTitle').textContent=cur.n;$('#mDesc').textContent=cur.d;$('#mStars').innerHTML=stars(cur.r)+` <span class="text-muted ms-1">${cur.r}</span>`;
+ $('#mDiet').textContent=(cur.vegan?'Vegan':cur.veg?'Vegetarian':catName(cur.c));
+ $('#mIng').innerHTML=cur.ing.map(i=>`<span>${i}</span>`).join('');
+ const imgs=[cur.img,...GAL[cur.c].filter(x=>x!==cur.img)].slice(0,3);
+ $('#mThumbs').innerHTML=imgs.map((x,i)=>`<img src="${IMG(x,200)}" data-big="${IMG(x,900)}" class="${i?'':'on'}" alt="${cur.n} photo ${i+1}" onerror="fb(this)">`).join('');
+ setMain(IMG(imgs[0],900),cur.n);
+ $('#mSizes').innerHTML=SIZES.map((s,i)=>`<div><input type="radio" name="size" id="sz${i}" value="${i}" ${i==1?'checked':''}><label for="sz${i}">${s.k}</label></div>`).join('');
+ $('#mAddons').innerHTML=ADDONS.map((a,i)=>`<div class="addon form-check"><label class="form-check-label d-flex justify-content-between w-100"><span><input class="form-check-input me-2" type="checkbox" value="${i}">${a.n}</span><span class="text-muted">+${a.p} EGP</span></label></div>`).join('');
+ $('#mNotes').value='';$('#qVal').textContent=1;
+ $('#mAdd').disabled=!cur.av;$('#mAdd').innerHTML=cur.av?'<i class="fa-solid fa-cart-plus me-2"></i>Add to Cart':'Sold out';
+ total();modal.show();
+}
+function setMain(src,alt){const m=$('#mImg');m.onerror=()=>fb(m);m.src=src;m.alt=alt}
+function unit(){const s=SIZES[+(document.querySelector('input[name=size]:checked')||{value:1}).value];
+ const add=[...document.querySelectorAll('#mAddons input:checked')].reduce((t,c)=>t+ADDONS[+c.value].p,0);
+ return Math.round(eff(cur)*s.m)+add}
+function total(){$('#mTotal').textContent=(unit()*qty).toLocaleString()+' EGP'}
+$('#mThumbs').onclick=e=>{const i=e.target.closest('img');if(!i)return;document.querySelectorAll('#mThumbs img').forEach(x=>x.classList.toggle('on',x===i));setMain(i.dataset.big,i.alt)};
+$('#dishModal').addEventListener('change',total);
+$('#qPlus').onclick=()=>{qty=Math.min(20,qty+1);$('#qVal').textContent=qty;total()};
+$('#qMinus').onclick=()=>{qty=Math.max(1,qty-1);$('#qVal').textContent=qty;total()};
+$('#mAdd').onclick=()=>{count+=qty;save();modal.hide();toast(`${qty} × ${cur.n} added to cart`)};
+/* theme */
+const root=document.documentElement;
+function theme(t){root.setAttribute('data-theme',t);$('#themeBtn').innerHTML=t==='dark'?'<i class="fa-solid fa-sun"></i>':'<i class="fa-solid fa-moon"></i>';try{localStorage.setItem('fh_theme',t)}catch(e){}}
+let t='light';try{t=localStorage.getItem('fh_theme')||'light'}catch(e){}
+theme(t);$('#themeBtn').onclick=()=>theme(root.getAttribute('data-theme')==='dark'?'light':'dark');
+save();render();
+</script>
+</body>
+</html>
+ 

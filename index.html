@@ -1,0 +1,329 @@
+
+
+Index · HTML
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>FoodHub — Delicious Food, Delivered Fresh</title>
+<meta name="description" content="Order fresh burgers, pizza, pasta, grilled food, salads, desserts and drinks from FoodHub.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" rel="stylesheet">
+<style>
+:root{--red:#E94B35;--orange:#F59E0B;--green:#3A7D44;--bg:#FFF8F0;--card:#FFFFFF;--text:#292524;--muted:#78716c;--line:#f0e4d6;--shadow:0 8px 28px rgba(41,37,36,.08)}
+[data-theme=dark]{--bg:#1c1917;--card:#292524;--text:#f5f0ea;--muted:#a8a29e;--line:#3d3733;--shadow:0 8px 28px rgba(0,0,0,.4)}
+html{scroll-behavior:smooth;scroll-padding-top:80px}
+body{font-family:'Poppins','Cairo',sans-serif;background:var(--bg);color:var(--text);transition:background .3s,color .3s}
+section{padding:84px 0}
+h1,h2,h3,h4,h5{font-weight:700}
+.sec-title{font-size:clamp(1.7rem,3.5vw,2.4rem);margin-bottom:8px}
+.sec-sub{color:var(--muted);max-width:520px}
+.text-muted{color:var(--muted)!important}
+a{text-decoration:none}
+.btn-red{background:var(--red);color:#fff;border:0;border-radius:50px;padding:13px 30px;font-weight:600;transition:.25s}
+.btn-red:hover{background:#c93a26;color:#fff;transform:translateY(-2px);box-shadow:0 8px 20px rgba(233,75,53,.35)}
+.btn-line{border:2px solid var(--text);color:var(--text);border-radius:50px;padding:11px 28px;font-weight:600;transition:.25s}
+.btn-line:hover{background:var(--text);color:var(--bg)}
+:focus-visible{outline:3px solid var(--orange);outline-offset:2px}
+/* nav */
+.navbar{background:var(--card);box-shadow:0 2px 16px rgba(0,0,0,.06);padding:12px 0;transition:background .3s}
+.navbar-brand{font-weight:800;font-size:1.6rem;color:var(--text)!important}
+.navbar-brand i{color:var(--red)}.navbar-brand span{color:var(--red)}
+.nav-link{color:var(--text)!important;font-weight:500;padding:8px 14px!important;position:relative}
+.nav-link:hover,.nav-link.active{color:var(--red)!important}
+.icon-btn{background:var(--bg);border:1px solid var(--line);color:var(--text);width:42px;height:42px;border-radius:50%;display:inline-flex;align-items:center;justify-content:center;position:relative;transition:.25s}
+.icon-btn:hover{background:var(--red);color:#fff;border-color:var(--red)}
+.cart-count{position:absolute;top:-5px;right:-5px;background:var(--orange);color:#fff;font-size:.7rem;font-weight:700;min-width:20px;height:20px;border-radius:50px;display:flex;align-items:center;justify-content:center}
+.navbar-toggler{border:0;color:var(--text)}.navbar-toggler:focus{box-shadow:none}
+/* hero */
+.hero{padding:70px 0 90px;background:radial-gradient(circle at 85% 20%,rgba(245,158,11,.18),transparent 45%),var(--bg)}
+.hero h1{font-size:clamp(2.3rem,5.5vw,4rem);font-weight:800;line-height:1.1}
+.hero h1 em{font-style:normal;color:var(--red)}
+.hero p.lead{color:var(--muted);max-width:480px;margin:20px 0 30px}
+.hero-img{position:relative}
+.hero-img img{width:100%;height:480px;object-fit:cover;border-radius:36px 36px 120px 36px;box-shadow:var(--shadow)}
+.float-card{position:absolute;background:var(--card);border-radius:18px;padding:12px 18px;box-shadow:var(--shadow);display:flex;align-items:center;gap:12px;font-size:.85rem}
+.float-card i{font-size:1.4rem}
+.fc1{left:-22px;bottom:40px}.fc2{right:12px;top:-18px}
+.stats{display:flex;gap:34px;margin-top:38px;flex-wrap:wrap}
+.stats b{font-size:1.5rem;display:block}.stats small{color:var(--muted)}
+/* search */
+.search-wrap{margin-top:-45px;position:relative;z-index:5;padding:0}
+.search-box{background:var(--card);border-radius:60px;box-shadow:var(--shadow);padding:10px 10px 10px 28px;display:flex;align-items:center;gap:14px;max-width:760px;margin:0 auto}
+.search-box i{color:var(--muted)}
+.search-box input{flex:1;border:0;background:transparent;color:var(--text);outline:0;font-size:1rem;min-width:0}
+/* categories */
+.cats{display:flex;gap:18px;overflow-x:auto;padding:12px 4px 20px;scrollbar-width:thin}
+.cat{flex:0 0 130px;text-align:center;cursor:pointer;background:none;border:0;color:var(--text);transition:.25s}
+.cat .ring{width:120px;height:120px;border-radius:50%;overflow:hidden;margin:0 auto 10px;border:4px solid transparent;box-shadow:var(--shadow);transition:.25s;background:var(--line)}
+.cat img{width:100%;height:100%;object-fit:cover}
+.cat:hover .ring{transform:translateY(-4px)}
+.cat.active .ring{border-color:var(--red)}
+.cat.active span{color:var(--red)}
+.cat span{font-weight:600;font-size:.92rem}
+/* dishes */
+.dish{background:var(--card);border-radius:22px;overflow:hidden;box-shadow:var(--shadow);height:100%;display:flex;flex-direction:column;transition:transform .3s,box-shadow .3s}
+.dish:hover{transform:translateY(-8px);box-shadow:0 18px 40px rgba(233,75,53,.18)}
+.dish .pic{height:210px;overflow:hidden;background:var(--line)}
+.dish img{width:100%;height:100%;object-fit:cover;transition:transform .5s}
+.dish:hover img{transform:scale(1.08)}
+.dish .body{padding:20px;display:flex;flex-direction:column;flex:1}
+.dish .tag{font-size:.75rem;color:var(--green);font-weight:600}
+.dish h5{margin:4px 0 6px;font-size:1.1rem}
+.dish p{color:var(--muted);font-size:.88rem;flex:1}
+.stars{color:var(--orange);font-size:.85rem}
+.price{font-weight:700;font-size:1.25rem;color:var(--red)}
+.add-btn{background:var(--red);color:#fff;border:0;border-radius:50px;padding:9px 18px;font-size:.88rem;font-weight:600;transition:.25s}
+.add-btn:hover{background:var(--green)}
+.add-btn.done{background:var(--green)}
+.empty{text-align:center;color:var(--muted);padding:40px}
+/* promo */
+.promo{border-radius:32px;overflow:hidden;position:relative;min-height:340px;display:flex;align-items:center;color:#fff;background:#3b1d12 url('https://images.unsplash.com/photo-1513104890138-7c749659a591?auto=format&fit=crop&w=1600&q=70') center/cover}
+.promo::before{content:"";position:absolute;inset:0;background:linear-gradient(90deg,rgba(30,12,6,.9) 30%,rgba(30,12,6,.2))}
+.promo .in{position:relative;padding:48px}
+.promo h2{font-size:clamp(1.9rem,4vw,3rem);font-weight:800}
+.promo .big{color:var(--orange)}
+.code{display:inline-block;border:2px dashed var(--orange);color:var(--orange);padding:6px 16px;border-radius:12px;font-weight:700;margin:0 8px 16px 0}
+/* steps */
+.step{text-align:center;padding:34px 24px;background:var(--card);border-radius:24px;box-shadow:var(--shadow);height:100%}
+.step .ic{width:80px;height:80px;border-radius:50%;background:rgba(233,75,53,.1);color:var(--red);display:flex;align-items:center;justify-content:center;font-size:1.9rem;margin:0 auto 18px}
+.step:nth-child(2) .ic{}
+/* reviews */
+.review{background:var(--card);border-radius:22px;padding:28px;box-shadow:var(--shadow);height:100%}
+.review .who{display:flex;align-items:center;gap:12px;margin-top:18px}
+.review img{width:48px;height:48px;border-radius:50%;object-fit:cover;background:var(--line)}
+/* info */
+.info{background:var(--card);border-radius:22px;padding:28px;box-shadow:var(--shadow);height:100%}
+.info h5 i{color:var(--red);margin-right:8px}
+.info li{list-style:none;display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px dashed var(--line);font-size:.92rem;gap:10px}
+.info ul{padding:0;margin:0}.info li:last-child{border:0}
+/* newsletter */
+.news{background:var(--green);color:#fff;border-radius:32px;padding:56px 32px;text-align:center}
+.news form{display:flex;gap:10px;max-width:520px;margin:24px auto 0;flex-wrap:wrap;justify-content:center}
+.news input{flex:1;min-width:220px;border:0;border-radius:50px;padding:14px 22px;outline:0}
+.news .btn-o{background:var(--orange);color:#fff;border:0;border-radius:50px;padding:14px 30px;font-weight:600}
+.news .btn-o:hover{background:#d98a07}
+#nlMsg{min-height:24px;margin-top:12px;font-weight:500}
+/* footer */
+footer{background:#1c1917;color:#d6d3d1;padding:60px 0 24px}
+footer a{color:#d6d3d1;transition:.2s}footer a:hover{color:var(--orange)}
+footer h6{color:#fff;margin-bottom:16px}
+footer ul{padding:0;list-style:none}footer li{margin-bottom:8px}
+.social a{width:40px;height:40px;border-radius:50%;background:#292524;display:inline-flex;align-items:center;justify-content:center;margin-right:8px}
+.social a:hover{background:var(--red);color:#fff}
+.toast-fh{position:fixed;bottom:24px;left:50%;transform:translate(-50%,120px);background:var(--text);color:var(--bg);padding:12px 24px;border-radius:50px;transition:.35s;z-index:2000;font-size:.9rem}
+.toast-fh.show{transform:translate(-50%,0)}
+@media(max-width:991px){.hero-img img{height:360px}.fc1{left:8px}.navbar-collapse{padding:14px 0}}
+@media(max-width:575px){section{padding:60px 0}.promo .in{padding:30px 24px}.search-box{border-radius:30px}.hero-img img{height:280px;border-radius:28px 28px 70px 28px}}
+@media(prefers-reduced-motion:reduce){*{transition:none!important;scroll-behavior:auto!important}}
+</style>
+</head>
+<body>
+ 
+<nav class="navbar navbar-expand-lg sticky-top">
+ <div class="container">
+  <a class="navbar-brand" href="#home"><i class="fa-solid fa-utensils"></i> Food<span>Hub</span></a>
+  <button class="navbar-toggler" data-bs-toggle="collapse" data-bs-target="#nav" aria-label="Toggle navigation"><i class="fa-solid fa-bars fa-lg"></i></button>
+  <div class="collapse navbar-collapse" id="nav">
+   <ul class="navbar-nav mx-auto">
+    <li class="nav-item"><a class="nav-link active" href="#home">Home</a></li>
+    <li class="nav-item"><a class="nav-link" href="#menu">Menu</a></li>
+    <li class="nav-item"><a class="nav-link" href="#reservations">Reservations</a></li>
+    <li class="nav-item"><a class="nav-link" href="#about">About</a></li>
+    <li class="nav-item"><a class="nav-link" href="#contact">Contact</a></li>
+   </ul>
+   <div class="d-flex align-items-center gap-2">
+    <button class="icon-btn" id="themeBtn" aria-label="Toggle dark mode"><i class="fa-solid fa-moon"></i></button>
+    <a href="#" class="btn btn-line btn-sm px-3" onclick="toast('Login page coming soon');return false">Login</a>
+    <a href="#menu" class="icon-btn" aria-label="Cart"><i class="fa-solid fa-cart-shopping"></i><span class="cart-count" id="cartCount">0</span></a>
+   </div>
+  </div>
+ </div>
+</nav>
+ 
+<header class="hero" id="home">
+ <div class="container">
+  <div class="row align-items-center g-5">
+   <div class="col-lg-6">
+    <h1>Delicious Food, <em>Delivered Fresh</em></h1>
+    <p class="lead">Handcrafted burgers, wood-fired pizza, fresh pasta and more — made with seasonal ingredients and at your door in 30 minutes.</p>
+    <a href="#menu" class="btn btn-red me-2 mb-2">Order Now</a>
+    <a href="#categories" class="btn btn-line mb-2">Explore Menu</a>
+    <div class="stats"><div><b>30 min</b><small>Avg. delivery</small></div><div><b>120+</b><small>Menu items</small></div><div><b>4.8★</b><small>12k reviews</small></div></div>
+   </div>
+   <div class="col-lg-6">
+    <div class="hero-img">
+     <img src="https://images.unsplash.com/photo-1504674900247-0877df9cc836?auto=format&fit=crop&w=1200&q=75" alt="Table of freshly grilled meats and vegetables">
+     <div class="float-card fc1"><i class="fa-solid fa-motorcycle" style="color:var(--red)"></i><div><b>Free delivery</b><br><small class="text-muted">Orders over $25</small></div></div>
+     <div class="float-card fc2"><i class="fa-solid fa-leaf" style="color:var(--green)"></i><div><b>100% fresh</b><br><small class="text-muted">Local ingredients</small></div></div>
+    </div>
+   </div>
+  </div>
+ </div>
+</header>
+ 
+<div class="search-wrap"><div class="container">
+ <div class="search-box"><i class="fa-solid fa-magnifying-glass"></i>
+  <input id="search" type="search" placeholder="Search meals or ingredients (e.g. cheese, chicken, mango)" aria-label="Search meals and ingredients">
+  <button class="btn btn-red" onclick="document.getElementById('menu').scrollIntoView()">Search</button></div>
+</div></div>
+ 
+<section id="categories">
+ <div class="container">
+  <h2 class="sec-title text-center">Browse by category</h2>
+  <p class="sec-sub text-center mx-auto mb-4">Pick a category to filter the menu below.</p>
+  <div class="cats" id="cats"></div>
+ </div>
+</section>
+ 
+<section id="menu" style="padding-top:20px">
+ <div class="container">
+  <div class="d-flex justify-content-between align-items-end flex-wrap mb-4 gap-2">
+   <div><h2 class="sec-title">Popular dishes</h2><p class="sec-sub mb-0">Customer favourites, cooked to order.</p></div>
+   <span class="text-muted" id="resultCount"></span>
+  </div>
+  <div class="row g-4" id="dishes"></div>
+ </div>
+</section>
+ 
+<section style="padding-top:0">
+ <div class="container">
+  <div class="promo"><div class="in col-md-8 col-lg-6">
+   <div class="code">WELCOME30</div><div class="code">Free dessert</div>
+   <h2>Get <span class="big">30% off</span> your first order</h2>
+   <p class="mb-4" style="opacity:.9">Treat yourself to a wood-fired pizza feast. Valid on orders over $20 this month.</p>
+   <a href="#menu" class="btn btn-red">Claim offer</a>
+  </div></div>
+ </div>
+</section>
+ 
+<section id="how">
+ <div class="container">
+  <h2 class="sec-title text-center">How it works</h2>
+  <p class="sec-sub text-center mx-auto mb-5">From craving to table in three simple steps.</p>
+  <div class="row g-4">
+   <div class="col-md-4"><div class="step"><div class="ic"><i class="fa-solid fa-burger"></i></div><h5>1. Choose Food</h5><p class="text-muted mb-0">Browse the menu, filter by category and add your favourites to the cart.</p></div></div>
+   <div class="col-md-4"><div class="step"><div class="ic"><i class="fa-solid fa-bag-shopping"></i></div><h5>2. Place Order</h5><p class="text-muted mb-0">Confirm your address and pay securely online or in cash on delivery.</p></div></div>
+   <div class="col-md-4"><div class="step"><div class="ic"><i class="fa-solid fa-face-smile-beam"></i></div><h5>3. Enjoy Your Meal</h5><p class="text-muted mb-0">Our rider brings it hot and fresh. Sit back and dig in.</p></div></div>
+  </div>
+ </div>
+</section>
+ 
+<section id="reservations" style="padding-top:0">
+ <div class="container">
+  <h2 class="sec-title text-center">What our customers say</h2>
+  <p class="sec-sub text-center mx-auto mb-5">Reviews from people who ordered this month.</p>
+  <div class="row g-4" id="reviews"></div>
+ </div>
+</section>
+ 
+<section id="about" style="padding-top:0">
+ <div class="container">
+  <div class="row align-items-center g-5 mb-5">
+   <div class="col-lg-6"><img class="w-100" style="height:340px;object-fit:cover;border-radius:28px;box-shadow:var(--shadow)" src="https://images.unsplash.com/photo-1414235077428-338989a2e8c0?auto=format&fit=crop&w=1000&q=70" alt="Elegant FoodHub restaurant dining room" onerror="this.src='https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?auto=format&fit=crop&w=1000&q=70'"></div>
+   <div class="col-lg-6"><h2 class="sec-title">About FoodHub</h2><p class="text-muted">Since 2015 we've been cooking honest food with local produce. Dine in with a reservation, or have the same dishes delivered to your door. Every plate is made to order by our chefs.</p><a href="#contact" class="btn btn-red">Book a table</a></div>
+  </div>
+  <div class="row g-4" id="contact">
+   <div class="col-md-4"><div class="info"><h5><i class="fa-regular fa-clock"></i>Opening hours</h5><ul><li><span>Mon – Thu</span><b>10:00 – 23:00</b></li><li><span>Fri – Sat</span><b>10:00 – 01:00</b></li><li><span>Sunday</span><b>12:00 – 22:00</b></li></ul></div></div>
+   <div class="col-md-4"><div class="info"><h5><i class="fa-solid fa-motorcycle"></i>Delivery</h5><ul><li><span>Delivery time</span><b>25 – 40 min</b></li><li><span>Delivery fee</span><b>$2.99</b></li><li><span>Free over</span><b>$25</b></li><li><span>Radius</span><b>8 km</b></li></ul></div></div>
+   <div class="col-md-4"><div class="info"><h5><i class="fa-solid fa-location-dot"></i>Contact</h5><ul><li><span>Address</span><b>12 Nile Street, Cairo</b></li><li><span>Phone</span><b>+20 100 123 4567</b></li><li><span>Email</span><b>hello@foodhub.com</b></li></ul></div></div>
+  </div>
+ </div>
+</section>
+ 
+<section style="padding-top:0">
+ <div class="container"><div class="news">
+  <h2 class="sec-title">Get 10% off your next order</h2>
+  <p class="mb-0" style="opacity:.9">Subscribe for weekly deals and new menu drops.</p>
+  <form id="nlForm" novalidate>
+   <input type="email" id="nlEmail" placeholder="Enter your email address" aria-label="Email address">
+   <button class="btn-o" type="submit">Subscribe</button>
+  </form>
+  <div id="nlMsg" role="status"></div>
+ </div></div>
+</section>
+ 
+<footer>
+ <div class="container">
+  <div class="row g-4">
+   <div class="col-lg-4"><h4 class="text-white"><i class="fa-solid fa-utensils" style="color:var(--red)"></i> FoodHub</h4><p>Delicious food, delivered fresh. Made to order, every time.</p>
+    <div class="social"><a href="#" aria-label="Facebook"><i class="fa-brands fa-facebook-f"></i></a><a href="#" aria-label="Instagram"><i class="fa-brands fa-instagram"></i></a><a href="#" aria-label="X"><i class="fa-brands fa-x-twitter"></i></a><a href="#" aria-label="YouTube"><i class="fa-brands fa-youtube"></i></a></div></div>
+   <div class="col-6 col-lg-2"><h6>Explore</h6><ul><li><a href="#home">Home</a></li><li><a href="#menu">Menu</a></li><li><a href="#reservations">Reservations</a></li><li><a href="#about">About</a></li></ul></div>
+   <div class="col-6 col-lg-2"><h6>Support</h6><ul><li><a href="#contact">Contact</a></li><li><a href="#how">How it works</a></li><li><a href="#contact">Delivery info</a></li></ul></div>
+   <div class="col-lg-4"><h6>Contact</h6><ul><li><i class="fa-solid fa-phone me-2"></i>+20 100 123 4567</li><li><i class="fa-solid fa-envelope me-2"></i>hello@foodhub.com</li></ul></div>
+  </div>
+  <hr style="border-color:#3d3733" class="mt-4"><p class="text-center mb-0 small">© 2026 FoodHub. All rights reserved.</p>
+ </div>
+</footer>
+<div class="toast-fh" id="toast" role="status"></div>
+ 
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+const U=(id,w)=>`https://images.unsplash.com/${id}?auto=format&fit=crop&w=${w}&q=75`;
+const FALLBACK='data:image/svg+xml;utf8,'+encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" width="600" height="400"><rect width="600" height="400" fill="#f5e6d3"/><text x="300" y="215" font-size="64" text-anchor="middle">🍽️</text></svg>');
+const cats=[
+ {n:'All',k:'all',i:'photo-1504674900247-0877df9cc836'},
+ {n:'Burgers',k:'burgers',i:'photo-1568901346375-23c9450c58cd'},
+ {n:'Pizza',k:'pizza',i:'photo-1513104890138-7c749659a591'},
+ {n:'Grilled Food',k:'grilled',i:'photo-1529692236671-f1f6cf9683ba'},
+ {n:'Pasta',k:'pasta',i:'photo-1621996346565-e3dbc646d9a9'},
+ {n:'Salads',k:'salads',i:'photo-1512621776951-a57141f2eefd'},
+ {n:'Desserts',k:'desserts',i:'photo-1551024601-bec78aea704b'},
+ {n:'Drinks',k:'drinks',i:'photo-1544145945-f90425340c7e'}];
+const dishes=[
+ {id:1,n:'Classic Cheeseburger',c:'burgers',d:'Beef patty, cheddar, pickles, lettuce and house sauce in a brioche bun.',p:8.99,r:4.8,i:'photo-1568901346375-23c9450c58cd'},
+ {id:2,n:'Margherita Pizza',c:'pizza',d:'Wood-fired crust with San Marzano tomato, mozzarella and fresh basil.',p:11.5,r:4.9,i:'photo-1574071318508-1cdbab80d002'},
+ {id:3,n:'Mixed Grill Platter',c:'grilled',d:'Chicken, kofta and lamb chops with grilled vegetables and garlic dip.',p:16.99,r:4.7,i:'photo-1529692236671-f1f6cf9683ba'},
+ {id:4,n:'Creamy Fettuccine Alfredo',c:'pasta',d:'Fresh fettuccine in parmesan cream sauce with grilled chicken.',p:12.75,r:4.6,i:'photo-1621996346565-e3dbc646d9a9'},
+ {id:5,n:'Garden Quinoa Salad',c:'salads',d:'Quinoa, avocado, cherry tomato, cucumber, feta and lemon dressing.',p:9.25,r:4.5,i:'photo-1512621776951-a57141f2eefd'},
+ {id:6,n:'Chocolate Lava Cake',c:'desserts',d:'Warm dark chocolate cake with a molten centre and vanilla ice cream.',p:6.5,r:4.9,i:'photo-1606313564200-e75d5e30476c'},
+ {id:7,n:'Fresh Mango Smoothie',c:'drinks',d:'Ripe mango blended with yogurt, honey and a touch of mint.',p:4.75,r:4.6,i:'photo-1544145945-f90425340c7e'},
+ {id:8,n:'Pepperoni Pizza',c:'pizza',d:'Spicy pepperoni, mozzarella and tomato sauce on a thin crispy base.',p:13.25,r:4.7,i:'photo-1628840042765-356cda07504e'},
+ {id:9,n:'Bacon BBQ Burger',c:'burgers',d:'Double beef, crispy bacon, onion rings and smoky BBQ sauce.',p:10.99,r:4.7,i:'photo-1550547660-d9450f859349'}];
+const reviews=[
+ {n:'Sara Ahmed',t:'The pizza arrived hot and the crust was perfect. Best delivery in the city, easily.',r:5,i:'photo-1494790108377-be9c29b29330'},
+ {n:'Omar Hassan',t:'Generous portions and the burger was juicy. Ordering was quick and the rider was friendly.',r:5,i:'photo-1507003211169-0a1dd7228f2d'},
+ {n:'Layla Mostafa',t:'Great salads and desserts. Delivery took 35 minutes, a little longer than quoted, but worth it.',r:4,i:'photo-1438761681033-6461ffad8d80'}];
+const stars=r=>[1,2,3,4,5].map(x=>`<i class="${x<=Math.round(r)?'fa-solid':'fa-regular'} fa-star"></i>`).join('');
+const fb=e=>{e.onerror=null;e.src=FALLBACK};
+window.fb=fb;
+let active='all',cart=JSON.parse(JSON.stringify([])),count=0;
+try{count=+localStorage.getItem('fh_cart')||0}catch(e){}
+const $=s=>document.querySelector(s);
+function toast(m){const t=$('#toast');t.textContent=m;t.classList.add('show');clearTimeout(t._t);t._t=setTimeout(()=>t.classList.remove('show'),2200)}
+window.toast=toast;
+function setCount(){$('#cartCount').textContent=count;try{localStorage.setItem('fh_cart',count)}catch(e){}}
+$('#cats').innerHTML=cats.map(c=>`<button class="cat ${c.k==='all'?'active':''}" data-k="${c.k}"><div class="ring"><img src="${U(c.i,300)}" alt="${c.n} category" loading="lazy" onerror="fb(this)"></div><span>${c.n}</span></button>`).join('');
+$('#reviews').innerHTML=reviews.map(v=>`<div class="col-md-4"><div class="review"><div class="stars mb-3">${stars(v.r)}</div><p>"${v.t}"</p><div class="who"><img src="${U(v.i,120)}" alt="Portrait of ${v.n}" loading="lazy" onerror="fb(this)"><div><b>${v.n}</b><br><small class="text-muted">Verified customer</small></div></div></div></div>`).join('');
+function render(){
+ const q=$('#search').value.trim().toLowerCase();
+ const list=dishes.filter(d=>(active==='all'||d.c===active)&&(!q||(d.n+' '+d.d+' '+d.c).toLowerCase().includes(q)));
+ $('#resultCount').textContent=list.length+' dishes';
+ $('#dishes').innerHTML=list.length?list.map(d=>`<div class="col-sm-6 col-lg-4"><article class="dish"><div class="pic"><img src="${U(d.i,700)}" alt="${d.n}: ${d.d}" loading="lazy" onerror="fb(this)"></div><div class="body"><span class="tag">${cats.find(c=>c.k===d.c).n}</span><h5>${d.n}</h5><p>${d.d}</p><div class="stars mb-3">${stars(d.r)} <span class="text-muted ms-1">${d.r}</span></div><div class="d-flex justify-content-between align-items-center"><span class="price">$${d.p.toFixed(2)}</span><button class="add-btn" data-id="${d.id}"><i class="fa-solid fa-plus me-1"></i>Add to Cart</button></div></div></article></div>`).join(''):'<div class="col-12 empty"><i class="fa-solid fa-bowl-food fa-2x mb-2"></i><p>No dishes match your search. Try another ingredient or category.</p></div>';
+}
+$('#cats').addEventListener('click',e=>{const b=e.target.closest('.cat');if(!b)return;active=b.dataset.k;document.querySelectorAll('.cat').forEach(x=>x.classList.toggle('active',x===b));render();document.getElementById('menu').scrollIntoView()});
+$('#search').addEventListener('input',()=>{render()});
+$('#search').addEventListener('keydown',e=>{if(e.key==='Enter')document.getElementById('menu').scrollIntoView()});
+$('#dishes').addEventListener('click',e=>{const b=e.target.closest('.add-btn');if(!b)return;count++;setCount();const d=dishes.find(x=>x.id==b.dataset.id);toast(d.n+' added to cart');b.classList.add('done');b.innerHTML='<i class="fa-solid fa-check me-1"></i>Added';setTimeout(()=>{b.classList.remove('done');b.innerHTML='<i class="fa-solid fa-plus me-1"></i>Add to Cart'},1200)});
+$('#nlForm').addEventListener('submit',e=>{e.preventDefault();const v=$('#nlEmail').value.trim(),m=$('#nlMsg');
+ if(!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(v)){m.textContent='Enter a valid email address, like name@example.com.';m.style.color='#FFE0A3';return}
+ m.textContent='Thanks for subscribing! Check your inbox for your 10% code.';m.style.color='#fff';$('#nlEmail').value=''});
+// theme
+const root=document.documentElement;
+function theme(t){root.setAttribute('data-theme',t);$('#themeBtn').innerHTML=t==='dark'?'<i class="fa-solid fa-sun"></i>':'<i class="fa-solid fa-moon"></i>';try{localStorage.setItem('fh_theme',t)}catch(e){}}
+let saved='light';try{saved=localStorage.getItem('fh_theme')||(matchMedia('(prefers-color-scheme:dark)').matches?'dark':'light')}catch(e){}
+theme(saved);
+$('#themeBtn').onclick=()=>theme(root.getAttribute('data-theme')==='dark'?'light':'dark');
+// nav: close on click, active link on scroll
+document.querySelectorAll('.nav-link').forEach(l=>l.addEventListener('click',()=>{const c=$('#nav');if(c.classList.contains('show'))bootstrap.Collapse.getOrCreateInstance(c).hide()}));
+const secs=['home','menu','reservations','about','contact'].map(id=>document.getElementById(id));
+addEventListener('scroll',()=>{let cur='home';secs.forEach(s=>{if(s.getBoundingClientRect().top<140)cur=s.id});document.querySelectorAll('.nav-link').forEach(l=>l.classList.toggle('active',l.getAttribute('href')==='#'+cur))},{passive:true});
+setCount();render();
+</script>
+</body>
+</html>
+ 
+Claude finished the response

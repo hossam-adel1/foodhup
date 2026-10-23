@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>FoodHub Admin — Restaurant Overview</title>
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" rel="stylesheet">
+<style>
+:root{--red:#E94B35;--orange:#F59E0B;--green:#3A7D44;--bg:#FFF8F0;--card:#FFFFFF;--text:#292524;--muted:#78716c;--line:#f0e4d6;--shadow:0 6px 24px rgba(41,37,36,.07);--sw:250px}
+[data-theme=dark]{--bg:#161412;--card:#241f1d;--text:#f5f0ea;--muted:#a8a29e;--line:#3a3430;--shadow:0 6px 24px rgba(0,0,0,.4)}
+body{font-family:'Poppins','Cairo',sans-serif;background:var(--bg);color:var(--text);transition:background .3s,color .3s}
+a{text-decoration:none}.text-muted{color:var(--muted)!important}h1,h2,h3,h4,h5,h6{font-weight:700}
+:focus-visible{outline:3px solid var(--orange);outline-offset:2px}
+.btn-red{background:var(--red);color:#fff;border:0;border-radius:12px;font-weight:600;padding:9px 18px;transition:.2s}.btn-red:hover{background:#c93a26;color:#fff}
+.btn-soft{background:var(--card);border:1px solid var(--line);color:var(--text);border-radius:12px;font-weight:500;padding:9px 16px;font-size:.88rem;transition:.2s}.btn-soft:hover{border-color:var(--red);color:var(--red)}
+/* sidebar */
+#side{position:fixed;inset:0 auto 0 0;width:var(--sw);background:var(--card);border-right:1px solid var(--line);z-index:1040;display:flex;flex-direction:column;transition:width .3s,transform .3s;overflow:hidden}
+.brand{padding:20px;font-weight:800;font-size:1.45rem;color:var(--text);white-space:nowrap;display:flex;align-items:center;gap:10px}
+.brand i,.brand span{color:var(--red)}.brand small{font-size:.65rem;background:var(--red);color:#fff;padding:2px 8px;border-radius:50px;font-weight:600}
+#side nav{padding:8px 12px;flex:1;overflow-y:auto}
+.nl{display:flex;align-items:center;gap:14px;padding:11px 14px;border-radius:12px;color:var(--text);font-weight:500;font-size:.9rem;margin-bottom:4px;white-space:nowrap;transition:.2s}
+.nl i{width:20px;text-align:center;color:var(--muted)}
+.nl:hover{background:var(--bg)}.nl.on{background:rgba(233,75,53,.1);color:var(--red)}.nl.on i{color:var(--red)}
+.nl .bd{margin-left:auto;background:var(--orange);color:#fff;font-size:.68rem;padding:1px 8px;border-radius:50px}
+.sec-t{font-size:.7rem;color:var(--muted);padding:14px 14px 6px;white-space:nowrap}
+body.collapsed{--sw:80px}
+body.collapsed .nl span,body.collapsed .brand span,body.collapsed .brand small,body.collapsed .sec-t,body.collapsed .nl .bd{display:none}
+body.collapsed .nl{justify-content:center;padding:12px}
+#main{margin-left:var(--sw);transition:margin .3s;min-height:100vh}
+.topbar{position:sticky;top:0;z-index:1030;background:var(--card);border-bottom:1px solid var(--line);padding:12px 24px;display:flex;align-items:center;gap:14px}
+.ib{background:var(--bg);border:1px solid var(--line);color:var(--text);width:40px;height:40px;border-radius:12px;display:inline-flex;align-items:center;justify-content:center;position:relative;flex:none;transition:.2s}
+.ib:hover{border-color:var(--red);color:var(--red)}
+.ib .dot{position:absolute;top:-5px;right:-5px;background:var(--red);color:#fff;font-size:.65rem;font-weight:700;min-width:18px;height:18px;border-radius:50px;display:flex;align-items:center;justify-content:center}
+.sbox{flex:1;max-width:420px;position:relative}
+.sbox i{position:absolute;left:14px;top:50%;transform:translateY(-50%);color:var(--muted)}
+.sbox input{padding-left:40px}
+.form-control,.form-select{background-color:var(--bg);color:var(--text);border:1px solid var(--line);border-radius:12px;padding:9px 14px;font-size:.88rem}
+.form-control:focus,.form-select:focus{background-color:var(--bg);color:var(--text);border-color:var(--red);box-shadow:0 0 0 .2rem rgba(233,75,53,.15)}
+.form-control::placeholder{color:var(--muted)}
+.dropdown-menu{background:var(--card);border:1px solid var(--line);border-radius:16px;box-shadow:var(--shadow);color:var(--text)}
+.dropdown-item{color:var(--text);border-radius:10px;font-size:.88rem;white-space:normal}.dropdown-item:hover{background:var(--bg);color:var(--text)}
+.av{width:40px;height:40px;border-radius:50%;background:linear-gradient(135deg,var(--red),var(--orange));color:#fff;font-weight:700;display:flex;align-items:center;justify-content:center;border:0}
+.nt{display:flex;gap:12px;padding:10px 14px;font-size:.84rem;border-bottom:1px solid var(--line)}.nt:last-child{border:0}
+.nt .i{width:34px;height:34px;border-radius:10px;display:flex;align-items:center;justify-content:center;flex:none}
+.content{padding:24px}
+.demo-note{background:#fff4d6;color:#7a4b00;border-radius:12px;padding:9px 14px;font-size:.8rem;border:1px solid #f5d98b}
+[data-theme=dark] .demo-note{background:#3b2f10;color:#fcd98a;border-color:#6b5316}
+.card-x{background:var(--card);border-radius:20px;box-shadow:var(--shadow);padding:22px;height:100%;border:1px solid transparent}
+.card-x h6{margin:0}
+.kpi{display:flex;align-items:flex-start;justify-content:space-between;gap:10px}
+.kpi .ic{width:48px;height:48px;border-radius:14px;display:flex;align-items:center;justify-content:center;font-size:1.2rem;flex:none}
+.kpi small{color:var(--muted);font-size:.8rem}.kpi h3{font-size:1.55rem;margin:2px 0 4px}
+.up{color:var(--green)}.down{color:var(--red)}.delta{font-size:.78rem;font-weight:600}
+.chart-box{position:relative;height:300px}
+.prod{display:flex;align-items:center;gap:14px;padding:10px 0;border-bottom:1px solid var(--line)}.prod:last-child{border:0}
+.prod img,.thm img{width:52px;height:52px;border-radius:14px;object-fit:cover;background:var(--line);flex:none}
+.prod .nm{flex:1;min-width:0;font-size:.9rem}.prod .nm b{display:block}
+.pbar{height:6px;background:var(--line);border-radius:50px;margin-top:6px;overflow:hidden}.pbar i{display:block;height:100%;border-radius:50px;background:var(--red)}
+.tbl{width:100%;font-size:.86rem;border-collapse:collapse}
+.tbl th{color:var(--muted);font-weight:500;font-size:.76rem;padding:10px 12px;border-bottom:1px solid var(--line);white-space:nowrap}
+.tbl td{padding:12px;border-bottom:1px solid var(--line);vertical-align:middle}
+.tbl tr:last-child td{border:0}.tbl tbody tr:hover{background:var(--bg)}
+.thm{display:flex;align-items:center}.thm img{width:34px;height:34px;border-radius:10px;border:2px solid var(--card);margin-right:-10px}.thm span{margin-left:18px;font-size:.82rem;max-width:190px}
+.bdg{font-size:.72rem;font-weight:600;padding:4px 11px;border-radius:50px;white-space:nowrap}
+.b-new{background:rgba(59,130,246,.14);color:#2563eb}.b-prep{background:rgba(245,158,11,.18);color:#b45309}.b-way{background:rgba(139,92,246,.15);color:#7c3aed}.b-done{background:rgba(58,125,68,.14);color:var(--green)}.b-can{background:rgba(233,75,53,.12);color:var(--red)}
+[data-theme=dark] .b-prep{color:#fbbf24}[data-theme=dark] .b-new{color:#60a5fa}[data-theme=dark] .b-way{color:#a78bfa}
+.stock{padding:10px 0;border-bottom:1px solid var(--line);font-size:.86rem}.stock:last-child{border:0}
+.act{display:flex;gap:12px;padding:10px 0;font-size:.86rem;position:relative}
+.act .d{width:34px;height:34px;border-radius:50%;display:flex;align-items:center;justify-content:center;flex:none;font-size:.8rem}
+.qa{display:flex;flex-direction:column;align-items:center;gap:8px;padding:16px 8px;border-radius:16px;background:var(--card);border:1px solid var(--line);color:var(--text);font-size:.82rem;font-weight:500;width:100%;transition:.2s}
+.qa i{font-size:1.3rem;color:var(--red)}.qa:hover{transform:translateY(-3px);border-color:var(--red)}
+.empty-r td{text-align:center;color:var(--muted);padding:30px!important}
+#scrim{display:none}
+@media(max-width:991px){
+ #side{transform:translateX(-100%);width:260px}body.open #side{transform:none}
+ #main{margin-left:0}
+ body.open #scrim{display:block;position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:1035}
+ body.collapsed{--sw:260px}body.collapsed .nl span,body.collapsed .brand span,body.collapsed .brand small,body.collapsed .sec-t,body.collapsed .nl .bd{display:inline}
+ body.collapsed .nl{justify-content:flex-start;padding:11px 14px}
+ .topbar{padding:10px 14px}.content{padding:16px}
+}
+@media(max-width:575px){.hide-sm{display:none}.sbox{max-width:none}}
+.toast-fh{position:fixed;bottom:24px;left:50%;transform:translate(-50%,120px);background:var(--text);color:var(--bg);padding:12px 24px;border-radius:50px;transition:.35s;z-index:2000;font-size:.9rem}
+.toast-fh.show{transform:translate(-50%,0)}
+@media(prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+</head>
+<body>
+<aside id="side" aria-label="Admin navigation">
+ <a class="brand" href="index.html"><i class="fa-solid fa-utensils"></i><span>Food<span>Hub</span></span><small>Admin</small></a>
+ <nav>
+  <div class="sec-t">MAIN</div>
+  <a class="nl on" href="#"><i class="fa-solid fa-gauge-high"></i><span>Dashboard</span></a>
+  <a class="nl" href="#" data-soon><i class="fa-solid fa-receipt"></i><span>Orders</span><b class="bd">12</b></a>
+  <a class="nl" href="#" data-soon><i class="fa-solid fa-burger"></i><span>Menu items</span></a>
+  <a class="nl" href="#" data-soon><i class="fa-regular fa-calendar-check"></i><span>Reservations</span></a>
+  <a class="nl" href="#" data-soon><i class="fa-solid fa-users"></i><span>Customers</span></a>
+  <div class="sec-t">OPERATIONS</div>
+  <a class="nl" href="#" data-soon><i class="fa-solid fa-boxes-stacked"></i><span>Inventory</span><b class="bd">4</b></a>
+  <a class="nl" href="#" data-soon><i class="fa-solid fa-motorcycle"></i><span>Delivery</span></a>
+  <a class="nl" href="#" data-soon><i class="fa-solid fa-chart-column"></i><span>Reports</span></a>
+  <a class="nl" href="#" data-soon><i class="fa-solid fa-gear"></i><span>Settings</span></a>
+  <div class="sec-t">SITE</div>
+  <a class="nl" href="index.html"><i class="fa-solid fa-arrow-up-right-from-square"></i><span>View website</span></a>
+ </nav>
+</aside>
+<div id="scrim"></div>
+ 
+<div id="main">
+ <header class="topbar">
+  <button class="ib" id="toggle" aria-label="Toggle sidebar"><i class="fa-solid fa-bars"></i></button>
+  <div class="sbox"><i class="fa-solid fa-magnifying-glass"></i><input class="form-control" id="gsearch" type="search" placeholder="Search orders, customers, dishes…" aria-label="Search orders"></div>
+  <div class="ms-auto d-flex align-items-center gap-2">
+   <button class="ib" id="themeBtn" aria-label="Toggle dark mode"><i class="fa-solid fa-moon"></i></button>
+   <div class="dropdown">
+    <button class="ib" data-bs-toggle="dropdown" data-bs-auto-close="outside" aria-label="Notifications" aria-expanded="false"><i class="fa-regular fa-bell"></i><span class="dot" id="nCount">4</span></button>
+    <div class="dropdown-menu dropdown-menu-end p-0" style="width:330px;max-width:92vw">
+     <div class="d-flex justify-content-between align-items-center p-3 border-bottom" style="border-color:var(--line)!important"><b>Notifications</b><button class="btn btn-link btn-sm p-0 text-decoration-none" id="markRead" style="color:var(--red)">Mark all read</button></div>
+     <div id="notes" style="max-height:320px;overflow:auto"></div>
+    </div>
+   </div>
+   <div class="dropdown"><button class="av" data-bs-toggle="dropdown" aria-label="Admin profile" aria-expanded="false">SA</button>
+    <ul class="dropdown-menu dropdown-menu-end p-2"><li class="px-3 py-2"><b>Sara Admin</b><br><small class="text-muted">Restaurant manager</small></li><li><hr class="dropdown-divider"></li><li><a class="dropdown-item" href="#" data-soon>My profile</a></li><li><a class="dropdown-item" href="#" data-soon>Settings</a></li><li><a class="dropdown-item" href="index.html">Back to website</a></li></ul></div>
+  </div>
+ </header>
+ 
+ <main class="content">
+  <div class="d-flex flex-wrap justify-content-between align-items-center gap-3 mb-3">
+   <div><h4 class="mb-0">Restaurant overview</h4><small class="text-muted" id="rangeLbl"></small></div>
+   <div class="d-flex gap-2 align-items-center"><label for="range" class="visually-hidden">Date range</label><i class="fa-regular fa-calendar text-muted"></i>
+    <select class="form-select" id="range" style="width:auto"><option value="today">Today</option><option value="7d" selected>Last 7 days</option><option value="30d">Last 30 days</option><option value="90d">Last 90 days</option></select></div>
+  </div>
+  <div class="demo-note mb-4"><i class="fa-solid fa-flask me-2"></i><b>Demo data.</b> All figures, orders and customers on this page are sample values generated in your browser. Live data requires a backend and database.</div>
+ 
+  <div class="row g-3 mb-4" id="kpis"></div>
+ 
+  <div class="row g-3 mb-4">
+   <div class="col-xl-8"><div class="card-x"><div class="d-flex justify-content-between align-items-center mb-3 flex-wrap gap-2"><div><h6>Revenue</h6><small class="text-muted">Compared with the previous period (EGP)</small></div><div class="small"><span class="me-3"><i class="fa-solid fa-circle me-1" style="color:var(--red);font-size:.6rem"></i>This period</span><span><i class="fa-solid fa-circle me-1" style="color:#a8a29e;font-size:.6rem"></i>Previous</span></div></div><div class="chart-box"><canvas id="revChart" role="img" aria-label="Revenue line chart"></canvas></div></div></div>
+   <div class="col-xl-4"><div class="card-x"><h6 class="mb-1">Order distribution</h6><small class="text-muted">By order type</small><div class="chart-box" style="height:250px"><canvas id="typeChart" role="img" aria-label="Order distribution doughnut chart"></canvas></div></div></div>
+  </div>
+ 
+  <div class="row g-3 mb-4">
+   <div class="col-xl-5"><div class="card-x"><div class="d-flex justify-content-between mb-2"><h6>Top-selling dishes</h6><small class="text-muted" id="topLbl"></small></div><div id="top"></div></div></div>
+   <div class="col-xl-7"><div class="card-x"><h6 class="mb-3">Quick actions</h6><div class="row g-3" id="qas"></div>
+    <h6 class="mt-4 mb-1">Recent activity</h6><div id="acts"></div></div></div>
+  </div>
+ 
+  <div class="row g-3 mb-4">
+   <div class="col-12"><div class="card-x">
+    <div class="d-flex flex-wrap justify-content-between align-items-center gap-2 mb-3"><h6>Recent orders</h6>
+     <div class="d-flex gap-2 flex-wrap"><select class="form-select" id="fStatus" aria-label="Filter by status" style="width:auto"><option value="">All statuses</option><option>New</option><option>Preparing</option><option>Out for delivery</option><option>Completed</option><option>Cancelled</option></select>
+      <select class="form-select" id="fType" aria-label="Filter by order type" style="width:auto"><option value="">All types</option><option>Delivery</option><option>Pickup</option><option>Dine-in</option></select></div></div>
+    <div style="overflow-x:auto"><table class="tbl"><thead><tr><th>Order ID</th><th>Customer</th><th>Food items</th><th>Total</th><th>Type</th><th>Date</th><th>Status</th></tr></thead><tbody id="orders"></tbody></table></div>
+    <div class="small text-muted mt-2" id="ordCount"></div>
+   </div></div>
+  </div>
+ 
+  <div class="row g-3">
+   <div class="col-12"><div class="card-x"><div class="d-flex justify-content-between mb-2"><h6>Low-stock ingredient alerts</h6><small class="text-muted">Demo inventory</small></div><div class="row" id="stock"></div></div></div>
+  </div>
+ </main>
+</div>
+<div class="toast-fh" id="toast" role="status"></div>
+ 
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<script>
+const IMG=(id,w)=>`https://images.unsplash.com/${id}?auto=format&fit=crop&w=${w}&q=75`;
+const FALLBACK='data:image/svg+xml;utf8,'+encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" width="200" height="200"><rect width="200" height="200" fill="#f5e6d3"/><text x="100" y="125" font-size="80" text-anchor="middle">🍽️</text></svg>');
+const P={burger:'photo-1568901346375-23c9450c58cd',bbq:'photo-1550547660-d9450f859349',marg:'photo-1574071318508-1cdbab80d002',pep:'photo-1628840042765-356cda07504e',grill:'photo-1529692236671-f1f6cf9683ba',alfredo:'photo-1621996346565-e3dbc646d9a9',penne:'photo-1563379926898-05f4575a45d8',salad:'photo-1512621776951-a57141f2eefd',lava:'photo-1606313564200-e75d5e30476c',cake:'photo-1533134242443-d4fd215305ad',mango:'photo-1544145945-f90425340c7e',lemon:'photo-1497534446932-c925b458314e'};
+/* ===== Centralized demo data ===== */
+const wave=(base,n,seed,amp=.25)=>Array.from({length:n},(_,i)=>Math.round(base*(1+amp*Math.sin(i*1.3+seed)+.08*Math.cos(i*.7+seed*2))));
+const DATA={
+ ranges:{
+  today:{label:'Today, 12 Oct 2026',labels:['10:00','12:00','14:00','16:00','18:00','20:00','22:00'],rev:wave(2400,7,1,.45),prev:wave(2200,7,3,.4),type:[41,15,8],orders:64,customers:58,k:{rev:['18,450',12.4],ord:[64,8.1],cust:[58,5.3]},scale:.14},
+  '7d':{label:'6 – 12 Oct 2026',labels:['Tue','Wed','Thu','Fri','Sat','Sun','Mon'],rev:wave(19000,7,2,.28),prev:wave(17200,7,5,.25),type:[289,96,61],orders:446,customers:318,k:{rev:['133,850',9.6],ord:[446,6.2],cust:[318,4.4]},scale:1},
+  '30d':{label:'13 Sep – 12 Oct 2026',labels:['W1 d1','d4','d7','d10','d13','d16','d19','d22','d25','d28'],rev:wave(18500,10,4,.2),prev:wave(16800,10,7,.22),type:[1210,402,255],orders:1867,customers:1204,k:{rev:['556,200',11.8],ord:[1867,7.4],cust:[1204,6.1]},scale:4.2},
+  '90d':{label:'14 Jul – 12 Oct 2026',labels:['Jul 14','Jul 28','Aug 11','Aug 25','Sep 8','Sep 22','Oct 6','Oct 12'],rev:wave(135000,8,6,.15),prev:wave(122000,8,2,.17),type:[3480,1190,742],orders:5412,customers:2976,k:{rev:['1,598,400',14.2],ord:[5412,10.3],cust:[2976,8.8]},scale:12}
+ },
+ activeOrders:12,totalCustomers:3842,
+ products:[{n:'Classic Cheeseburger',c:'Burgers',img:P.burger,sold:96,price:140},{n:'Margherita Pizza',c:'Pizza',img:P.marg,sold:88,price:160},{n:'Fettuccine Alfredo',c:'Pasta',img:P.alfredo,sold:71,price:150},{n:'Mixed Grill Platter',c:'Grilled',img:P.grill,sold:54,price:320},{n:'Chocolate Lava Cake',c:'Desserts',img:P.lava,sold:49,price:85}],
+ orders:[
+  {id:'FH-100512',c:'Mona Adel',items:[['Classic Cheeseburger',P.burger],['Fresh Lemon Mint',P.lemon]],total:285,type:'Delivery',date:'2026-10-12 14:32',s:'New'},
+  {id:'FH-100511',c:'Omar Khaled',items:[['Margherita Pizza',P.marg],['Penne Arrabbiata',P.penne]],total:392,type:'Dine-in',date:'2026-10-12 14:10',s:'Preparing'},
+  {id:'FH-100510',c:'Layla Hassan',items:[['Mixed Grill Platter',P.grill]],total:410,type:'Delivery',date:'2026-10-12 13:48',s:'Out for delivery'},
+  {id:'FH-100509',c:'Youssef Ali',items:[['Pepperoni Pizza',P.pep],['Mango Smoothie',P.mango]],total:322,type:'Pickup',date:'2026-10-12 13:20',s:'Completed'},
+  {id:'FH-100508',c:'Nour Ibrahim',items:[['Fettuccine Alfredo',P.alfredo],['Cheesecake',P.cake]],total:290,type:'Delivery',date:'2026-10-12 12:55',s:'Completed'},
+  {id:'FH-100507',c:'Karim Samir',items:[['Bacon BBQ Burger',P.bbq]],total:199,type:'Pickup',date:'2026-10-12 12:31',s:'Cancelled'},
+  {id:'FH-100506',c:'Hana Mostafa',items:[['Garden Quinoa Salad',P.salad],['Lava Cake',P.lava]],total:236,type:'Dine-in',date:'2026-10-12 12:05',s:'Completed'},
+  {id:'FH-100505',c:'Tarek Fouad',items:[['Margherita Pizza',P.marg],['Classic Cheeseburger',P.burger]],total:365,type:'Delivery',date:'2026-10-12 11:40',s:'Completed'}],
+ stock:[{n:'Mozzarella cheese',left:4,unit:'kg',min:15},{n:'Beef patties',left:22,unit:'pcs',min:60},{n:'Fresh basil',left:1,unit:'kg',min:3},{n:'Dark chocolate',left:2,unit:'kg',min:5}],
+ notes:[{i:'fa-receipt',c:'var(--red)',t:'New order FH-100512 from Mona Adel',m:'2 min ago',u:1},{i:'fa-triangle-exclamation',c:'var(--orange)',t:'Mozzarella cheese is running low (4 kg)',m:'18 min ago',u:1},{i:'fa-regular fa-calendar-check',c:'var(--green)',t:'New reservation: 6 guests at 20:00',m:'1 h ago',u:1},{i:'fa-star',c:'var(--orange)',t:'New 5-star review for Margherita Pizza',m:'2 h ago',u:1}],
+ activity:[{i:'fa-circle-check',c:'var(--green)',t:'Order FH-100509 marked completed',m:'14:41'},{i:'fa-motorcycle',c:'#7c3aed',t:'Order FH-100510 assigned to rider Hany',m:'14:02'},{i:'fa-pen',c:'var(--orange)',t:'Menu price updated: Mixed Grill Platter',m:'13:30'},{i:'fa-user-plus',c:'var(--red)',t:'12 new customers registered today',m:'12:00'}],
+ actions:[['fa-plus','Add dish'],['fa-receipt','New order'],['fa-calendar-plus','Add reservation'],['fa-boxes-packing','Update stock'],['fa-ticket','Create coupon'],['fa-file-export','Export report']]
+};
+const STATUS={'New':'b-new','Preparing':'b-prep','Out for delivery':'b-way','Completed':'b-done','Cancelled':'b-can'};
+/* ===== helpers ===== */
+const $=s=>document.querySelector(s);
+const esc=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const num=n=>Math.round(n).toLocaleString('en-US');
+function fb(e){e.onerror=null;e.src=FALLBACK}window.fb=fb;
+function toast(m){const t=$('#toast');t.textContent=m;t.classList.add('show');clearTimeout(t._t);t._t=setTimeout(()=>t.classList.remove('show'),2200)}
+document.querySelectorAll('[data-soon]').forEach(a=>a.addEventListener('click',e=>{e.preventDefault();toast('This admin page is not part of the demo yet')}));
+/* ===== charts ===== */
+Chart.defaults.font.family="'Poppins',sans-serif";
+let rev,typ;
+const dark=()=>document.documentElement.getAttribute('data-theme')==='dark';
+function colors(){return{grid:dark()?'#3a3430':'#f0e4d6',tick:dark()?'#a8a29e':'#78716c',card:dark()?'#241f1d':'#ffffff'}}
+function drawCharts(){
+ const r=DATA.ranges[$('#range').value],c=colors();
+ if(rev)rev.destroy();if(typ)typ.destroy();
+ const ctx=$('#revChart').getContext('2d'),g=ctx.createLinearGradient(0,0,0,300);g.addColorStop(0,'rgba(233,75,53,.28)');g.addColorStop(1,'rgba(233,75,53,0)');
+ rev=new Chart(ctx,{type:'line',data:{labels:r.labels,datasets:[{label:'This period',data:r.rev,borderColor:'#E94B35',backgroundColor:g,fill:true,tension:.38,borderWidth:3,pointRadius:4,pointBackgroundColor:'#E94B35',pointBorderColor:c.card,pointBorderWidth:2},{label:'Previous period',data:r.prev,borderColor:'#a8a29e',borderDash:[6,5],tension:.38,borderWidth:2,pointRadius:0}]},options:{responsive:true,maintainAspectRatio:false,interaction:{mode:'index',intersect:false},plugins:{legend:{display:false},tooltip:{callbacks:{label:t=>`${t.dataset.label}: ${num(t.parsed.y)} EGP`}}},scales:{x:{grid:{display:false},ticks:{color:c.tick}},y:{beginAtZero:true,grid:{color:c.grid},ticks:{color:c.tick,callback:v=>v>=1000?(v/1000)+'k':v}}}}});
+ typ=new Chart($('#typeChart'),{type:'doughnut',data:{labels:['Delivery','Dine-in','Pickup'],datasets:[{data:r.type,backgroundColor:['#E94B35','#F59E0B','#3A7D44'],borderColor:c.card,borderWidth:4,hoverOffset:8}]},options:{responsive:true,maintainAspectRatio:false,cutout:'66%',plugins:{legend:{position:'bottom',labels:{color:c.tick,usePointStyle:true,padding:16}},tooltip:{callbacks:{label:t=>` ${t.label}: ${num(t.parsed)} orders`}}}}});
+}
+/* ===== render ===== */
+function kpis(){
+ const r=DATA.ranges[$('#range').value],k=r.k;
+ const card=(ic,bg,col,l,v,d,sub)=>`<div class="col-sm-6 col-xl-3"><div class="card-x"><div class="kpi"><div><small>${l}</small><h3>${v}</h3>${d!=null?`<span class="delta up"><i class="fa-solid fa-arrow-trend-up me-1"></i>+${d}%</span> <small>${sub}</small>`:`<small>${sub}</small>`}</div><span class="ic" style="background:${bg};color:${col}"><i class="fa-solid ${ic}"></i></span></div></div></div>`;
+ $('#kpis').innerHTML=card('fa-sack-dollar','rgba(233,75,53,.12)','var(--red)','Total revenue',k.rev[0]+' EGP',k.rev[1],'vs previous')+card('fa-receipt','rgba(245,158,11,.18)','#d97706','Total orders',num(k.ord[0]),k.ord[1],'vs previous')+card('fa-fire-burner','rgba(58,125,68,.14)','var(--green)','Active orders',DATA.activeOrders,null,'being prepared or delivered now')+card('fa-users','rgba(59,130,246,.14)','#2563eb','Total customers',num(DATA.totalCustomers),k.cust[1],`${num(k.cust[0])} active in range`);
+ $('#rangeLbl').textContent=r.label+' · demo data';
+}
+function top(){
+ const s=DATA.ranges[$('#range').value].scale,max=DATA.products[0].sold*s;
+ $('#topLbl').textContent='Units sold';
+ $('#top').innerHTML=DATA.products.map((p,i)=>{const u=Math.round(p.sold*s);return `<div class="prod"><img src="${IMG(p.img,120)}" alt="${esc(p.n)}" loading="lazy" onerror="fb(this)"><div class="nm"><b>${i+1}. ${esc(p.n)}</b><small class="text-muted">${p.c} · ${p.price} EGP</small><div class="pbar"><i style="width:${u/max*100}%"></i></div></div><div class="text-end"><b>${num(u)}</b><br><small class="text-muted">${num(u*p.price)} EGP</small></div></div>`}).join('');
+}
+function orders(){
+ const q=$('#gsearch').value.trim().toLowerCase(),st=$('#fStatus').value,ty=$('#fType').value;
+ const L=DATA.orders.filter(o=>(!st||o.s===st)&&(!ty||o.type===ty)&&(!q||(o.id+' '+o.c+' '+o.items.map(i=>i[0]).join(' ')+' '+o.type+' '+o.s).toLowerCase().includes(q)));
+ $('#orders').innerHTML=L.length?L.map(o=>`<tr><td><b>${o.id}</b></td><td>${esc(o.c)}</td><td><div class="thm">${o.items.map(i=>`<img src="${IMG(i[1],80)}" alt="${esc(i[0])}" onerror="fb(this)">`).join('')}<span class="text-truncate">${esc(o.items.map(i=>i[0]).join(', '))}</span></div></td><td><b>${num(o.total)} EGP</b></td><td>${o.type}</td><td class="text-nowrap">${o.date}</td><td><span class="bdg ${STATUS[o.s]}">${o.s}</span></td></tr>`).join(''):'<tr class="empty-r"><td colspan="7"><i class="fa-solid fa-magnifying-glass me-2"></i>No orders match your search or filters.</td></tr>';
+ $('#ordCount').textContent=`Showing ${L.length} of ${DATA.orders.length} demo orders`;
+}
+function misc(){
+ $('#stock').innerHTML=DATA.stock.map(s=>{const p=Math.round(s.left/s.min*100),c=p<30?'var(--red)':'var(--orange)';return `<div class="col-md-6 col-xl-3"><div class="stock"><div class="d-flex justify-content-between"><b>${s.n}</b><span style="color:${c};font-weight:600">${s.left} ${s.unit}</span></div><div class="pbar"><i style="width:${p}%;background:${c}"></i></div><small class="text-muted">Minimum ${s.min} ${s.unit} · <a href="#" data-restock="${s.n}" style="color:var(--red)">Reorder</a></small></div></div>`}).join('');
+ $('#acts').innerHTML=DATA.activity.map(a=>`<div class="act"><span class="d" style="background:${a.c}22;color:${a.c}"><i class="fa-solid ${a.i}"></i></span><div class="flex-grow-1">${a.t}<br><small class="text-muted">${a.m}</small></div></div>`).join('');
+ $('#qas').innerHTML=DATA.actions.map(a=>`<div class="col-4 col-md-2"><button class="qa" data-qa="${a[1]}"><i class="fa-solid ${a[0]}"></i>${a[1]}</button></div>`).join('');
+ renderNotes();
+}
+function renderNotes(){
+ const u=DATA.notes.filter(n=>n.u).length;$('#nCount').textContent=u;$('#nCount').style.display=u?'':'none';
+ $('#notes').innerHTML=DATA.notes.map(n=>`<div class="nt" style="${n.u?'background:rgba(233,75,53,.05)':''}"><span class="i" style="background:${n.c}22;color:${n.c}"><i class="fa-solid ${n.i.replace('fa-regular ','')}"></i></span><div>${n.t}<br><small class="text-muted">${n.m}</small></div></div>`).join('');
+}
+document.addEventListener('click',e=>{
+ const q=e.target.closest('[data-qa]');if(q)toast(q.dataset.qa+' — demo action only');
+ const r=e.target.closest('[data-restock]');if(r){e.preventDefault();toast('Reorder request for '+r.dataset.restock+' (demo)')}
+});
+$('#markRead').onclick=()=>{DATA.notes.forEach(n=>n.u=0);renderNotes()};
+/* ===== events ===== */
+$('#range').onchange=()=>{kpis();top();drawCharts()};
+['gsearch'].forEach(i=>$('#'+i).addEventListener('input',orders));
+['fStatus','fType'].forEach(i=>$('#'+i).addEventListener('change',orders));
+$('#toggle').onclick=()=>{if(innerWidth<992)document.body.classList.toggle('open');else document.body.classList.toggle('collapsed')};
+$('#scrim').onclick=()=>document.body.classList.remove('open');
+document.addEventListener('keydown',e=>{if(e.key==='Escape')document.body.classList.remove('open')});
+const root=document.documentElement;
+function theme(t){root.setAttribute('data-theme',t);$('#themeBtn').innerHTML=t==='dark'?'<i class="fa-solid fa-sun"></i>':'<i class="fa-solid fa-moon"></i>';try{localStorage.setItem('fh_theme',t)}catch(e){}if(typeof rev!=='undefined'&&rev)drawCharts()}
+let th='light';try{th=localStorage.getItem('fh_theme')||'light'}catch(e){}
+theme(th);$('#themeBtn').onclick=()=>theme(dark()?'light':'dark');
+kpis();top();orders();misc();drawCharts();
+</script>
+</body>
+</html>
+ 

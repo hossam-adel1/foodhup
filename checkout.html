@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>FoodHub — Your Cart & Checkout</title>
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" rel="stylesheet">
+<style>
+:root{--red:#E94B35;--orange:#F59E0B;--green:#3A7D44;--bg:#FFF8F0;--card:#FFFFFF;--text:#292524;--muted:#78716c;--line:#f0e4d6;--shadow:0 8px 28px rgba(41,37,36,.08)}
+[data-theme=dark]{--bg:#1c1917;--card:#292524;--text:#f5f0ea;--muted:#a8a29e;--line:#3d3733;--shadow:0 8px 28px rgba(0,0,0,.4)}
+body{font-family:'Poppins','Cairo',sans-serif;background:var(--bg);color:var(--text);transition:background .3s,color .3s}
+a{text-decoration:none}.text-muted{color:var(--muted)!important}h1,h2,h3,h4,h5,h6{font-weight:700}
+:focus-visible{outline:3px solid var(--orange);outline-offset:2px}
+.btn-red{background:var(--red);color:#fff;border:0;border-radius:50px;padding:12px 28px;font-weight:600;transition:.25s}
+.btn-red:hover:not(:disabled){background:#c93a26;color:#fff;transform:translateY(-2px)}
+.btn-red:disabled{opacity:.6;cursor:not-allowed}
+.btn-line{border:2px solid var(--text);color:var(--text);border-radius:50px;font-weight:600;padding:10px 24px}
+.btn-line:hover{background:var(--text);color:var(--bg)}
+.navbar{background:var(--card);box-shadow:0 2px 16px rgba(0,0,0,.06);padding:12px 0}
+.navbar-brand{font-weight:800;font-size:1.6rem;color:var(--text)!important}
+.navbar-brand i,.navbar-brand span{color:var(--red)}
+.nav-link{color:var(--text)!important;font-weight:500}.nav-link:hover{color:var(--red)!important}
+.navbar-toggler{border:0;color:var(--text)}.navbar-toggler:focus{box-shadow:none}
+.icon-btn{background:var(--bg);border:1px solid var(--line);color:var(--text);width:42px;height:42px;border-radius:50%;display:inline-flex;align-items:center;justify-content:center;position:relative;transition:.25s}
+.icon-btn:hover{background:var(--red);color:#fff;border-color:var(--red)}
+.cart-count{position:absolute;top:-5px;right:-5px;background:var(--orange);color:#fff;font-size:.7rem;font-weight:700;min-width:20px;height:20px;border-radius:50px;display:flex;align-items:center;justify-content:center}
+.demo-note{background:#fff4d6;color:#7a4b00;border-radius:14px;padding:12px 16px;font-size:.85rem;border:1px solid #f5d98b}
+[data-theme=dark] .demo-note{background:#3b2f10;color:#fcd98a;border-color:#6b5316}
+/* progress */
+.steps{display:flex;justify-content:space-between;position:relative;max-width:640px;margin:0 auto 34px}
+.steps::before{content:"";position:absolute;top:19px;left:8%;right:8%;height:3px;background:var(--line)}
+.steps .fill{position:absolute;top:19px;left:8%;height:3px;background:var(--green);transition:width .4s;width:0}
+.stp{position:relative;text-align:center;flex:1;font-size:.82rem;font-weight:500;color:var(--muted)}
+.stp b{width:40px;height:40px;border-radius:50%;background:var(--card);border:3px solid var(--line);display:flex;align-items:center;justify-content:center;margin:0 auto 6px;transition:.3s}
+.stp.on{color:var(--red)}.stp.on b{border-color:var(--red);color:var(--red)}
+.stp.done{color:var(--green)}.stp.done b{background:var(--green);border-color:var(--green);color:#fff}
+.panel{background:var(--card);border-radius:22px;box-shadow:var(--shadow);padding:26px}
+.item{display:flex;gap:16px;align-items:center;padding:16px 0;border-bottom:1px solid var(--line)}
+.item:last-child{border:0}
+.item img{width:92px;height:92px;object-fit:cover;border-radius:16px;background:var(--line);flex:none}
+.item .info{flex:1;min-width:0}.item h6{margin:0 0 2px}
+.item small{color:var(--muted);display:block}
+.qty{display:inline-flex;align-items:center;border:2px solid var(--line);border-radius:50px}
+.qty button{border:0;background:none;color:var(--text);width:32px;height:32px}.qty button:hover{color:var(--red)}
+.qty span{min-width:26px;text-align:center;font-weight:600;font-size:.9rem}
+.rm{background:none;border:0;color:var(--muted);transition:.2s}.rm:hover{color:var(--red)}
+.line-total{font-weight:700;min-width:84px;text-align:right}
+@media(max-width:575px){.item{flex-wrap:wrap}.item img{width:72px;height:72px}.item .ctrl{width:100%;display:flex;justify-content:space-between;align-items:center}}
+.form-control,.form-select{background-color:var(--card);color:var(--text);border-color:var(--line);border-radius:12px;padding:11px 14px}
+.form-control:focus,.form-select:focus{background-color:var(--card);color:var(--text);border-color:var(--red);box-shadow:0 0 0 .2rem rgba(233,75,53,.15)}
+.form-control::placeholder{color:var(--muted)}
+.form-label{font-weight:500;font-size:.88rem}
+.choice{display:grid;gap:12px}
+.choice.c3{grid-template-columns:repeat(3,1fr)}
+@media(max-width:575px){.choice.c3{grid-template-columns:1fr}}
+.choice input{display:none}
+.choice label{border:2px solid var(--line);border-radius:16px;padding:14px;cursor:pointer;display:flex;align-items:center;gap:12px;height:100%;transition:.2s}
+.choice label i{font-size:1.3rem;color:var(--muted)}
+.choice label small{display:block;color:var(--muted);font-size:.74rem;font-weight:400}
+.choice input:checked+label{border-color:var(--red);background:rgba(233,75,53,.07)}
+.choice input:checked+label i{color:var(--red)}
+.choice input:focus-visible+label{outline:3px solid var(--orange)}
+.summary{position:sticky;top:90px}
+.sum-row{display:flex;justify-content:space-between;padding:6px 0;font-size:.92rem}
+.sum-row.total{border-top:2px dashed var(--line);margin-top:8px;padding-top:14px;font-size:1.25rem;font-weight:800;color:var(--red)}
+.disc{color:var(--green)}
+.mini{display:flex;gap:10px;align-items:center;font-size:.85rem;padding:6px 0}
+.mini img{width:44px;height:44px;border-radius:10px;object-fit:cover;background:var(--line)}
+.mini span{flex:1}
+.empty{text-align:center;padding:50px 10px}.empty i{font-size:3rem;color:var(--orange);margin-bottom:12px}
+.ok-ring{width:90px;height:90px;border-radius:50%;background:var(--green);color:#fff;display:flex;align-items:center;justify-content:center;font-size:2.4rem;margin:0 auto 18px;animation:pop .5s}
+@keyframes pop{from{transform:scale(.3);opacity:0}to{transform:scale(1);opacity:1}}
+.toast-fh{position:fixed;bottom:24px;left:50%;transform:translate(-50%,120px);background:var(--text);color:var(--bg);padding:12px 24px;border-radius:50px;transition:.35s;z-index:2000;font-size:.9rem}
+.toast-fh.show{transform:translate(-50%,0)}
+.view{display:none}.view.show{display:block}
+@media(prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
+</style>
+</head>
+<body>
+<nav class="navbar navbar-expand-lg sticky-top">
+ <div class="container">
+  <a class="navbar-brand" href="index.html"><i class="fa-solid fa-utensils"></i> Food<span>Hub</span></a>
+  <button class="navbar-toggler" data-bs-toggle="collapse" data-bs-target="#nav" aria-label="Toggle navigation"><i class="fa-solid fa-bars fa-lg"></i></button>
+  <div class="collapse navbar-collapse" id="nav">
+   <ul class="navbar-nav mx-auto">
+    <li class="nav-item"><a class="nav-link" href="index.html">Home</a></li>
+    <li class="nav-item"><a class="nav-link" href="menu.html">Menu</a></li>
+    <li class="nav-item"><a class="nav-link" href="index.html#reservations">Reservations</a></li>
+    <li class="nav-item"><a class="nav-link" href="index.html#about">About</a></li>
+    <li class="nav-item"><a class="nav-link" href="index.html#contact">Contact</a></li>
+   </ul>
+   <div class="d-flex align-items-center gap-2">
+    <button class="icon-btn" id="themeBtn" aria-label="Toggle dark mode"><i class="fa-solid fa-moon"></i></button>
+    <a href="checkout.html" class="icon-btn" aria-label="Cart"><i class="fa-solid fa-cart-shopping"></i><span class="cart-count" id="cartCount">0</span></a>
+   </div>
+  </div>
+ </div>
+</nav>
+ 
+<main class="container py-5">
+ <div class="demo-note mb-4"><i class="fa-solid fa-flask me-2"></i><b>Prototype only.</b> No real payment is processed and no data is sent anywhere. Real payments need a configured backend and a payment gateway.</div>
+ <div class="steps" id="steps" aria-label="Checkout progress">
+  <div class="fill" id="fill"></div>
+  <div class="stp"><b>1</b>Cart</div><div class="stp"><b>2</b>Delivery</div><div class="stp"><b>3</b>Payment</div><div class="stp"><b>4</b>Confirmation</div>
+ </div>
+ 
+ <div class="row g-4" id="flow">
+  <div class="col-lg-8">
+   <!-- step 1 -->
+   <section class="panel view" id="v1"><h4 class="mb-2">Your cart</h4><div id="cartList"></div>
+    <div class="d-flex justify-content-between flex-wrap gap-2 mt-3"><a href="menu.html" class="btn btn-line"><i class="fa-solid fa-arrow-left me-2"></i>Add more dishes</a><button class="btn btn-red" id="to2">Continue to delivery</button></div></section>
+   <!-- step 2 -->
+   <section class="panel view" id="v2"><h4 class="mb-3">Delivery information</h4>
+    <form id="f2" novalidate>
+     <div class="choice c3 mb-4" role="radiogroup" aria-label="Order type">
+      <div><input type="radio" name="type" id="t1" value="delivery" checked><label for="t1"><i class="fa-solid fa-motorcycle"></i><span>Delivery<small>25 – 40 min</small></span></label></div>
+      <div><input type="radio" name="type" id="t2" value="pickup"><label for="t2"><i class="fa-solid fa-bag-shopping"></i><span>Pickup<small>Ready in 20 min</small></span></label></div>
+      <div><input type="radio" name="type" id="t3" value="dinein"><label for="t3"><i class="fa-solid fa-chair"></i><span>Dine-in<small>We'll hold a table</small></span></label></div>
+     </div>
+     <div class="row g-3">
+      <div class="col-md-6"><label class="form-label" for="name">Full name</label><input class="form-control" id="name" autocomplete="name" placeholder="Your full name" required><div class="invalid-feedback">Enter your full name.</div></div>
+      <div class="col-md-6"><label class="form-label" for="phone">Phone number</label><input class="form-control" id="phone" type="tel" autocomplete="tel" placeholder="01012345678" required><div class="invalid-feedback">Enter a valid phone number (at least 10 digits).</div></div>
+      <div class="col-12"><label class="form-label" for="email">Email</label><input class="form-control" id="email" type="email" autocomplete="email" placeholder="name@example.com" required><div class="invalid-feedback">Enter a valid email, like name@example.com.</div></div>
+      <div class="col-12" id="addrBox"><label class="form-label" for="addr">Delivery address</label><textarea class="form-control" id="addr" rows="2" placeholder="Street, building, floor, apartment, area"></textarea><div class="invalid-feedback">Enter your delivery address.</div></div>
+      <div class="col-md-6"><label class="form-label" for="time" id="timeLbl">Preferred delivery time</label><select class="form-select" id="time"></select></div>
+      <div class="col-md-6"><label class="form-label" for="notes" id="notesLbl">Delivery instructions</label><input class="form-control" id="notes" placeholder="e.g. ring the bell twice"></div>
+     </div>
+    </form>
+    <div class="d-flex justify-content-between mt-4"><button class="btn btn-line" data-go="1"><i class="fa-solid fa-arrow-left me-2"></i>Back</button><button class="btn btn-red" id="to3">Continue to payment</button></div></section>
+   <!-- step 3 -->
+   <section class="panel view" id="v3"><h4 class="mb-3">Payment</h4>
+    <div class="choice mb-3" role="radiogroup" aria-label="Payment method">
+     <div><input type="radio" name="pay" id="p1" value="Cash on Delivery" checked><label for="p1"><i class="fa-solid fa-money-bill-wave"></i><span>Cash on Delivery<small>Pay when your order arrives</small></span></label></div>
+     <div><input type="radio" name="pay" id="p2" value="Card"><label for="p2"><i class="fa-regular fa-credit-card"></i><span>Card<small>Demo only</small></span></label></div>
+     <div><input type="radio" name="pay" id="p3" value="Online Payment"><label for="p3"><i class="fa-solid fa-globe"></i><span>Online Payment<small>Demo only</small></span></label></div>
+    </div>
+    <div class="demo-note mb-4" id="payNote"></div>
+    <h6>Review your order</h6><div id="review" class="mb-3"></div>
+    <div class="d-flex justify-content-between flex-wrap gap-2"><button class="btn btn-line" data-go="2"><i class="fa-solid fa-arrow-left me-2"></i>Back</button><button class="btn btn-red" id="place"><i class="fa-solid fa-lock me-2"></i>Place Order (demo)</button></div></section>
+   <!-- step 4 -->
+   <section class="panel view text-center" id="v4"><div class="ok-ring"><i class="fa-solid fa-check"></i></div>
+    <h3>Order placed (demo)</h3><p class="text-muted mb-1">Order number <b id="oNo" style="color:var(--red)"></b></p>
+    <p class="text-muted" id="oMsg"></p>
+    <div class="text-start mx-auto my-4" style="max-width:480px" id="oItems"></div>
+    <div class="demo-note mx-auto mb-4" style="max-width:480px">This was a demo. No payment was taken and the restaurant did not receive this order.</div>
+    <a href="index.html" class="btn btn-red me-2">Back to home</a><a href="menu.html" class="btn btn-line">Order again</a></section>
+  </div>
+  <div class="col-lg-4" id="sumCol"><aside class="panel summary">
+   <h5 class="mb-3">Order summary</h5>
+   <div id="miniItems" class="mb-2"></div>
+   <label class="form-label" for="coupon">Coupon code</label>
+   <div class="input-group mb-1"><input class="form-control" id="coupon" placeholder="Try WELCOME30" style="border-radius:12px 0 0 12px"><button class="btn btn-red" id="applyC" style="border-radius:0 12px 12px 0;padding:0 18px">Apply</button></div>
+   <div class="small mb-3" id="cMsg" role="status" style="min-height:20px"></div>
+   <div class="sum-row"><span>Subtotal</span><span id="sSub"></span></div>
+   <div class="sum-row disc"><span>Coupon discount</span><span id="sDisc"></span></div>
+   <div class="sum-row"><span>Delivery fee</span><span id="sDel"></span></div>
+   <div class="sum-row"><span>Tax (14% VAT)</span><span id="sTax"></span></div>
+   <div class="sum-row total"><span>Total</span><span id="sTot"></span></div>
+   <p class="small text-muted mt-3 mb-0">Demo coupons: WELCOME30 (30% off), FOOD10 (10% off), FREESHIP (free delivery). Delivery is free over 400 EGP.</p>
+  </aside></div>
+ </div>
+</main>
+<div class="toast-fh" id="toast" role="status"></div>
+ 
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+const IMG_BASE='https://images.unsplash.com/';
+const IMG=(id,w)=>`${IMG_BASE}${id}?auto=format&fit=crop&w=${w}&q=75`;
+const FALLBACK='data:image/svg+xml;utf8,'+encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" width="300" height="300"><rect width="300" height="300" fill="#f5e6d3"/><text x="150" y="175" font-size="72" text-anchor="middle">🍽️</text></svg>');
+const SAMPLE=[
+ {key:'s1',n:'Classic Cheeseburger',img:'photo-1568901346375-23c9450c58cd',size:'Medium',addons:['Extra cheese','Bacon topping'],unit:185,qty:1},
+ {key:'s2',n:'Margherita Pizza',img:'photo-1574071318508-1cdbab80d002',size:'Large',addons:['Extra sauce'],unit:218,qty:1},
+ {key:'s3',n:'Chocolate Lava Cake',img:'photo-1606313564200-e75d5e30476c',size:'Small',addons:[],unit:68,qty:2}];
+const COUPONS={WELCOME30:{type:'pct',v:30,label:'30% off'},FOOD10:{type:'pct',v:10,label:'10% off'},FREESHIP:{type:'ship',v:0,label:'free delivery'}};
+const $=s=>document.querySelector(s);
+const EGP=n=>(Math.round(n*100)/100).toLocaleString('en-US',{minimumFractionDigits:0,maximumFractionDigits:2})+' EGP';
+const esc=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+function fb(e){e.onerror=null;e.src=FALLBACK}window.fb=fb;
+function toast(m){const t=$('#toast');t.textContent=m;t.classList.add('show');clearTimeout(t._t);t._t=setTimeout(()=>t.classList.remove('show'),2200)}
+let cart=[],coupon=null,step=1,submitting=false,placed=false;
+try{const s=localStorage.getItem('fh_cart_items');cart=s?JSON.parse(s):SAMPLE;if(!Array.isArray(cart))cart=SAMPLE;coupon=JSON.parse(localStorage.getItem('fh_coupon')||'null')}catch(e){cart=SAMPLE}
+function persist(){try{localStorage.setItem('fh_cart_items',JSON.stringify(cart));localStorage.setItem('fh_cart',cart.reduce((t,i)=>t+i.qty,0));localStorage.setItem('fh_coupon',JSON.stringify(coupon))}catch(e){}$('#cartCount').textContent=cart.reduce((t,i)=>t+i.qty,0)}
+const orderType=()=>document.querySelector('input[name=type]:checked').value;
+function calc(){
+ const sub=cart.reduce((t,i)=>t+i.unit*i.qty,0);
+ const c=coupon&&COUPONS[coupon];
+ const disc=c&&c.type==='pct'?Math.round(sub*c.v)/100:0;
+ let del=orderType()==='delivery'&&cart.length?(sub-disc>=400?0:25):0;
+ if(c&&c.type==='ship')del=0;
+ const tax=Math.round((sub-disc)*14)/100;
+ return{sub,disc,del,tax,tot:sub-disc+del+tax};
+}
+function lineDesc(i){return `${esc(i.size)}${i.addons.length?' · '+esc(i.addons.join(', ')):' · No add-ons'}`}
+function render(){
+ persist();
+ $('#cartList').innerHTML=cart.length?cart.map((i,x)=>`<div class="item"><img src="${IMG(i.img,240)}" alt="${esc(i.n)}" onerror="fb(this)"><div class="info"><h6>${esc(i.n)}</h6><small>Size: ${esc(i.size)}</small><small>Add-ons: ${i.addons.length?esc(i.addons.join(', ')):'None'}</small><small>${EGP(i.unit)} each</small></div><div class="ctrl d-flex align-items-center gap-3"><div class="qty"><button data-q="${x}" data-d="-1" aria-label="Decrease quantity of ${esc(i.n)}"><i class="fa-solid fa-minus"></i></button><span>${i.qty}</span><button data-q="${x}" data-d="1" aria-label="Increase quantity of ${esc(i.n)}"><i class="fa-solid fa-plus"></i></button></div><div class="line-total">${EGP(i.unit*i.qty)}</div><button class="rm" data-r="${x}" aria-label="Remove ${esc(i.n)}"><i class="fa-regular fa-trash-can"></i></button></div></div>`).join(''):'<div class="empty"><i class="fa-solid fa-basket-shopping"></i><h5>Your cart is empty</h5><p class="text-muted">Add a few dishes from the menu to get started.</p><a href="menu.html" class="btn btn-red">Browse the menu</a></div>';
+ $('#to2').disabled=!cart.length;
+ const mini=cart.map(i=>`<div class="mini"><img src="${IMG(i.img,100)}" alt="${esc(i.n)}" onerror="fb(this)"><span>${i.qty} × ${esc(i.n)}</span><b>${EGP(i.unit*i.qty)}</b></div>`).join('');
+ $('#miniItems').innerHTML=mini;
+ $('#review').innerHTML=cart.map(i=>`<div class="mini"><img src="${IMG(i.img,100)}" alt="${esc(i.n)}" onerror="fb(this)"><span>${i.qty} × ${esc(i.n)}<br><small class="text-muted">${lineDesc(i)}</small></span><b>${EGP(i.unit*i.qty)}</b></div>`).join('');
+ const t=calc();
+ $('#sSub').textContent=EGP(t.sub);$('#sDisc').textContent=t.disc?'− '+EGP(t.disc):(coupon==='FREESHIP'?'Free delivery':'0 EGP');
+ $('#sDel').textContent=t.del?EGP(t.del):'Free';$('#sTax').textContent=EGP(t.tax);$('#sTot').textContent=EGP(t.tot);
+ const f=$('#cMsg');if(coupon&&COUPONS[coupon]){f.innerHTML=`<span class="disc"><i class="fa-solid fa-circle-check me-1"></i>${coupon} applied: ${COUPONS[coupon].label}</span>`;$('#coupon').value=coupon}
+}
+$('#cartList').onclick=e=>{
+ const q=e.target.closest('[data-q]'),r=e.target.closest('[data-r]');
+ if(q){const i=cart[+q.dataset.q];i.qty=Math.min(20,Math.max(1,i.qty+ +q.dataset.d))}
+ if(r){const n=cart[+r.dataset.r].n;cart.splice(+r.dataset.r,1);toast(n+' removed')}
+ render()};
+$('#applyC').onclick=()=>{
+ const v=$('#coupon').value.trim().toUpperCase(),f=$('#cMsg');
+ if(!v){f.innerHTML='<span class="text-danger">Enter a coupon code.</span>';return}
+ if(!COUPONS[v]){coupon=null;f.innerHTML='<span class="text-danger"><i class="fa-solid fa-circle-xmark me-1"></i>That code isn\'t valid. Try WELCOME30, FOOD10 or FREESHIP.</span>';render();f.innerHTML='<span class="text-danger"><i class="fa-solid fa-circle-xmark me-1"></i>That code isn\'t valid. Try WELCOME30, FOOD10 or FREESHIP.</span>';return}
+ coupon=v;render();toast('Coupon applied')};
+$('#coupon').addEventListener('keydown',e=>{if(e.key==='Enter'){e.preventDefault();$('#applyC').click()}});
+/* steps */
+function go(n){
+ if(placed)return;step=n;
+ document.querySelectorAll('.view').forEach((v,i)=>v.classList.toggle('show',i+1===n));
+ document.querySelectorAll('.stp').forEach((s,i)=>{s.classList.toggle('done',i+1<n||n===4);s.classList.toggle('on',i+1===n&&n<4);s.firstChild.innerHTML=i+1<n||n===4?'<i class="fa-solid fa-check"></i>':i+1});
+ $('#fill').style.width=((n-1)/3*84)+'%';
+ $('#sumCol').style.display=n===4?'none':'';
+ if(n===4)document.querySelector('.col-lg-8').className='col-lg-8 mx-auto';
+ window.scrollTo({top:0,behavior:'smooth'});
+}
+document.querySelectorAll('[data-go]').forEach(b=>b.onclick=()=>go(+b.dataset.go));
+$('#to2').onclick=()=>cart.length?go(2):toast('Your cart is empty');
+/* order type */
+const SLOTS=['As soon as possible','12:00 – 12:30','12:30 – 13:00','13:00 – 13:30','18:00 – 18:30','19:00 – 19:30','20:00 – 20:30','21:00 – 21:30'];
+function typeUI(){
+ const t=orderType(),n={delivery:['delivery','Delivery instructions','e.g. ring the bell twice'],pickup:['pickup','Pickup notes','e.g. name for the order'],dinein:['arrival','Special requests','e.g. high chair, window table']}[t];
+ $('#addrBox').style.display=t==='delivery'?'':'none';
+ $('#addr').required=t==='delivery';
+ $('#timeLbl').textContent=`Preferred ${n[0]} time`;$('#notesLbl').textContent=n[1];$('#notes').placeholder=n[2];
+ $('#time').innerHTML=SLOTS.map(s=>`<option>${s}</option>`).join('');
+ render();
+}
+document.querySelectorAll('input[name=type]').forEach(r=>r.onchange=typeUI);
+/* payment notes */
+const NOTES={'Cash on Delivery':'<i class="fa-solid fa-circle-info me-2"></i>You would pay the courier in cash on arrival. Nothing is charged in this demo.','Card':'<i class="fa-solid fa-triangle-exclamation me-2"></i>Card payments need a backend and a payment gateway, which this prototype does not have. No card details are collected here.','Online Payment':'<i class="fa-solid fa-triangle-exclamation me-2"></i>Online payments need a configured backend and payment gateway. This prototype does not process payments.'};
+function payUI(){$('#payNote').innerHTML=NOTES[document.querySelector('input[name=pay]:checked').value]}
+document.querySelectorAll('input[name=pay]').forEach(r=>r.onchange=payUI);
+/* validation */
+function validate(){
+ const rules={name:v=>v.trim().length>=3,phone:v=>v.replace(/\D/g,'').length>=10&&/^[+\d][\d\s-]+$/.test(v.trim()),email:v=>/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(v.trim()),addr:v=>orderType()!=='delivery'||v.trim().length>=8};
+ let first=null;
+ for(const k in rules){const el=$('#'+k),ok=rules[k](el.value);el.classList.toggle('is-invalid',!ok);if(!ok&&!first)first=el}
+ if(first){first.focus();return false}return true}
+['name','phone','email','addr'].forEach(k=>$('#'+k).addEventListener('input',e=>e.target.classList.remove('is-invalid')));
+$('#to3').onclick=()=>{if(!cart.length)return go(1);if(validate())go(3)};
+/* place order */
+$('#place').onclick=()=>{
+ if(submitting||placed||!cart.length)return;
+ if(!validate()){go(2);return}
+ submitting=true;const b=$('#place');b.disabled=true;b.innerHTML='<span class="spinner-border spinner-border-sm me-2"></span>Placing demo order…';
+ setTimeout(()=>{
+  placed=true;const t=calc(),type=orderType();
+  $('#oNo').textContent='FH-'+Date.now().toString().slice(-6);
+  $('#oMsg').textContent=`Thanks, ${$('#name').value.trim().split(' ')[0]}. ${type==='delivery'?'Estimated delivery: 25 – 40 minutes.':type==='pickup'?'Your order would be ready for pickup in about 20 minutes.':'Your table would be held for your arrival.'} Payment: ${document.querySelector('input[name=pay]:checked').value}. Total: ${EGP(t.tot)}.`;
+  $('#oItems').innerHTML=cart.map(i=>`<div class="mini"><img src="${IMG(i.img,100)}" alt="${esc(i.n)}" onerror="fb(this)"><span>${i.qty} × ${esc(i.n)}<br><small class="text-muted">${lineDesc(i)}</small></span><b>${EGP(i.unit*i.qty)}</b></div>`).join('');
+  placed=false;go(4);placed=true;
+  cart=[];coupon=null;persist();
+ },1200)};
+/* theme */
+const root=document.documentElement;
+function theme(t){root.setAttribute('data-theme',t);$('#themeBtn').innerHTML=t==='dark'?'<i class="fa-solid fa-sun"></i>':'<i class="fa-solid fa-moon"></i>';try{localStorage.setItem('fh_theme',t)}catch(e){}}
+let th='light';try{th=localStorage.getItem('fh_theme')||'light'}catch(e){}
+theme(th);$('#themeBtn').onclick=()=>theme(root.getAttribute('data-theme')==='dark'?'light':'dark');
+typeUI();payUI();go(1);
+</script>
+</body>
+</html>
+ 

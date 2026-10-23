@@ -1,0 +1,332 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>FoodHub — My Account</title>
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" rel="stylesheet">
+<style>
+:root{--red:#E94B35;--orange:#F59E0B;--green:#3A7D44;--bg:#FFF8F0;--card:#FFFFFF;--text:#292524;--muted:#78716c;--line:#f0e4d6;--shadow:0 8px 28px rgba(41,37,36,.08)}
+[data-theme=dark]{--bg:#1c1917;--card:#292524;--text:#f5f0ea;--muted:#a8a29e;--line:#3d3733;--shadow:0 8px 28px rgba(0,0,0,.4)}
+body{font-family:'Poppins','Cairo',sans-serif;background:var(--bg);color:var(--text);transition:background .3s,color .3s}
+a{text-decoration:none}.text-muted{color:var(--muted)!important}h1,h2,h3,h4,h5,h6{font-weight:700}
+:focus-visible{outline:3px solid var(--orange);outline-offset:2px}
+.btn-red{background:var(--red);color:#fff;border:0;border-radius:50px;padding:10px 24px;font-weight:600;transition:.25s}
+.btn-red:hover{background:#c93a26;color:#fff;transform:translateY(-1px)}
+.btn-green{background:var(--green);color:#fff;border:0;border-radius:50px;padding:10px 24px;font-weight:600}.btn-green:hover{background:#2e6636;color:#fff}.btn-green:disabled{background:var(--line);color:var(--muted)}
+.btn-line{border:2px solid var(--text);color:var(--text);border-radius:50px;font-weight:600;padding:8px 20px;background:none}
+.btn-line:hover{background:var(--text);color:var(--bg)}
+.btn-sm2{padding:6px 16px!important;font-size:.82rem}
+.navbar{background:var(--card);box-shadow:0 2px 16px rgba(0,0,0,.06);padding:12px 0}
+.navbar-brand{font-weight:800;font-size:1.6rem;color:var(--text)!important}
+.navbar-brand i,.navbar-brand span{color:var(--red)}
+.nav-link{color:var(--text)!important;font-weight:500;padding:8px 14px!important}.nav-link:hover{color:var(--red)!important}
+.navbar-toggler{border:0;color:var(--text)}.navbar-toggler:focus{box-shadow:none}
+.icon-btn{background:var(--bg);border:1px solid var(--line);color:var(--text);width:42px;height:42px;border-radius:50%;display:inline-flex;align-items:center;justify-content:center;position:relative;transition:.25s}
+.icon-btn:hover{background:var(--red);color:#fff;border-color:var(--red)}
+.cart-count{position:absolute;top:-5px;right:-5px;background:var(--orange);color:#fff;font-size:.7rem;font-weight:700;min-width:20px;height:20px;border-radius:50px;display:flex;align-items:center;justify-content:center}
+.demo-note{background:#fff4d6;color:#7a4b00;border-radius:14px;padding:12px 16px;font-size:.84rem;border:1px solid #f5d98b}
+[data-theme=dark] .demo-note{background:#3b2f10;color:#fcd98a;border-color:#6b5316}
+.panel{background:var(--card);border-radius:22px;box-shadow:var(--shadow);padding:24px}
+.side{position:sticky;top:90px}
+.avatar{width:72px;height:72px;border-radius:50%;background:linear-gradient(135deg,var(--red),var(--orange));color:#fff;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:1.6rem;flex:none}
+.side nav{display:flex;flex-direction:column;gap:4px;margin-top:16px}
+.side button.sn{display:flex;align-items:center;gap:12px;border:0;background:none;color:var(--text);padding:11px 14px;border-radius:14px;font-weight:500;font-size:.9rem;text-align:left;transition:.2s;white-space:nowrap}
+.side button.sn i{width:20px;color:var(--muted);text-align:center}
+.side button.sn:hover{background:var(--bg)}
+.side button.sn.on{background:rgba(233,75,53,.1);color:var(--red)}.side button.sn.on i{color:var(--red)}
+@media(max-width:991px){.side{position:static}.side nav{flex-direction:row;overflow-x:auto;padding-bottom:6px}}
+.sec{display:none}.sec.show{display:block}
+.stat{display:flex;gap:14px;align-items:center;background:var(--card);border-radius:20px;padding:18px;box-shadow:var(--shadow);height:100%;cursor:pointer;transition:.25s;border:0;width:100%;color:var(--text);text-align:left}
+.stat:hover{transform:translateY(-4px)}
+.stat .ic{width:50px;height:50px;border-radius:15px;display:flex;align-items:center;justify-content:center;font-size:1.3rem;flex:none}
+.stat b{font-size:1.5rem;display:block;line-height:1.1}.stat small{color:var(--muted)}
+.order{background:var(--card);border-radius:20px;box-shadow:var(--shadow);padding:18px;margin-bottom:16px}
+.thumbs{display:flex}.thumbs img{width:54px;height:54px;border-radius:14px;object-fit:cover;border:3px solid var(--card);margin-right:-12px;background:var(--line)}
+.badge-s{font-size:.74rem;font-weight:600;padding:5px 12px;border-radius:50px;white-space:nowrap}
+.s-del{background:rgba(58,125,68,.14);color:var(--green)}.s-act{background:rgba(245,158,11,.18);color:#b45309}.s-can{background:rgba(233,75,53,.12);color:var(--red)}.s-up{background:rgba(245,158,11,.18);color:#b45309}
+[data-theme=dark] .s-act,[data-theme=dark] .s-up{color:#fbbf24}
+.tl{display:flex;position:relative;margin:8px 0}
+.tl .st{flex:1;text-align:center;position:relative;font-size:.74rem;color:var(--muted)}
+.tl .st::before{content:"";position:absolute;top:17px;left:-50%;width:100%;height:3px;background:var(--line);z-index:0}
+.tl .st:first-child::before{display:none}
+.tl .st.done::before,.tl .st.now::before{background:var(--green)}
+.tl .st b{position:relative;z-index:1;width:36px;height:36px;border-radius:50%;background:var(--card);border:3px solid var(--line);display:flex;align-items:center;justify-content:center;margin:0 auto 6px;font-size:.8rem}
+.tl .st.done b{background:var(--green);border-color:var(--green);color:#fff}
+.tl .st.now b{border-color:var(--orange);color:var(--orange);box-shadow:0 0 0 5px rgba(245,158,11,.2)}
+.tl .st.now,.tl .st.done{color:var(--text);font-weight:500}
+@media(max-width:575px){.tl{flex-direction:column;gap:0}.tl .st{display:flex;align-items:center;gap:12px;text-align:left;padding:6px 0}.tl .st b{margin:0}.tl .st::before{top:-18px;left:17px;width:3px;height:100%}}
+.rec{background:var(--card);border-radius:18px;box-shadow:var(--shadow);overflow:hidden;height:100%}
+.rec img{width:100%;aspect-ratio:4/3;object-fit:cover;background:var(--line)}
+.rec div{padding:12px}.rec h6{font-size:.88rem;margin:0}
+.addr{background:var(--card);border-radius:20px;box-shadow:var(--shadow);padding:20px;height:100%;border:2px solid transparent}
+.addr.def{border-color:var(--green)}
+.bar{height:14px;border-radius:50px;background:var(--line);overflow:hidden}.bar i{display:block;height:100%;background:linear-gradient(90deg,var(--orange),var(--red));border-radius:50px;transition:width .6s}
+.reward{background:var(--card);border-radius:20px;box-shadow:var(--shadow);padding:20px;height:100%;text-align:center}
+.reward i.big{font-size:2rem;color:var(--orange);margin-bottom:8px}
+.cpn{background:var(--card);border-radius:20px;box-shadow:var(--shadow);display:flex;overflow:hidden;height:100%}
+.cpn .l{background:var(--red);color:#fff;padding:20px;display:flex;flex-direction:column;justify-content:center;align-items:center;min-width:100px;font-weight:800;text-align:center}
+.cpn .r{padding:16px;flex:1;border-left:3px dashed var(--bg)}
+.cpn code{background:var(--bg);padding:3px 10px;border-radius:8px;color:var(--red);font-weight:700}
+.stars{color:var(--orange);font-size:.85rem}
+.row-line{display:flex;justify-content:space-between;gap:12px;padding:10px 0;border-bottom:1px solid var(--line);font-size:.9rem}.row-line:last-child{border:0}
+.form-control,.form-select{background-color:var(--card);color:var(--text);border-color:var(--line);border-radius:12px;padding:10px 14px}
+.form-control:focus,.form-select:focus{background-color:var(--card);color:var(--text);border-color:var(--red);box-shadow:0 0 0 .2rem rgba(233,75,53,.15)}
+.form-label{font-weight:500;font-size:.88rem}
+.form-check-input:checked{background-color:var(--green);border-color:var(--green)}
+.modal-content{background:var(--card);color:var(--text);border-radius:24px;border:0}
+.modal .btn-close{filter:var(--bs-btn-close-white-filter,none)}[data-theme=dark] .modal .btn-close{filter:invert(1)}
+.mini{display:flex;gap:12px;align-items:center;padding:8px 0;font-size:.88rem}.mini img{width:52px;height:52px;border-radius:12px;object-fit:cover;background:var(--line)}.mini span{flex:1}
+.empty{text-align:center;padding:40px;color:var(--muted)}
+.toast-fh{position:fixed;bottom:24px;left:50%;transform:translate(-50%,120px);background:var(--text);color:var(--bg);padding:12px 24px;border-radius:50px;transition:.35s;z-index:2000;font-size:.9rem}
+.toast-fh.show{transform:translate(-50%,0)}
+@media(prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+</head>
+<body>
+<nav class="navbar navbar-expand-lg sticky-top">
+ <div class="container">
+  <a class="navbar-brand" href="index.html"><i class="fa-solid fa-utensils"></i> Food<span>Hub</span></a>
+  <button class="navbar-toggler" data-bs-toggle="collapse" data-bs-target="#nav" aria-label="Toggle navigation"><i class="fa-solid fa-bars fa-lg"></i></button>
+  <div class="collapse navbar-collapse" id="nav">
+   <ul class="navbar-nav mx-auto">
+    <li class="nav-item"><a class="nav-link" href="index.html">Home</a></li>
+    <li class="nav-item"><a class="nav-link" href="menu.html">Menu</a></li>
+    <li class="nav-item"><a class="nav-link" href="reservations.html">Reservations</a></li>
+    <li class="nav-item"><a class="nav-link" href="index.html#about">About</a></li>
+    <li class="nav-item"><a class="nav-link" href="index.html#contact">Contact</a></li>
+   </ul>
+   <div class="d-flex align-items-center gap-2">
+    <button class="icon-btn" id="themeBtn" aria-label="Toggle dark mode"><i class="fa-solid fa-moon"></i></button>
+    <a href="account.html" class="icon-btn" aria-label="My account"><i class="fa-regular fa-user"></i></a>
+    <a href="checkout.html" class="icon-btn" aria-label="Cart"><i class="fa-solid fa-cart-shopping"></i><span class="cart-count" id="cartCount">0</span></a>
+   </div>
+  </div>
+ </div>
+</nav>
+ 
+<main class="container py-4">
+ <div class="demo-note mb-4"><i class="fa-solid fa-flask me-2"></i><b>UI demo.</b> This is not a secure login. All data on this page is sample data stored in your browser. Real customer accounts and data must be handled by ASP.NET Core Identity and a server-side database.</div>
+ <div class="row g-4">
+  <div class="col-lg-3"><aside class="panel side">
+   <div class="d-flex align-items-center gap-3"><div class="avatar" id="sAv"></div><div style="min-width:0"><h6 class="mb-0 text-truncate" id="sName"></h6><small class="text-muted text-truncate d-block" id="sMail"></small></div></div>
+   <nav id="sn" aria-label="Account sections">
+    <button class="sn on" data-sec="overview"><i class="fa-solid fa-gauge"></i>Overview</button>
+    <button class="sn" data-sec="orders"><i class="fa-solid fa-receipt"></i>Order history</button>
+    <button class="sn" data-sec="addresses"><i class="fa-solid fa-location-dot"></i>Saved addresses</button>
+    <button class="sn" data-sec="reservations"><i class="fa-regular fa-calendar-check"></i>Reservations</button>
+    <button class="sn" data-sec="loyalty"><i class="fa-solid fa-star"></i>Loyalty points</button>
+    <button class="sn" data-sec="coupons"><i class="fa-solid fa-ticket"></i>Coupons &amp; offers</button>
+    <button class="sn" data-sec="reviews"><i class="fa-regular fa-comment-dots"></i>My reviews</button>
+    <button class="sn" data-sec="settings"><i class="fa-solid fa-gear"></i>Account settings</button>
+    <button class="sn" id="logout"><i class="fa-solid fa-right-from-bracket"></i>Log out</button>
+   </nav>
+  </aside></div>
+ 
+  <div class="col-lg-9">
+   <section class="sec show" id="overview">
+    <div class="panel mb-4 d-flex align-items-center gap-3 flex-wrap" style="background:linear-gradient(120deg,var(--red),var(--orange));color:#fff">
+     <div class="avatar" id="wAv" style="background:rgba(255,255,255,.25)"></div>
+     <div class="flex-grow-1"><h3 class="mb-1" id="welcome"></h3><div style="opacity:.92;font-size:.9rem" id="wInfo"></div></div>
+     <a href="menu.html" class="btn btn-line" style="color:#fff;border-color:#fff">Order food</a>
+    </div>
+    <div class="row g-3 mb-4" id="stats"></div>
+    <div class="panel mb-4" id="track"></div>
+    <div class="d-flex justify-content-between align-items-center mb-3"><h5 class="mb-0">Recent orders</h5><button class="btn btn-line btn-sm2" data-sec="orders">View all</button></div>
+    <div id="recent"></div>
+    <h5 class="mb-3 mt-4">Recommended for you</h5><div class="row g-3" id="recs"></div>
+   </section>
+ 
+   <section class="sec" id="orders"><h4 class="mb-3">Order history</h4><div id="orderList"></div></section>
+ 
+   <section class="sec" id="addresses"><div class="d-flex justify-content-between align-items-center mb-3"><h4 class="mb-0">Saved addresses</h4><button class="btn btn-red btn-sm2" id="addAddr"><i class="fa-solid fa-plus me-1"></i>Add address</button></div><div class="row g-3" id="addrList"></div></section>
+ 
+   <section class="sec" id="reservations"><div class="d-flex justify-content-between align-items-center mb-3"><h4 class="mb-0">Reservation history</h4><a href="reservations.html" class="btn btn-red btn-sm2">Book a table</a></div><div id="resList"></div></section>
+ 
+   <section class="sec" id="loyalty"><h4 class="mb-3">Loyalty points &amp; rewards</h4>
+    <div class="panel mb-4"><div class="d-flex justify-content-between flex-wrap gap-2 mb-2"><div><span class="text-muted small">Current balance</span><h2 class="mb-0" style="color:var(--red)" id="pts"></h2></div><div class="text-end"><span class="badge s-act badge-s" id="tier"></span><div class="small text-muted mt-1" id="next"></div></div></div><div class="bar"><i id="pbar"></i></div><div class="small text-muted mt-2">Earn 1 point for every 10 EGP spent.</div></div>
+    <h6 class="mb-3">Available rewards</h6><div class="row g-3 mb-4" id="rewards"></div>
+    <h6 class="mb-2">Points activity</h6><div class="panel" id="txs"></div></section>
+ 
+   <section class="sec" id="coupons"><h4 class="mb-3">Coupons &amp; offers</h4><div class="row g-3" id="cpnList"></div></section>
+ 
+   <section class="sec" id="reviews"><h4 class="mb-3">My reviews</h4><div id="revList"></div></section>
+ 
+   <section class="sec" id="settings"><h4 class="mb-3">Account settings</h4>
+    <div class="panel mb-4"><h6 class="mb-3">Edit profile</h6>
+     <form id="pf" novalidate><div class="row g-3">
+      <div class="col-md-6"><label class="form-label" for="pName">Full name</label><input class="form-control" id="pName" autocomplete="name"><div class="invalid-feedback">Enter your full name.</div></div>
+      <div class="col-md-6"><label class="form-label" for="pPhone">Phone number</label><input class="form-control" id="pPhone" type="tel" autocomplete="tel"><div class="invalid-feedback">Enter a valid phone number (10+ digits).</div></div>
+      <div class="col-12"><label class="form-label" for="pMail">Email</label><input class="form-control" id="pMail" type="email" autocomplete="email"><div class="invalid-feedback">Enter a valid email address.</div></div>
+      <div class="col-12"><button class="btn btn-red" type="submit">Save changes</button></div>
+     </div></form></div>
+    <div class="panel mb-4"><h6 class="mb-3">Notifications</h6>
+     <div class="form-check form-switch mb-2"><input class="form-check-input" type="checkbox" id="nOffers" data-pref="offers"><label class="form-check-label" for="nOffers">Offers and promotions by email</label></div>
+     <div class="form-check form-switch mb-2"><input class="form-check-input" type="checkbox" id="nOrders" data-pref="orders"><label class="form-check-label" for="nOrders">Order status updates by SMS</label></div>
+     <div class="form-check form-switch"><input class="form-check-input" type="checkbox" id="nRes" data-pref="res"><label class="form-check-label" for="nRes">Reservation reminders</label></div></div>
+    <div class="panel"><h6>Demo data</h6><p class="text-muted small">Password and security settings are not part of this UI demo. They would be handled by ASP.NET Core Identity.</p><button class="btn btn-line btn-sm2" id="resetDemo">Reset demo data</button></div>
+   </section>
+  </div>
+ </div>
+</main>
+ 
+<div class="modal fade" id="oModal" tabindex="-1" aria-labelledby="oTitle" aria-hidden="true"><div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable"><div class="modal-content">
+ <div class="modal-header border-0"><h5 class="modal-title" id="oTitle"></h5><button class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button></div>
+ <div class="modal-body" id="oBody"></div>
+ <div class="modal-footer border-0"><button class="btn btn-line" data-bs-dismiss="modal">Close</button><button class="btn btn-red" id="oReorder"><i class="fa-solid fa-rotate-right me-2"></i>Reorder</button></div>
+</div></div></div>
+<div class="modal fade" id="aModal" tabindex="-1" aria-labelledby="aTitle" aria-hidden="true"><div class="modal-dialog modal-dialog-centered"><div class="modal-content">
+ <form id="af" novalidate>
+ <div class="modal-header border-0"><h5 class="modal-title" id="aTitle">Add address</h5><button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button></div>
+ <div class="modal-body"><div class="row g-3">
+  <div class="col-12"><label class="form-label" for="aLabel">Label</label><select class="form-select" id="aLabel"><option>Home</option><option>Work</option><option>Other</option></select></div>
+  <div class="col-12"><label class="form-label" for="aText">Address</label><textarea class="form-control" id="aText" rows="2" placeholder="Street, building, floor, apartment"></textarea><div class="invalid-feedback">Enter a full address (at least 8 characters).</div></div>
+  <div class="col-12"><label class="form-label" for="aNote">Delivery note (optional)</label><input class="form-control" id="aNote" placeholder="e.g. ring the bell twice"></div>
+  <div class="col-12"><div class="form-check"><input class="form-check-input" type="checkbox" id="aDef"><label class="form-check-label" for="aDef">Make this my default address</label></div></div>
+ </div></div>
+ <div class="modal-footer border-0"><button type="button" class="btn btn-line" data-bs-dismiss="modal">Cancel</button><button class="btn btn-red" type="submit">Save address</button></div>
+ </form></div></div></div>
+<div class="toast-fh" id="toast" role="status"></div>
+ 
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+const IMG=(id,w)=>`https://images.unsplash.com/${id}?auto=format&fit=crop&w=${w}&q=75`;
+const FALLBACK='data:image/svg+xml;utf8,'+encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" width="400" height="300"><rect width="400" height="300" fill="#f5e6d3"/><text x="200" y="175" font-size="72" text-anchor="middle">🍽️</text></svg>');
+const P={burger:'photo-1568901346375-23c9450c58cd',bbq:'photo-1550547660-d9450f859349',marg:'photo-1574071318508-1cdbab80d002',pep:'photo-1628840042765-356cda07504e',grill:'photo-1529692236671-f1f6cf9683ba',alfredo:'photo-1621996346565-e3dbc646d9a9',salad:'photo-1512621776951-a57141f2eefd',lava:'photo-1606313564200-e75d5e30476c',cake:'photo-1533134242443-d4fd215305ad',mango:'photo-1544145945-f90425340c7e',lemon:'photo-1497534446932-c925b458314e',salmon:'photo-1467003909585-2f8a72700288'};
+const STAGES=['Order Placed','Confirmed','Preparing','Ready','Out for Delivery','Delivered'];
+const STAGE_ICONS=['fa-receipt','fa-circle-check','fa-fire-burner','fa-bag-shopping','fa-motorcycle','fa-house'];
+const it=(n,img,qty,size,addons,unit)=>({n,img,qty,size,addons,unit});
+const tot=items=>{const s=items.reduce((t,i)=>t+i.qty*i.unit,0);return Math.round(s*1.14+(s<400?25:0))};
+function seed(){
+ const O=[
+  {no:'FH-100482',date:'2026-10-12',stage:4,pay:'Cash on Delivery',addr:'Home',items:[it('Classic Cheeseburger',P.burger,2,'Medium',['Extra cheese'],160),it('Fresh Mango Smoothie',P.mango,2,'Medium',[],60)]},
+  {no:'FH-100431',date:'2026-10-03',stage:5,pay:'Card',addr:'Home',items:[it('Margherita Pizza',P.marg,1,'Large',['Extra sauce'],218),it('Chocolate Lava Cake',P.lava,1,'Medium',[],85)]},
+  {no:'FH-100377',date:'2026-09-24',stage:5,pay:'Online Payment',addr:'Work',items:[it('Mixed Grill Platter',P.grill,1,'Medium',[],320),it('Garden Quinoa Salad',P.salad,1,'Medium',['Fresh veggies'],125)]},
+  {no:'FH-100312',date:'2026-09-12',stage:5,pay:'Cash on Delivery',addr:'Home',items:[it('Fettuccine Alfredo',P.alfredo,1,'Medium',[],150),it('Strawberry Cheesecake',P.cake,1,'Medium',[],95),it('Fresh Lemon Mint',P.lemon,1,'Medium',[],45)]},
+  {no:'FH-100254',date:'2026-08-30',stage:-1,pay:'Card',addr:'Home',items:[it('Pepperoni Pizza',P.pep,1,'Medium',[],195)]}];
+ O.forEach(o=>o.total=tot(o.items));
+ return{
+  profile:{name:'Ahmed Hassan',email:'ahmed.hassan@example.com',phone:'01012345678'},
+  prefs:{offers:true,orders:true,res:true},
+  orders:O,
+  addresses:[{id:1,label:'Home',text:'14 El Nasr Street, Building 3, Floor 2, Apt 5, Faiyum',note:'Ring the bell twice',def:true},{id:2,label:'Work',text:'Tower B, Office 12, Business District, Faiyum',note:'Leave with reception',def:false}],
+  reservations:[{ref:'FH-R-7K2M9Q',d:'2026-10-20',tm:'19:30',guests:4,table:'Terrace 2 (Outdoor)',occ:'Birthday',status:'Upcoming'},{ref:'FH-R-3PX81A',d:'2026-09-05',tm:'20:00',guests:2,table:'Window 1 (Window)',occ:'Anniversary',status:'Completed'},{ref:'FH-R-9LD40C',d:'2026-08-14',tm:'13:30',guests:6,table:'Table 3 (Indoor)',occ:'Business',status:'Completed'}],
+  points:1240,
+  txs:[{d:'2026-10-03',t:'Order FH-100431',p:55},{d:'2026-09-24',t:'Order FH-100377',p:49},{d:'2026-09-20',t:'Redeemed: Free dessert',p:-500},{d:'2026-09-12',t:'Order FH-100312',p:36},{d:'2026-09-01',t:'Birthday bonus',p:100}],
+  coupons:[{code:'WELCOME30',v:'30%',t:'OFF',d:'30% off your next order',exp:'2026-12-31'},{code:'FOOD10',v:'10%',t:'OFF',d:'10% off any order',exp:'2026-11-30'},{code:'FREESHIP',v:'FREE',t:'DELIVERY',d:'Free delivery on any order',exp:'2026-11-15'}],
+  reviews:[{id:1,n:'Margherita Pizza',img:P.marg,r:5,t:'Perfect crust and fresh basil. Arrived hot.',d:'2026-10-04'},{id:2,n:'Mixed Grill Platter',img:P.grill,r:4,t:'Great portions. The kofta was a little dry.',d:'2026-09-25'},{id:3,n:'Chocolate Lava Cake',img:P.lava,r:5,t:'Molten centre exactly as promised.',d:'2026-10-04'}]};
+}
+const $=s=>document.querySelector(s);
+const esc=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const EGP=n=>Math.round(n).toLocaleString('en-US')+' EGP';
+const fd=d=>new Date(d+'T12:00').toLocaleDateString('en-GB',{day:'numeric',month:'short',year:'numeric'});
+const stars=r=>[1,2,3,4,5].map(x=>`<i class="${x<=r?'fa-solid':'fa-regular'} fa-star"></i>`).join('');
+function fb(e){e.onerror=null;e.src=FALLBACK}window.fb=fb;
+function toast(m){const t=$('#toast');t.textContent=m;t.classList.add('show');clearTimeout(t._t);t._t=setTimeout(()=>t.classList.remove('show'),2300)}
+let S;try{S=JSON.parse(localStorage.getItem('fh_account'))}catch(e){}
+if(!S||!S.orders)S=seed();
+const save=()=>{try{localStorage.setItem('fh_account',JSON.stringify(S))}catch(e){}};
+const ini=n=>n.trim().split(/\s+/).map(w=>w[0]).slice(0,2).join('').toUpperCase();
+const statusOf=o=>o.stage<0?['Cancelled','s-can']:o.stage===5?['Delivered','s-del']:[STAGES[o.stage],'s-act'];
+const thumbs=o=>`<div class="thumbs">${o.items.slice(0,4).map(i=>`<img src="${IMG(i.img,120)}" alt="${esc(i.n)}" onerror="fb(this)">`).join('')}</div>`;
+function tl(stage){return `<div class="tl" role="list">${STAGES.map((s,i)=>`<div class="st ${stage>i?'done':stage===i?'now':''}" role="listitem"><b>${stage>i?'<i class="fa-solid fa-check"></i>':`<i class="fa-solid ${STAGE_ICONS[i]}"></i>`}</b>${s}</div>`).join('')}</div>`}
+function orderCard(o){const [st,cl]=statusOf(o);return `<div class="order"><div class="d-flex align-items-center gap-3 flex-wrap">${thumbs(o)}<div class="flex-grow-1 ms-2" style="min-width:180px"><b>${o.no}</b> <span class="badge-s ${cl} ms-1">${st}</span><div class="small text-muted">${fd(o.date)} · ${o.items.reduce((t,i)=>t+i.qty,0)} items</div><div class="small text-muted text-truncate" style="max-width:380px">${esc(o.items.map(i=>i.qty+'× '+i.n).join(', '))}</div></div><div class="text-end"><div class="fw-bold mb-2" style="color:var(--red)">${EGP(o.total)}</div><button class="btn btn-line btn-sm2" data-view="${o.no}">View Details</button> <button class="btn btn-red btn-sm2" data-re="${o.no}">Reorder</button></div></div></div>`}
+/* cart */
+function addToCart(list){
+ let c=[];try{c=JSON.parse(localStorage.getItem('fh_cart_items')||'[]')}catch(e){}if(!Array.isArray(c))c=[];
+ list.forEach(i=>{const key=i.n+'|'+i.size+'|'+i.addons.join(',');const f=c.find(x=>x.key===key);if(f)f.qty=Math.min(20,f.qty+i.qty);else c.push({key,n:i.n,img:i.img,size:i.size,addons:i.addons,unit:i.unit,qty:i.qty})});
+ try{localStorage.setItem('fh_cart_items',JSON.stringify(c));localStorage.setItem('fh_cart',c.reduce((t,i)=>t+i.qty,0))}catch(e){}
+ cartCount();
+}
+function cartCount(){try{$('#cartCount').textContent=localStorage.getItem('fh_cart')||0}catch(e){}}
+function reorder(no){const o=S.orders.find(x=>x.no===no);addToCart(o.items);toast(`${o.no} added to cart`)}
+/* reservations merge from reservations.html */
+function resAll(){let extra=[];try{extra=JSON.parse(localStorage.getItem('fh_reservations')||'[]')}catch(e){}
+ const names={I:'Indoor',W:'Window',O:'Outdoor'};
+ const m=extra.map((b,i)=>({ref:'FH-R-'+(b.d.replace(/-/g,'').slice(2)+i),d:b.d,tm:b.tm,guests:'—',table:`Table ${b.t} (${names[b.t[0]]||''})`,occ:'Booked on reservations page',status:b.d>=new Date().toISOString().slice(0,10)?'Upcoming':'Completed'}));
+ return [...m,...S.reservations].sort((a,b)=>b.d.localeCompare(a.d))}
+/* render */
+function renderAll(){
+ const p=S.profile;
+ $('#sAv').textContent=$('#wAv').textContent=ini(p.name);$('#sName').textContent=p.name;$('#sMail').textContent=p.email;
+ $('#welcome').textContent='Welcome back, '+p.name.split(' ')[0]+'!';
+ $('#wInfo').innerHTML=`<i class="fa-regular fa-envelope me-1"></i>${esc(p.email)} &nbsp; <i class="fa-solid fa-phone me-1"></i>${esc(p.phone)}`;
+ const R=resAll();
+ const stat=(sec,ic,bg,c,v,l)=>`<div class="col-6 col-xl-3"><button class="stat" data-sec="${sec}"><span class="ic" style="background:${bg};color:${c}"><i class="fa-solid ${ic}"></i></span><span><b>${v}</b><small>${l}</small></span></button></div>`;
+ $('#stats').innerHTML=stat('orders','fa-receipt','rgba(233,75,53,.12)','var(--red)',S.orders.length,'Total orders')+stat('loyalty','fa-star','rgba(245,158,11,.18)','#d97706',S.points.toLocaleString(),'Loyalty points')+stat('reservations','fa-calendar-check','rgba(58,125,68,.14)','var(--green)',R.length,'Reservations')+stat('addresses','fa-location-dot','rgba(233,75,53,.12)','var(--red)',S.addresses.length,'Saved addresses');
+ const live=S.orders.find(o=>o.stage>=0&&o.stage<5);
+ $('#track').innerHTML=live?`<div class="d-flex justify-content-between flex-wrap gap-2 mb-3"><div><h6 class="mb-0"><i class="fa-solid fa-motorcycle me-2" style="color:var(--red)"></i>Track order ${live.no}</h6><small class="text-muted">Estimated arrival: 15 – 25 minutes (demo)</small></div><button class="btn btn-line btn-sm2" data-view="${live.no}">View Details</button></div>${tl(live.stage)}`:'<div class="empty py-2">No active orders right now.</div>';
+ $('#recent').innerHTML=S.orders.slice(0,3).map(orderCard).join('');
+ $('#orderList').innerHTML=S.orders.length?S.orders.map(orderCard).join(''):'<div class="empty">No orders yet.</div>';
+ const recs=[['Pepperoni Pizza',P.pep,195],['Bacon BBQ Burger',P.bbq,149],['Grilled Salmon',P.salmon,360],['Strawberry Cheesecake',P.cake,95]];
+ $('#recs').innerHTML=recs.map((r,i)=>`<div class="col-6 col-md-3"><div class="rec"><img src="${IMG(r[1],400)}" alt="${r[0]}" loading="lazy" onerror="fb(this)"><div><h6>${r[0]}</h6><div class="d-flex justify-content-between align-items-center mt-2"><b style="color:var(--red);font-size:.85rem">${r[2]} EGP</b><button class="btn btn-red btn-sm2" style="padding:4px 12px!important" data-rec="${i}" aria-label="Add ${r[0]} to cart"><i class="fa-solid fa-plus"></i></button></div></div></div></div>`).join('');
+ window.RECS=recs;
+ $('#addrList').innerHTML=S.addresses.length?S.addresses.map(a=>`<div class="col-md-6"><div class="addr ${a.def?'def':''}"><div class="d-flex justify-content-between mb-2"><b><i class="fa-solid ${a.label==='Work'?'fa-briefcase':a.label==='Home'?'fa-house':'fa-location-dot'} me-2" style="color:var(--red)"></i>${a.label}</b>${a.def?'<span class="badge-s s-del">Default</span>':''}</div><p class="mb-1 small">${esc(a.text)}</p>${a.note?`<p class="small text-muted mb-3">Note: ${esc(a.note)}</p>`:'<div class="mb-3"></div>'}<button class="btn btn-line btn-sm2" data-ea="${a.id}">Edit</button> <button class="btn btn-line btn-sm2" data-da="${a.id}">Remove</button></div></div>`).join(''):'<div class="col-12 empty">No saved addresses. Add one to speed up checkout.</div>';
+ $('#resList').innerHTML=R.map(r=>`<div class="order d-flex flex-wrap justify-content-between align-items-center gap-3"><div><b>${r.ref}</b> <span class="badge-s ${r.status==='Upcoming'?'s-up':'s-del'} ms-1">${r.status}</span><div class="small text-muted mt-1"><i class="fa-regular fa-calendar me-1"></i>${fd(r.d)} at ${r.tm} · <i class="fa-solid fa-users me-1"></i>${r.guests} guests</div><div class="small text-muted">${esc(r.table)} · ${esc(r.occ)}</div></div>${r.status==='Upcoming'?'<a href="reservations.html" class="btn btn-line btn-sm2">Rebook / change</a>':'<a href="reservations.html" class="btn btn-line btn-sm2">Book again</a>'}</div>`).join('');
+ const nextAt=1500,pct=Math.min(100,S.points/nextAt*100);
+ $('#pts').textContent=S.points.toLocaleString()+' pts';$('#pbar').style.width=pct+'%';
+ $('#tier').textContent=S.points>=1500?'Gold member':S.points>=500?'Silver member':'Bronze member';
+ $('#next').textContent=S.points>=nextAt?'You can claim our top reward':`${(nextAt-S.points).toLocaleString()} points to your next big reward`;
+ const RW=[['fa-ice-cream','Free dessert',500,'Any dessert on the menu'],['fa-tag','50 EGP off',800,'On orders over 150 EGP'],['fa-burger','Free burger',1500,'Classic Cheeseburger on us']];
+ $('#rewards').innerHTML=RW.map((r,i)=>`<div class="col-md-4"><div class="reward"><i class="fa-solid ${r[0]} big"></i><h6>${r[1]}</h6><p class="small text-muted">${r[3]}</p><button class="btn btn-green btn-sm2" data-rw="${i}" ${S.points<r[2]?'disabled':''}>${r[2]} pts · Redeem</button></div></div>`).join('');
+ window.RW=RW;
+ $('#txs').innerHTML=S.txs.map(t=>`<div class="row-line"><span>${t.t}<br><small class="text-muted">${fd(t.d)}</small></span><b style="color:${t.p>0?'var(--green)':'var(--red)'}">${t.p>0?'+':''}${t.p} pts</b></div>`).join('');
+ $('#cpnList').innerHTML=S.coupons.map(c=>`<div class="col-md-6"><div class="cpn"><div class="l"><span style="font-size:1.5rem">${c.v}</span><small>${c.t}</small></div><div class="r"><code>${c.code}</code><p class="small mb-1 mt-2">${esc(c.d)}</p><small class="text-muted">Expires ${fd(c.exp)}</small><div class="mt-2"><button class="btn btn-line btn-sm2" data-copy="${c.code}"><i class="fa-regular fa-copy me-1"></i>Copy code</button></div></div></div></div>`).join('');
+ $('#revList').innerHTML=S.reviews.length?S.reviews.map(r=>`<div class="order d-flex gap-3 align-items-center"><img src="${IMG(r.img,160)}" alt="${esc(r.n)}" style="width:70px;height:70px;border-radius:16px;object-fit:cover" onerror="fb(this)"><div class="flex-grow-1"><b>${esc(r.n)}</b><div class="stars">${stars(r.r)}</div><p class="small mb-0">${esc(r.t)}</p><small class="text-muted">${fd(r.d)}</small></div><button class="btn btn-line btn-sm2" data-dr="${r.id}" aria-label="Delete review of ${esc(r.n)}"><i class="fa-regular fa-trash-can"></i></button></div>`).join(''):'<div class="empty">You haven\'t reviewed any dishes yet.</div>';
+ $('#pName').value=p.name;$('#pPhone').value=p.phone;$('#pMail').value=p.email;
+ document.querySelectorAll('[data-pref]').forEach(c=>c.checked=!!S.prefs[c.dataset.pref]);
+ cartCount();
+}
+/* nav */
+function show(sec){document.querySelectorAll('.sec').forEach(s=>s.classList.toggle('show',s.id===sec));document.querySelectorAll('button.sn[data-sec]').forEach(b=>b.classList.toggle('on',b.dataset.sec===sec));history.replaceState(null,'','#'+sec);if(innerWidth<992)$('#sn').scrollIntoView({block:'start',behavior:'smooth'});else scrollTo({top:0,behavior:'smooth'})}
+document.addEventListener('click',e=>{
+ const g=(s)=>e.target.closest(s);let b;
+ if(b=g('[data-sec]'))return show(b.dataset.sec);
+ if(b=g('[data-view]'))return openOrder(b.dataset.view);
+ if(b=g('[data-re]'))return reorder(b.dataset.re);
+ if(b=g('[data-rec]')){const r=RECS[b.dataset.rec];addToCart([{n:r[0],img:r[1],qty:1,size:'Medium',addons:[],unit:r[2]}]);return toast(r[0]+' added to cart')}
+ if(b=g('[data-ea]'))return editAddr(+b.dataset.ea);
+ if(b=g('[data-da]')){S.addresses=S.addresses.filter(a=>a.id!=b.dataset.da);if(S.addresses.length&&!S.addresses.some(a=>a.def))S.addresses[0].def=true;save();renderAll();return toast('Address removed')}
+ if(b=g('[data-rw]')){const r=RW[b.dataset.rw];if(S.points<r[2])return;S.points-=r[2];S.txs.unshift({d:new Date().toISOString().slice(0,10),t:'Redeemed: '+r[1],p:-r[2]});S.coupons.unshift({code:'RWD-'+Math.random().toString(36).slice(2,7).toUpperCase(),v:r[1].split(' ')[0],t:r[1].split(' ').slice(1).join(' ').toUpperCase()||'REWARD',d:r[1]+' reward',exp:'2026-12-31'});save();renderAll();return toast(r[1]+' added to your coupons')}
+ if(b=g('[data-copy]')){try{navigator.clipboard.writeText(b.dataset.copy)}catch(x){}return toast('Code '+b.dataset.copy+' copied')}
+ if(b=g('[data-dr]')){S.reviews=S.reviews.filter(r=>r.id!=b.dataset.dr);save();renderAll();return toast('Review deleted')}
+});
+/* order modal */
+const oM=new bootstrap.Modal($('#oModal')),aM=new bootstrap.Modal($('#aModal'));let curO=null;
+function openOrder(no){
+ const o=curO=S.orders.find(x=>x.no===no),[st,cl]=statusOf(o),sub=o.items.reduce((t,i)=>t+i.qty*i.unit,0),fee=sub<400?25:0;
+ $('#oTitle').innerHTML=`Order ${o.no} <span class="badge-s ${cl} ms-2">${st}</span>`;
+ $('#oBody').innerHTML=`<p class="text-muted small">${fd(o.date)} · Paid by ${o.pay} · Deliver to: ${esc(o.addr)}</p>${o.stage>=0?tl(o.stage):'<div class="demo-note mb-3">This order was cancelled.</div>'}<h6 class="mt-4">Items</h6>${o.items.map(i=>`<div class="mini"><img src="${IMG(i.img,120)}" alt="${esc(i.n)}" onerror="fb(this)"><span>${i.qty} × ${esc(i.n)}<br><small class="text-muted">${i.size}${i.addons.length?' · '+esc(i.addons.join(', ')):''}</small></span><b>${EGP(i.qty*i.unit)}</b></div>`).join('')}<div class="mt-3"><div class="row-line"><span>Subtotal</span><span>${EGP(sub)}</span></div><div class="row-line"><span>Delivery fee</span><span>${fee?EGP(fee):'Free'}</span></div><div class="row-line"><span>Tax (14%)</span><span>${EGP(sub*.14)}</span></div><div class="row-line"><b>Total</b><b style="color:var(--red)">${EGP(o.total)}</b></div></div>`;
+ oM.show();
+}
+$('#oReorder').onclick=()=>{reorder(curO.no);oM.hide()};
+/* addresses */
+let editing=null;
+function editAddr(id){editing=id?S.addresses.find(a=>a.id===id):null;$('#aTitle').textContent=editing?'Edit address':'Add address';$('#aLabel').value=editing?editing.label:'Home';$('#aText').value=editing?editing.text:'';$('#aNote').value=editing?editing.note:'';$('#aDef').checked=editing?editing.def:!S.addresses.length;$('#aText').classList.remove('is-invalid');aM.show()}
+$('#addAddr').onclick=()=>editAddr(0);
+$('#af').onsubmit=e=>{e.preventDefault();const t=$('#aText').value.trim();if(t.length<8){$('#aText').classList.add('is-invalid');return}
+ const d=$('#aDef').checked||!S.addresses.length;if(d)S.addresses.forEach(a=>a.def=false);
+ if(editing)Object.assign(editing,{label:$('#aLabel').value,text:t,note:$('#aNote').value.trim(),def:d||editing.def&&S.addresses.every(a=>!a.def)});
+ else S.addresses.push({id:Date.now(),label:$('#aLabel').value,text:t,note:$('#aNote').value.trim(),def:d});
+ save();renderAll();aM.hide();toast('Address saved')};
+/* profile */
+$('#pf').onsubmit=e=>{e.preventDefault();const n=$('#pName').value.trim(),ph=$('#pPhone').value.trim(),m=$('#pMail').value.trim();
+ const ok={pName:n.length>=3,pPhone:ph.replace(/\D/g,'').length>=10&&/^[+\d][\d\s-]+$/.test(ph),pMail:/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(m)};
+ Object.keys(ok).forEach(k=>$('#'+k).classList.toggle('is-invalid',!ok[k]));
+ if(!Object.values(ok).every(Boolean))return;S.profile={name:n,phone:ph,email:m};save();renderAll();toast('Profile updated')};
+document.querySelectorAll('[data-pref]').forEach(c=>c.onchange=()=>{S.prefs[c.dataset.pref]=c.checked;save();toast('Preference saved')});
+$('#resetDemo').onclick=()=>{if(!confirm('Reset all demo account data on this device?'))return;try{localStorage.removeItem('fh_account');localStorage.removeItem('fh_reservations')}catch(e){}S=seed();save();renderAll();toast('Demo data reset')};
+$('#logout').onclick=()=>toast('Demo only: there is no real session to end');
+/* theme */
+const root=document.documentElement;
+function theme(t){root.setAttribute('data-theme',t);$('#themeBtn').innerHTML=t==='dark'?'<i class="fa-solid fa-sun"></i>':'<i class="fa-solid fa-moon"></i>';try{localStorage.setItem('fh_theme',t)}catch(e){}}
+let th='light';try{th=localStorage.getItem('fh_theme')||'light'}catch(e){}
+theme(th);$('#themeBtn').onclick=()=>theme(root.getAttribute('data-theme')==='dark'?'light':'dark');
+save();renderAll();
+const h=location.hash.slice(1);if(h&&document.getElementById(h)&&document.getElementById(h).classList.contains('sec'))show(h);
+</script>
+</body>
+</html>
+ 

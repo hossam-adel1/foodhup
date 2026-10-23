@@ -1,0 +1,728 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>FoodHub Admin — Inventory Management</title>
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" rel="stylesheet">
+<style>
+:root{--red:#E94B35;--orange:#F59E0B;--green:#3A7D44;--blue:#2563eb;--purple:#7c3aed;--bg:#FFF8F0;--card:#FFFFFF;--text:#292524;--muted:#78716c;--line:#f0e4d6;--shadow:0 6px 22px rgba(41,37,36,.08);--sbw:250px}
+[data-theme=dark]{--bg:#161412;--card:#241f1d;--text:#f5f0ea;--muted:#a8a29e;--line:#3a3430;--shadow:0 6px 22px rgba(0,0,0,.4)}
+html{scroll-behavior:smooth}
+body{font-family:'Poppins','Cairo',sans-serif;background:var(--bg);color:var(--text);transition:background .3s,color .3s}
+a{text-decoration:none}.text-muted{color:var(--muted)!important}h1,h2,h3,h4,h5,h6{font-weight:700}
+:focus-visible{outline:3px solid var(--orange);outline-offset:2px}
+section{scroll-margin-top:84px}
+/* sidebar */
+.sb{position:fixed;inset:0 auto 0 0;width:var(--sbw);background:var(--card);border-right:1px solid var(--line);display:flex;flex-direction:column;padding:18px 14px;z-index:1040;overflow-y:auto;transition:transform .25s}
+.brand{font-weight:800;font-size:1.35rem;color:var(--text);display:flex;align-items:center;gap:8px;padding:0 8px 18px}.brand i,.brand span span{color:var(--red)}
+.brand small{font-size:.62rem;background:var(--green);color:#fff;padding:2px 9px;border-radius:50px;font-weight:600}
+.sb .grp{font-size:.68rem;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);padding:8px 14px 6px;font-weight:600}
+.sb nav a{display:flex;align-items:center;gap:12px;padding:12px 14px;border-radius:12px;color:var(--text);font-weight:500;font-size:.9rem;margin-bottom:4px;transition:.2s}
+.sb nav a i{width:20px;text-align:center;color:var(--muted)}.sb nav a:hover{background:var(--bg)}
+.sb nav a.on{background:var(--red);color:#fff}.sb nav a.on i{color:#fff}
+.sb .me{margin-top:auto;display:flex;align-items:center;gap:10px;padding:12px;border-radius:14px;background:var(--bg);font-size:.82rem}
+.av{width:38px;height:38px;border-radius:50%;background:linear-gradient(135deg,var(--green),#5aa365);color:#fff;font-weight:700;display:inline-flex;align-items:center;justify-content:center;flex:none;font-size:.8rem}
+.main{margin-left:var(--sbw);min-height:100vh}
+.ov{display:none;position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:1035}
+@media(max-width:991px){.sb{transform:translateX(-100%)}.sbo .sb{transform:none}.sbo .ov{display:block}.main{margin-left:0}}
+/* top */
+.top{background:var(--card);border-bottom:1px solid var(--line);padding:10px 22px;display:flex;align-items:center;gap:12px;position:sticky;top:0;z-index:1030}
+.ib{background:var(--bg);border:1px solid var(--line);color:var(--text);height:42px;min-width:42px;padding:0 12px;border-radius:12px;display:inline-flex;align-items:center;justify-content:center;gap:8px;font-size:.85rem;font-weight:500;transition:.2s;position:relative}
+.ib:hover{border-color:var(--red);color:var(--red)}
+.bn{position:absolute;top:-6px;right:-6px;background:var(--red);color:#fff;border-radius:50px;font-size:.65rem;font-weight:700;min-width:20px;height:20px;display:none;align-items:center;justify-content:center;padding:0 5px}
+.content{padding:22px}
+@media(max-width:575px){.content{padding:14px}.top{padding:10px 14px}}
+.sim{background:#fff4d6;color:#7a4b00;border:1px solid #f5d98b;border-radius:12px;padding:9px 14px;font-size:.8rem}
+[data-theme=dark] .sim{background:#3b2f10;color:#fcd98a;border-color:#6b5316}
+.tabs{display:flex;gap:8px;overflow-x:auto;padding:4px 0 8px}
+.tabs a,.tabs button{border:1px solid var(--line);background:var(--card);color:var(--text);border-radius:50px;padding:9px 18px;font-size:.86rem;font-weight:500;white-space:nowrap;min-height:42px;display:inline-flex;align-items:center}
+.tabs a:hover{border-color:var(--red);color:var(--red)}
+.tabs button.on{background:var(--text);color:var(--bg);border-color:var(--text)}.tabs button small{opacity:.7;margin-left:6px}
+/* cards & panels */
+.sc{background:var(--card);border-radius:18px;box-shadow:var(--shadow);padding:14px 16px;border:2px solid transparent;width:100%;text-align:left;color:var(--text);transition:.2s;display:flex;align-items:center;gap:12px;height:100%}
+.sc:hover{transform:translateY(-2px);border-color:var(--line)}
+.sc b{font-size:1.45rem;line-height:1.1;display:block}.sc b.sm{font-size:1.05rem}.sc small{color:var(--muted);font-size:.78rem}
+.sc .ic{width:44px;height:44px;border-radius:12px;display:flex;align-items:center;justify-content:center;flex:none}
+.panel{background:var(--card);border-radius:20px;box-shadow:var(--shadow);padding:18px}
+.sh{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;margin-bottom:14px}.sh h5{margin:0}
+.btn-fh{background:var(--red);color:#fff;border:0;border-radius:12px;min-height:42px;padding:0 18px;font-weight:600;font-size:.86rem;transition:.2s;white-space:nowrap}
+.btn-fh:hover{filter:brightness(.92);color:#fff}
+.btn-ol{background:none;border:1px solid var(--line);color:var(--text);border-radius:12px;min-height:42px;padding:0 16px;font-weight:600;font-size:.86rem;transition:.2s;white-space:nowrap}
+.btn-ol:hover{border-color:var(--red);color:var(--red)}
+.btn-wn{background:var(--orange);color:#fff;border:0;border-radius:12px;min-height:42px;padding:0 16px;font-weight:600;font-size:.86rem;white-space:nowrap}
+.btn-wn:hover{filter:brightness(.92)}
+.form-control,.form-select{background-color:var(--card);color:var(--text);border:1px solid var(--line);border-radius:12px;min-height:42px;font-size:.86rem}
+.form-control:focus,.form-select:focus{border-color:var(--red);box-shadow:0 0 0 .2rem rgba(233,75,53,.15);background-color:var(--card);color:var(--text)}
+.form-control:disabled{background-color:var(--bg);color:var(--muted)}
+.form-control::placeholder{color:var(--muted);opacity:.7}.form-label{font-size:.8rem;font-weight:600;margin-bottom:5px}
+.input-group-text{background:var(--bg);border-color:var(--line);color:var(--muted);font-size:.82rem}
+.fgrp .invalid-feedback{font-size:.76rem}.fgrp.err .invalid-feedback{display:block}
+.sbox{position:relative}.sbox i{position:absolute;left:14px;top:14px;color:var(--muted);font-size:.85rem}.sbox .form-control{padding-left:38px}
+.modal-content{background:var(--card);color:var(--text);border-radius:24px;border:0}[data-theme=dark] .btn-close{filter:invert(1)}
+/* tables */
+.tbl{width:100%;font-size:.86rem;border-collapse:collapse}
+.tbl th{color:var(--muted);font-weight:500;font-size:.75rem;padding:10px;border-bottom:1px solid var(--line);white-space:nowrap;text-align:left}
+.tbl td{padding:11px 10px;border-bottom:1px solid var(--line);vertical-align:middle}
+.tbl tr.r-low>td{background:rgba(245,158,11,.07)}.tbl tr.r-out>td{background:rgba(233,75,53,.07)}
+.tbl tr.r-low>td:first-child{box-shadow:inset 4px 0 0 var(--orange)}.tbl tr.r-out>td:first-child{box-shadow:inset 4px 0 0 var(--red)}
+.tbl .clip{max-width:260px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.thumb{width:44px;height:44px;border-radius:12px;background:var(--line);display:inline-flex;align-items:center;justify-content:center;position:relative;overflow:hidden;flex:none;color:var(--muted)}
+.thumb img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.sku{background:var(--bg);color:var(--text);padding:2px 8px;border-radius:8px;font-size:.78rem;border:1px solid var(--line)}
+.qbar{height:5px;border-radius:5px;background:var(--line);margin-top:5px;width:90px;overflow:hidden}.qbar span{display:block;height:100%;border-radius:5px}
+.qbar .ok{background:var(--green)}.qbar .low{background:var(--orange)}.qbar .out{background:var(--red)}
+.bdg{font-size:.7rem;font-weight:600;padding:4px 11px;border-radius:50px;white-space:nowrap;display:inline-block}
+.st-ok,.st-Received{background:rgba(58,125,68,.15);color:var(--green)}
+.st-low{background:rgba(245,158,11,.2);color:#b45309}[data-theme=dark] .st-low{color:#fbbf24}
+.st-out,.st-Cancelled{background:rgba(233,75,53,.13);color:var(--red)}
+.st-Ordered,.st-info{background:rgba(37,99,235,.13);color:var(--blue)}[data-theme=dark] .st-Ordered,[data-theme=dark] .st-info{color:#60a5fa}
+.st-Draft,.st-none{background:rgba(120,113,108,.18);color:var(--muted)}
+.mt-n{background:rgba(120,113,108,.18);color:var(--muted)}.mt-g{background:rgba(58,125,68,.15);color:var(--green)}.mt-o{background:rgba(245,158,11,.2);color:#b45309}
+.mt-r{background:rgba(233,75,53,.13);color:var(--red)}.mt-b{background:rgba(37,99,235,.13);color:var(--blue)}.mt-p{background:rgba(124,58,237,.14);color:var(--purple)}
+.pos{color:var(--green);font-weight:700}.neg{color:var(--red);font-weight:700}
+.rb{width:34px;height:34px;border-radius:10px;border:1px solid var(--line);background:var(--card);color:var(--text);display:inline-flex;align-items:center;justify-content:center;font-size:.8rem;transition:.2s}
+.rb:hover{border-color:var(--red);color:var(--red)}.rb.up:hover{border-color:var(--green);color:var(--green)}
+.acts{white-space:nowrap}.acts .rb{margin-left:3px}
+.mb{border:1px solid var(--line);background:var(--card);color:var(--text);border-radius:10px;min-height:34px;padding:0 12px;font-size:.78rem;font-weight:600;transition:.2s;white-space:nowrap}
+.mb:hover{border-color:var(--red);color:var(--red)}.mb.g{background:var(--green);color:#fff;border-color:var(--green)}.mb.g:hover{filter:brightness(.92);color:#fff}
+.mb.b{background:var(--blue);color:#fff;border-color:var(--blue)}.mb.b:hover{filter:brightness(.92);color:#fff}.mb.r{color:var(--red);border-color:rgba(233,75,53,.4)}
+/* alerts */
+.al{display:flex;gap:12px;align-items:center;background:var(--bg);border:1px solid var(--line);border-left:5px solid var(--orange);border-radius:14px;padding:12px;height:100%}
+.al.out{border-left-color:var(--red)}.al b{font-size:.9rem}.al small{display:block;color:var(--muted);font-size:.76rem}
+/* suppliers */
+.supc{background:var(--bg);border:1px solid var(--line);border-radius:18px;padding:16px;height:100%}
+.sav{width:46px;height:46px;border-radius:14px;background:linear-gradient(135deg,var(--red),#f0775f);color:#fff;font-weight:700;display:flex;align-items:center;justify-content:center;flex:none}
+.supc .small i{width:20px;color:var(--muted)}.supc .small div{margin-bottom:4px;word-break:break-all}.supc a{color:var(--text)}.supc a:hover{color:var(--red)}
+/* recipes */
+.rc{background:var(--bg);border:1px solid var(--line);border-radius:18px;padding:16px;height:100%;display:flex;flex-direction:column}
+.rc ul{list-style:none;padding:0;margin:10px 0;font-size:.82rem;flex:1}.rc li{display:flex;justify-content:space-between;padding:5px 0;border-top:1px dashed var(--line)}
+.rc li.miss{color:var(--red)}
+.msg{border-radius:12px;padding:10px 12px;font-size:.82rem;margin-top:12px}.msg.ok{background:rgba(58,125,68,.13);color:var(--green)}.msg.err{background:rgba(233,75,53,.12);color:var(--red)}
+.empty{text-align:center;padding:34px 10px;color:var(--muted)}
+.toasts{position:fixed;bottom:20px;right:20px;z-index:2000;display:flex;flex-direction:column;gap:8px;max-width:min(380px,92vw)}
+.tt{background:var(--text);color:var(--bg);padding:12px 16px;border-radius:14px;font-size:.85rem;box-shadow:var(--shadow);animation:in .3s;display:flex;gap:10px;align-items:center}
+@keyframes in{from{transform:translateY(20px);opacity:0}}
+@media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important;scroll-behavior:auto!important}}
+</style>
+</head>
+<body>
+<div class="ov" id="ov"></div>
+
+<aside class="sb" id="sb" aria-label="Admin navigation">
+ <a class="brand" href="index.html"><i class="fa-solid fa-utensils"></i><span>Food<span>Hub</span></span><small>Admin</small></a>
+ <nav>
+  <div class="grp">Management</div>
+  <a href="admin-dashboard.html"><i class="fa-solid fa-gauge-high"></i>Dashboard</a>
+  <a href="admin-orders.html"><i class="fa-solid fa-receipt"></i>Orders</a>
+  <a href="kitchen.html"><i class="fa-solid fa-fire-burner"></i>Kitchen display</a>
+  <a href="admin-menu.html"><i class="fa-solid fa-book-open"></i>Menu</a>
+  <a href="inventory.html" class="on" aria-current="page"><i class="fa-solid fa-boxes-stacked"></i>Inventory</a>
+  <a href="admin-customers.html"><i class="fa-solid fa-users"></i>Customers</a>
+  <div class="grp">Insights</div>
+  <a href="admin-reports.html"><i class="fa-solid fa-chart-line"></i>Reports</a>
+  <a href="admin-settings.html"><i class="fa-solid fa-gear"></i>Settings</a>
+ </nav>
+ <div class="me"><span class="av">AD</span><div><b>Admin</b><br><small class="text-muted">Restaurant manager</small></div></div>
+</aside>
+
+<div class="main">
+ <header class="top">
+  <button class="ib d-lg-none" id="menuBtn" aria-label="Open menu"><i class="fa-solid fa-bars"></i></button>
+  <div><h1 class="h5 mb-0">Inventory &amp; Suppliers</h1><small class="text-muted">Stock, purchasing and recipes</small></div>
+  <div class="ms-auto d-flex gap-2 align-items-center flex-wrap">
+   <button class="ib" id="bellBtn" aria-label="Low-stock alerts"><i class="fa-regular fa-bell"></i><span class="bn" id="bellN">0</span></button>
+   <button class="ib" id="resetBtn"><i class="fa-solid fa-rotate-left"></i><span class="d-none d-md-inline">Reset demo data</span></button>
+   <button class="ib" id="themeBtn" aria-label="Toggle dark mode"><i class="fa-solid fa-moon"></i></button>
+   <span class="av d-none d-sm-inline-flex">AD</span>
+  </div>
+ </header>
+
+ <div class="content">
+  <div class="sim mb-3"><i class="fa-solid fa-flask me-2"></i><b>Standalone prototype.</b> Data lives in your browser (localStorage). Production inventory updates must run as server-side transactions with concurrency protection (for example row versioning or optimistic locking) so that simultaneous orders, deliveries and adjustments can never oversell or corrupt stock.</div>
+
+  <nav class="tabs mb-2" aria-label="Page sections">
+   <a href="#overview">Overview</a><a href="#inventory">Inventory</a><a href="#alerts">Low stock</a><a href="#suppliers">Suppliers</a><a href="#orders">Purchase orders</a><a href="#movements">Movements</a><a href="#recipes">Recipes</a>
+  </nav>
+
+  <section id="overview" class="mb-4"><div class="row g-3" id="cards"></div></section>
+
+  <section id="inventory" class="mb-4"><div class="panel">
+   <div class="sh"><div><h5>Ingredient inventory</h5><small class="text-muted" id="tblInfo"></small></div>
+    <button class="btn-fh" id="addIng"><i class="fa-solid fa-plus me-2"></i>Add ingredient</button></div>
+   <div class="row g-2 mb-3">
+    <div class="col-lg-4"><div class="sbox"><i class="fa-solid fa-magnifying-glass"></i><input class="form-control" id="fQ" type="search" placeholder="Search name, SKU, supplier…" aria-label="Search ingredients"></div></div>
+    <div class="col-6 col-lg-2"><label class="visually-hidden" for="fCat">Category</label><select class="form-select" id="fCat"></select></div>
+    <div class="col-6 col-lg-2"><label class="visually-hidden" for="fSt">Stock status</label><select class="form-select" id="fSt"><option value="">All statuses</option><option value="ok">In stock</option><option value="low">Low stock</option><option value="out">Out of stock</option></select></div>
+    <div class="col-6 col-lg-2"><label class="visually-hidden" for="fSort">Sort</label><select class="form-select" id="fSort"><option value="name">Name A–Z</option><option value="status">Lowest stock first</option><option value="value">Highest value first</option></select></div>
+    <div class="col-6 col-lg-2"><button class="btn-ol w-100" id="fReset">Clear filters</button></div>
+   </div>
+   <div class="table-responsive"><table class="tbl" style="min-width:1080px"><thead><tr><th>Ingredient</th><th>SKU</th><th>Category</th><th>Quantity</th><th>Unit</th><th>Min. stock</th><th>Supplier</th><th>Unit cost</th><th>Status</th><th class="text-end">Actions</th></tr></thead><tbody id="tbody"></tbody></table></div>
+  </div></section>
+
+  <section id="alerts" class="mb-4"><div class="panel">
+   <div class="sh"><div><h5><i class="fa-solid fa-triangle-exclamation me-2" style="color:var(--orange)"></i>Low-stock alerts</h5><small class="text-muted">Items at or below their minimum level</small></div>
+    <button class="btn-wn" id="reorderAll"><i class="fa-solid fa-cart-plus me-2"></i>Draft POs for all low items</button></div>
+   <div class="row g-2" id="alertList"></div>
+  </div></section>
+
+  <section id="suppliers" class="mb-4"><div class="panel">
+   <div class="sh"><div><h5>Supplier directory</h5><small class="text-muted">Contacts, terms and open orders</small></div>
+    <button class="btn-fh" id="addSup"><i class="fa-solid fa-truck-field me-2"></i>Add supplier</button></div>
+   <div class="row g-3" id="supList"></div>
+  </div></section>
+
+  <section id="orders" class="mb-4"><div class="panel">
+   <div class="sh"><div><h5>Purchase orders</h5><small class="text-muted">Receiving an order adds stock and logs the movement</small></div>
+    <button class="btn-fh" id="addPO"><i class="fa-solid fa-file-invoice me-2"></i>New purchase order</button></div>
+   <div class="tabs" id="poTabs" role="tablist"></div>
+   <div class="table-responsive"><table class="tbl" style="min-width:900px"><thead><tr><th>PO</th><th>Supplier</th><th>Items</th><th>Total</th><th>Created</th><th>Expected</th><th>Status</th><th class="text-end">Actions</th></tr></thead><tbody id="poBody"></tbody></table></div>
+  </div></section>
+
+  <section id="movements" class="mb-4"><div class="panel">
+   <div class="sh"><div><h5>Ingredient movement history</h5><small class="text-muted" id="mvInfo"></small></div>
+    <button class="btn-ol" id="mvCsv"><i class="fa-solid fa-file-csv me-2"></i>Export CSV</button></div>
+   <div class="row g-2 mb-3">
+    <div class="col-md-4"><label class="visually-hidden" for="mvIng">Ingredient</label><select class="form-select" id="mvIng"></select></div>
+    <div class="col-md-4"><label class="visually-hidden" for="mvType">Type</label><select class="form-select" id="mvType"></select></div>
+    <div class="col-md-4"><button class="btn-ol w-100" id="mvReset">Clear filters</button></div>
+   </div>
+   <div class="table-responsive"><table class="tbl" style="min-width:760px"><thead><tr><th>Time</th><th>Ingredient</th><th>Type</th><th>Change</th><th>Balance</th><th>Note</th></tr></thead><tbody id="mvBody"></tbody></table></div>
+   <div class="text-center mt-3"><button class="btn-ol" id="mvMore" style="display:none">Show more</button></div>
+  </div></section>
+
+  <section id="recipes" class="mb-5"><div class="row g-3">
+   <div class="col-xl-8"><div class="panel">
+    <div class="sh"><div><h5>Recipe management</h5><small class="text-muted">Ingredient quantity per portion of each menu dish</small></div>
+     <button class="btn-fh" id="addRec"><i class="fa-solid fa-plus me-2"></i>Add recipe</button></div>
+    <div class="row g-3" id="recList"></div>
+   </div></div>
+   <div class="col-xl-4"><div class="panel">
+    <h6><i class="fa-solid fa-vial me-2" style="color:var(--red)"></i>Demo order simulator</h6>
+    <p class="small text-muted">Simulates the kitchen confirming an order: stock is deducted per recipe. If any ingredient is short, the whole order is blocked so stock never goes negative.</p>
+    <label class="form-label" for="simDish">Dish</label><select class="form-select mb-2" id="simDish"></select>
+    <label class="form-label" for="simQty">Portions</label><input class="form-control mb-3" id="simQty" type="number" min="1" max="50" step="1" value="1">
+    <button class="btn-fh w-100" id="simGo"><i class="fa-solid fa-circle-check me-2"></i>Confirm demo order</button>
+    <div id="simMsg" aria-live="polite"></div>
+   </div></div>
+  </div></section>
+ </div>
+</div>
+
+<!-- Ingredient modal -->
+<div class="modal fade" id="mIng" tabindex="-1" aria-labelledby="mIngT" aria-hidden="true"><div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable"><form class="modal-content" id="fIng" novalidate>
+ <div class="modal-header border-0"><h5 class="modal-title" id="mIngT">Add ingredient</h5><button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button></div>
+ <div class="modal-body"><div class="row g-3">
+  <div class="col-md-6 fgrp"><label class="form-label" for="iName">Name</label><input class="form-control" id="iName" maxlength="60" autocomplete="off"><div class="invalid-feedback"></div></div>
+  <div class="col-md-6 fgrp"><label class="form-label" for="iSku">SKU</label><input class="form-control" id="iSku" maxlength="16" placeholder="Auto-generated if empty" autocomplete="off"><div class="invalid-feedback"></div></div>
+  <div class="col-md-6 fgrp"><label class="form-label" for="iCat">Category</label><input class="form-control" id="iCat" list="catList" maxlength="40" autocomplete="off"><datalist id="catList"></datalist><div class="invalid-feedback"></div></div>
+  <div class="col-md-6 fgrp"><label class="form-label" for="iSup">Supplier</label><select class="form-select" id="iSup"></select><div class="invalid-feedback"></div></div>
+  <div class="col-6 col-md-3 fgrp"><label class="form-label" for="iUnit">Unit</label><select class="form-select" id="iUnit"></select></div>
+  <div class="col-6 col-md-3 fgrp"><label class="form-label" for="iQty">Quantity</label><input class="form-control" id="iQty" type="number" min="0" step="any"><div class="invalid-feedback"></div></div>
+  <div class="col-6 col-md-3 fgrp"><label class="form-label" for="iMin">Minimum stock</label><input class="form-control" id="iMin" type="number" min="0" step="any"><div class="invalid-feedback"></div></div>
+  <div class="col-6 col-md-3 fgrp"><label class="form-label" for="iCost">Unit cost (EGP)</label><input class="form-control" id="iCost" type="number" min="0" step="any"><div class="invalid-feedback"></div></div>
+  <div class="col-12"><small class="text-muted" id="qtyHint"></small></div>
+  <div class="col-12 fgrp"><label class="form-label" for="iImg">Photo link (optional)</label><input class="form-control" id="iImg" placeholder="https://…" autocomplete="off"><div class="invalid-feedback"></div></div>
+ </div></div>
+ <div class="modal-footer border-0"><button type="button" class="btn-ol" data-bs-dismiss="modal">Cancel</button><button type="submit" class="btn-fh">Save ingredient</button></div>
+</form></div></div>
+
+<!-- Adjust stock modal -->
+<div class="modal fade" id="mAdj" tabindex="-1" aria-labelledby="mAdjT" aria-hidden="true"><div class="modal-dialog modal-dialog-centered"><form class="modal-content" id="fAdj" novalidate>
+ <div class="modal-header border-0"><h5 class="modal-title" id="mAdjT">Adjust stock</h5><button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button></div>
+ <div class="modal-body">
+  <p class="small mb-3" id="aInfo"></p>
+  <div class="btn-group w-100 mb-3" role="group" aria-label="Adjustment type">
+   <input type="radio" class="btn-check" name="aMode" id="aIn" value="in" autocomplete="off"><label class="btn btn-outline-success" for="aIn"><i class="fa-solid fa-plus me-1"></i>Add stock</label>
+   <input type="radio" class="btn-check" name="aMode" id="aOut" value="out" autocomplete="off"><label class="btn btn-outline-danger" for="aOut"><i class="fa-solid fa-minus me-1"></i>Remove stock</label>
+  </div>
+  <div class="fgrp mb-3"><label class="form-label" for="aAmt">Amount</label><div class="input-group"><input class="form-control" id="aAmt" type="number" min="0" step="any"><span class="input-group-text" id="aUnit"></span></div><div class="invalid-feedback"></div></div>
+  <div class="mb-3"><label class="form-label" for="aReason">Reason</label><select class="form-select" id="aReason"></select></div>
+  <div><label class="form-label" for="aNote">Note (optional)</label><input class="form-control" id="aNote" maxlength="120"></div>
+ </div>
+ <div class="modal-footer border-0"><button type="button" class="btn-ol" data-bs-dismiss="modal">Cancel</button><button type="submit" class="btn-fh">Apply change</button></div>
+</form></div></div>
+
+<!-- Supplier modal -->
+<div class="modal fade" id="mSup" tabindex="-1" aria-labelledby="mSupT" aria-hidden="true"><div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable"><form class="modal-content" id="fSup" novalidate>
+ <div class="modal-header border-0"><h5 class="modal-title" id="mSupT">Add supplier</h5><button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button></div>
+ <div class="modal-body"><div class="row g-3">
+  <div class="col-md-6 fgrp"><label class="form-label" for="sName">Company name</label><input class="form-control" id="sName" maxlength="60"><div class="invalid-feedback"></div></div>
+  <div class="col-md-6 fgrp"><label class="form-label" for="sContact">Contact person</label><input class="form-control" id="sContact" maxlength="60"><div class="invalid-feedback"></div></div>
+  <div class="col-md-6 fgrp"><label class="form-label" for="sPhone">Phone</label><input class="form-control" id="sPhone" type="tel" placeholder="01001234567"><div class="invalid-feedback"></div></div>
+  <div class="col-md-6 fgrp"><label class="form-label" for="sEmail">Email</label><input class="form-control" id="sEmail" type="email"><div class="invalid-feedback"></div></div>
+  <div class="col-md-6 fgrp"><label class="form-label" for="sCat">Specialty</label><input class="form-control" id="sCat" maxlength="40" placeholder="e.g. Produce"><div class="invalid-feedback"></div></div>
+  <div class="col-md-6"><label class="form-label" for="sTerms">Payment terms</label><select class="form-select" id="sTerms"><option>Cash on delivery</option><option>Net 7 days</option><option>Net 14 days</option><option>Net 30 days</option></select></div>
+ </div></div>
+ <div class="modal-footer border-0"><button type="button" class="btn-ol" data-bs-dismiss="modal">Cancel</button><button type="submit" class="btn-fh">Save supplier</button></div>
+</form></div></div>
+
+<!-- Purchase order modal -->
+<div class="modal fade" id="mPO" tabindex="-1" aria-labelledby="mPOT" aria-hidden="true"><div class="modal-dialog modal-xl modal-dialog-centered modal-dialog-scrollable"><form class="modal-content" id="fPO" novalidate>
+ <div class="modal-header border-0"><h5 class="modal-title" id="mPOT">New purchase order</h5><button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button></div>
+ <div class="modal-body">
+  <div class="row g-3 mb-3">
+   <div class="col-md-4 fgrp"><label class="form-label" for="pSup">Supplier</label><select class="form-select" id="pSup"></select><div class="invalid-feedback"></div></div>
+   <div class="col-md-4 fgrp"><label class="form-label" for="pDate">Expected delivery</label><input class="form-control" id="pDate" type="date"><div class="invalid-feedback"></div></div>
+   <div class="col-md-4"><label class="form-label" for="pNote">Note (optional)</label><input class="form-control" id="pNote" maxlength="120"></div>
+  </div>
+  <div class="d-flex justify-content-between align-items-center mb-2"><h6 class="mb-0">Order lines</h6><button type="button" class="mb" id="pAddLine"><i class="fa-solid fa-plus me-1"></i>Add line</button></div>
+  <div id="pLines"></div>
+  <div class="text-end mt-3">Order total: <b id="pTotal" style="font-size:1.1rem">0 EGP</b></div>
+ </div>
+ <div class="modal-footer border-0"><button type="button" class="btn-ol" data-bs-dismiss="modal">Cancel</button><button type="button" class="btn-ol" id="poDraft">Save as draft</button><button type="button" class="btn-fh" id="poPlace">Place order</button></div>
+</form></div></div>
+
+<!-- Recipe modal -->
+<div class="modal fade" id="mRec" tabindex="-1" aria-labelledby="mRecT" aria-hidden="true"><div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable"><form class="modal-content" id="fRec" novalidate>
+ <div class="modal-header border-0"><h5 class="modal-title" id="mRecT">Add recipe</h5><button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button></div>
+ <div class="modal-body">
+  <div class="fgrp mb-3"><label class="form-label" for="rName">Menu dish</label><input class="form-control" id="rName" maxlength="60" autocomplete="off"><div class="invalid-feedback"></div></div>
+  <div class="d-flex justify-content-between align-items-center mb-2"><h6 class="mb-0">Ingredients per portion</h6><button type="button" class="mb" id="rAddLine"><i class="fa-solid fa-plus me-1"></i>Add ingredient</button></div>
+  <div id="rLines"></div>
+ </div>
+ <div class="modal-footer border-0"><button type="button" class="btn-ol" data-bs-dismiss="modal">Cancel</button><button type="submit" class="btn-fh">Save recipe</button></div>
+</form></div></div>
+
+<!-- Confirm modal -->
+<div class="modal fade" id="mCf" tabindex="-1" aria-labelledby="cfT" aria-hidden="true"><div class="modal-dialog modal-dialog-centered modal-sm"><div class="modal-content p-2"><div class="modal-body text-center">
+ <i class="fa-solid fa-triangle-exclamation fa-2x mb-2" style="color:var(--red)"></i><h6 id="cfT"></h6><p class="small text-muted" id="cfTxt"></p>
+ <button class="btn-ol me-2" data-bs-dismiss="modal">Back</button><button class="btn-fh" id="cfOk">Confirm</button></div></div></div></div>
+
+<div class="toasts" id="toasts" aria-live="polite"></div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+'use strict';
+const LS='fh_inventory_v1';
+const $=s=>document.querySelector(s);
+const esc=s=>String(s==null?'':s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const r4=n=>Math.round(n*1e4)/1e4;
+const num=n=>(Math.round(n*1000)/1000).toLocaleString('en-US',{maximumFractionDigits:3});
+const egp=n=>(Math.round(n*100)/100).toLocaleString('en-US',{maximumFractionDigits:2})+' EGP';
+const dt=t=>new Date(t).toLocaleString('en-GB',{day:'2-digit',month:'short',hour:'2-digit',minute:'2-digit'});
+const dd=t=>new Date(t).toLocaleDateString('en-GB',{day:'2-digit',month:'short',year:'numeric'});
+const ph=id=>`https://images.unsplash.com/${id}?auto=format&fit=crop&w=120&q=70`;
+const imgSrc=v=>/^https?:/i.test(v)?v:ph(v);
+const localISO=d=>{const t=new Date();t.setDate(t.getDate()+d);t.setMinutes(t.getMinutes()-t.getTimezoneOffset());return t.toISOString().slice(0,10)};
+const initials=n=>n.split(/\s+/).filter(Boolean).slice(0,2).map(w=>w[0]).join('').toUpperCase();
+const UNITS=['kg','g','L','ml','pcs','pack','bunch'];
+const ST={ok:['In stock','st-ok'],low:['Low stock','st-low'],out:['Out of stock','st-out']};
+const MT={'Opening balance':'mt-n','Purchase received':'mt-g','Stock added':'mt-g','Stock removed':'mt-o','Waste / spoilage':'mt-r','Order deduction':'mt-b','Count correction':'mt-p'};
+const ADD_R=['Stock added','Count correction'],OUT_R=['Stock removed','Waste / spoilage','Count correction'];
+
+/* ---------- seed data ---------- */
+function seed(){
+ const t=Date.now(),H=36e5;
+ const sup=[
+  {id:'s1',name:'Nile Fresh Produce',contact:'Ahmed Fathy',phone:'01001234567',email:'orders@nilefresh.example',cat:'Produce',terms:'Net 7 days'},
+  {id:'s2',name:'Cairo Meat House',contact:'Mostafa Hegazy',phone:'01112345678',email:'sales@cairomeat.example',cat:'Meat & Poultry',terms:'Cash on delivery'},
+  {id:'s3',name:'Delta Dairy Co.',contact:'Salma Reda',phone:'01223456789',email:'b2b@deltadairy.example',cat:'Dairy',terms:'Net 14 days'},
+  {id:'s4',name:'Al-Amal Dry Goods',contact:'Hossam Nabil',phone:'01009876543',email:'supply@alamal.example',cat:'Dry goods & oils',terms:'Net 30 days'},
+  {id:'s5',name:'Mocha Imports Egypt',contact:'Rania Samy',phone:'01554321098',email:'hello@mocha-eg.example',cat:'Coffee',terms:'Net 14 days'}];
+ const ing=[
+  {id:'i1',name:'Beef',sku:'MEA-001',cat:'Meat & Poultry',qty:38,unit:'kg',min:20,sup:'s2',cost:330,icon:'fa-drumstick-bite',img:'photo-1603048297172-c92544798d5a'},
+  {id:'i2',name:'Chicken',sku:'MEA-002',cat:'Meat & Poultry',qty:14,unit:'kg',min:20,sup:'s2',cost:105,icon:'fa-drumstick-bite',img:'photo-1587593810167-a84920ea0781'},
+  {id:'i3',name:'Cheese',sku:'DAI-001',cat:'Dairy',qty:9,unit:'kg',min:12,sup:'s3',cost:180,icon:'fa-cheese',img:'photo-1486297678162-eb2a19b0a32d'},
+  {id:'i4',name:'Tomatoes',sku:'PRO-001',cat:'Produce',qty:26,unit:'kg',min:15,sup:'s1',cost:18,icon:'fa-apple-whole',img:'photo-1546094096-0df4bcaaa337'},
+  {id:'i5',name:'Lettuce',sku:'PRO-002',cat:'Produce',qty:0,unit:'kg',min:6,sup:'s1',cost:25,icon:'fa-leaf',img:'photo-1622206151226-18ca2c9ab4a1'},
+  {id:'i6',name:'Potatoes',sku:'PRO-003',cat:'Produce',qty:55,unit:'kg',min:30,sup:'s1',cost:14,icon:'fa-seedling',img:'photo-1518977676601-b53f82aba655'},
+  {id:'i7',name:'Flour',sku:'DRY-001',cat:'Dry Goods',qty:80,unit:'kg',min:50,sup:'s4',cost:16,icon:'fa-wheat-awn',img:''},
+  {id:'i8',name:'Pasta',sku:'DRY-002',cat:'Dry Goods',qty:18,unit:'kg',min:20,sup:'s4',cost:32,icon:'fa-bowl-food',img:''},
+  {id:'i9',name:'Cooking oil',sku:'OIL-001',cat:'Oils & Fats',qty:30,unit:'L',min:15,sup:'s4',cost:62,icon:'fa-bottle-droplet',img:''},
+  {id:'i10',name:'Coffee beans',sku:'BEV-001',cat:'Beverages',qty:6,unit:'kg',min:5,sup:'s5',cost:480,icon:'fa-mug-hot',img:'photo-1447933601403-0c6688de566e'},
+  {id:'i11',name:'Milk',sku:'DAI-002',cat:'Dairy',qty:24,unit:'L',min:20,sup:'s3',cost:28,icon:'fa-glass-water',img:'photo-1550583724-b2692b85b150'},
+  {id:'i12',name:'Fresh herbs',sku:'PRO-004',cat:'Produce',qty:1.5,unit:'kg',min:2,sup:'s1',cost:90,icon:'fa-seedling',img:'photo-1515586000433-45406d8e6662'}];
+ const ex=[
+  ['i1','Order deduction',-6.4,'Orders #2036–#2038',30],['i1','Purchase received',20,'PO-1001 from Cairo Meat House',20],
+  ['i2','Order deduction',-9,'Orders #2035–#2039',28],['i2','Purchase received',10,'PO-1001 from Cairo Meat House',20],
+  ['i3','Order deduction',-5.5,'Pizza & burger orders',26],
+  ['i4','Order deduction',-8,'Orders #2030–#2037',24],['i4','Purchase received',15,'PO-1003 from Nile Fresh Produce',18],
+  ['i5','Order deduction',-4,'Salad & burger orders',22],['i5','Waste / spoilage',-2,'Wilted leaves discarded',10],
+  ['i6','Order deduction',-12,'Grill platters',27],
+  ['i7','Order deduction',-20,'Pizza dough batches',25],['i7','Purchase received',40,'PO-1002 from Al-Amal Dry Goods',16],
+  ['i8','Order deduction',-7,'Pasta dishes',23],['i9','Order deduction',-5,'Fryer refill',21],
+  ['i10','Order deduction',-2.4,'Coffee bar',12],
+  ['i11','Order deduction',-16,'Coffee bar & sauces',14],['i11','Purchase received',20,'PO-1004 from Delta Dairy Co.',13],
+  ['i12','Order deduction',-.7,'Pizza & pasta garnish',9]];
+ const mv=[];let m=0;
+ ing.forEach(i=>{const mine=ex.filter(x=>x[0]===i.id).sort((a,b)=>b[4]-a[4]);const open=r4(i.qty-mine.reduce((s,x)=>s+x[2],0));let bal=open;
+  mv.push({id:'m'+(++m),ts:t-96*H,ing:i.id,type:'Opening balance',delta:open,bal,note:'Initial stock'});
+  mine.forEach(x=>{bal=r4(bal+x[2]);mv.push({id:'m'+(++m),ts:t-x[4]*H,ing:i.id,type:x[1],delta:x[2],bal,note:x[3]})})});
+ mv.sort((a,b)=>b.ts-a.ts);
+ const po=[
+  {id:'PO-1001',no:'PO-1001',sup:'s2',items:[{ing:'i1',qty:20,cost:325},{ing:'i2',qty:10,cost:104}],status:'Received',created:t-48*H,expected:t-21*H,note:''},
+  {id:'PO-1002',no:'PO-1002',sup:'s4',items:[{ing:'i7',qty:40,cost:16}],status:'Received',created:t-60*H,expected:t-17*H,note:''},
+  {id:'PO-1003',no:'PO-1003',sup:'s1',items:[{ing:'i4',qty:15,cost:17}],status:'Received',created:t-40*H,expected:t-19*H,note:''},
+  {id:'PO-1004',no:'PO-1004',sup:'s3',items:[{ing:'i11',qty:20,cost:27}],status:'Received',created:t-36*H,expected:t-14*H,note:''},
+  {id:'PO-1005',no:'PO-1005',sup:'s1',items:[{ing:'i5',qty:20,cost:24},{ing:'i12',qty:4,cost:88}],status:'Ordered',created:t-5*H,expected:t+19*H,note:'Deliver before 8 AM'},
+  {id:'PO-1006',no:'PO-1006',sup:'s3',items:[{ing:'i3',qty:25,cost:178}],status:'Draft',created:t-2*H,expected:t+48*H,note:''},
+  {id:'PO-1007',no:'PO-1007',sup:'s5',items:[{ing:'i10',qty:10,cost:470}],status:'Cancelled',created:t-72*H,expected:t-24*H,note:'Supplier out of stock'}];
+ const rec=[
+  {id:'r1',dish:'Margherita Pizza',lines:[{ing:'i7',qty:.25},{ing:'i3',qty:.15},{ing:'i4',qty:.12},{ing:'i12',qty:.005},{ing:'i9',qty:.02}]},
+  {id:'r2',dish:'Classic Cheeseburger',lines:[{ing:'i1',qty:.18},{ing:'i3',qty:.03},{ing:'i5',qty:.02},{ing:'i4',qty:.03},{ing:'i7',qty:.1}]},
+  {id:'r3',dish:'Penne Arrabbiata',lines:[{ing:'i8',qty:.15},{ing:'i4',qty:.15},{ing:'i9',qty:.02},{ing:'i12',qty:.005}]},
+  {id:'r4',dish:'Mixed Grill Platter',lines:[{ing:'i1',qty:.2},{ing:'i2',qty:.25},{ing:'i6',qty:.2},{ing:'i9',qty:.03}]},
+  {id:'r5',dish:'Chicken Caesar Salad',lines:[{ing:'i2',qty:.15},{ing:'i5',qty:.12},{ing:'i3',qty:.03}]},
+  {id:'r6',dish:'Cappuccino',lines:[{ing:'i10',qty:.018},{ing:'i11',qty:.2}]}];
+ return{rev:1,sup,ing,po,mv,rec,seq:{ing:12,sup:5,po:1007,mv:m,rec:6,demo:2041}};
+}
+
+/* ---------- storage & transactions ---------- */
+let S=null;
+function readStore(){try{const r=localStorage.getItem(LS);if(r){const o=JSON.parse(r);if(o&&Array.isArray(o.ing)&&Array.isArray(o.po))return o}}catch(e){}return null}
+function save(s){try{localStorage.setItem(LS,JSON.stringify(s))}catch(e){toast('Storage unavailable: changes will not persist','fa-triangle-exclamation')}}
+/* mini-transaction: re-read latest stored state, apply changes on a copy, commit only if nothing throws */
+function tx(fn){
+ const base=readStore()||S;let s=JSON.parse(JSON.stringify(base));
+ try{const out=fn(s);s.rev=(s.rev||0)+1;save(s);S=s;renderAll();return{ok:true,out}}
+ catch(e){S=base;toast(e.message||'Action failed','fa-triangle-exclamation');renderAll();return{ok:false,err:e.message||'Action failed'}}
+}
+function mv(s,ing,type,delta,note){
+ delta=r4(delta);if(r4(ing.qty+delta)<0)throw new Error(`Not enough ${ing.name} in stock (have ${num(ing.qty)} ${ing.unit})`);
+ ing.qty=r4(ing.qty+delta);s.mv.unshift({id:'m'+(++s.seq.mv),ts:Date.now(),ing:ing.id,type,delta,bal:ing.qty,note:note||''});
+}
+
+/* ---------- helpers ---------- */
+const stOf=i=>i.qty<=0?'out':i.qty<=i.min?'low':'ok';
+const ingOf=id=>S.ing.find(x=>x.id===id);
+const ingName=id=>(ingOf(id)||{}).name||'Removed item';
+const supName=id=>(S.sup.find(x=>x.id===id)||{}).name||'—';
+const poTotal=p=>p.items.reduce((t,x)=>t+x.qty*x.cost,0);
+const openQty=id=>S.po.filter(p=>p.status==='Draft'||p.status==='Ordered').reduce((t,p)=>t+p.items.filter(x=>x.ing===id).reduce((a,x)=>a+x.qty,0),0);
+const sugg=i=>Math.ceil(Math.max(i.min*2-i.qty-openQty(i.id),0)*10)/10;
+const iconFor=c=>{c=c.toLowerCase();return/meat|poultry/.test(c)?'fa-drumstick-bite':/dairy/.test(c)?'fa-cheese':/produce|veg|fruit/.test(c)?'fa-carrot':/dry|grain/.test(c)?'fa-wheat-awn':/oil|fat/.test(c)?'fa-bottle-droplet':/bever|coffee|drink/.test(c)?'fa-mug-hot':/herb/.test(c)?'fa-seedling':'fa-box'};
+const thumb=i=>`<span class="thumb"><i class="fa-solid ${esc(i.icon||'fa-box')}"></i>${i.img?`<img src="${esc(imgSrc(i.img))}" alt="${esc(i.name)}" loading="lazy" onerror="this.remove()">`:''}</span>`;
+function toast(m,ic='fa-circle-check'){const t=document.createElement('div');t.className='tt';t.innerHTML=`<i class="fa-solid ${ic}"></i><span>${esc(m)}</span>`;$('#toasts').appendChild(t);setTimeout(()=>t.remove(),3800)}
+function bad(el,msg){el.classList.add('is-invalid');const g=el.closest('.fgrp');if(g){g.classList.add('err');const f=g.querySelector('.invalid-feedback');if(f&&msg)f.textContent=msg}}
+function clearBad(form){form.querySelectorAll('.is-invalid').forEach(e=>e.classList.remove('is-invalid'));form.querySelectorAll('.err').forEach(e=>e.classList.remove('err'))}
+const M={};['Ing','Adj','Sup','PO','Rec','Cf'].forEach(k=>M[k.toLowerCase()]=new bootstrap.Modal(document.getElementById('m'+k)));
+let cfFn=null;
+function ask(title,text,label,fn){$('#cfT').textContent=title;$('#cfTxt').textContent=text;$('#cfOk').textContent=label;cfFn=fn;M.cf.show()}
+$('#cfOk').onclick=()=>{M.cf.hide();const f=cfFn;cfFn=null;if(f)f()};
+
+/* ---------- state for views ---------- */
+const F={q:'',cat:'',st:'',sort:'name'};let POF='All';const MF={ing:'',type:'',n:25};
+
+/* ---------- render ---------- */
+function renderCards(){
+ const val=S.ing.reduce((t,i)=>t+i.qty*i.cost,0),low=S.ing.filter(i=>stOf(i)==='low').length,out=S.ing.filter(i=>stOf(i)==='out').length,open=S.po.filter(p=>p.status==='Draft'||p.status==='Ordered').length;
+ const c=(a,l,v,ic,col,sm)=>`<div class="col-6 col-lg-4 col-xxl-2"><button class="sc" data-card="${a}"><span class="ic" style="background:${col}22;color:${col}"><i class="fa-solid ${ic}"></i></span><span><b class="${sm?'sm':''}">${v}</b><small>${l}</small></span></button></div>`;
+ $('#cards').innerHTML=c('all','Ingredients',S.ing.length,'fa-boxes-stacked','#E94B35')+c('all','Stock value',egp(val),'fa-sack-dollar','#3A7D44',1)+c('low','Low stock',low,'fa-triangle-exclamation','#F59E0B')+c('out','Out of stock',out,'fa-ban','#E94B35')+c('po','Open purchase orders',open,'fa-file-invoice','#2563eb')+c('sup','Suppliers',S.sup.length,'fa-truck-field','#7c3aed');
+}
+function filtered(){
+ const q=F.q.trim().toLowerCase(),rank={out:0,low:1,ok:2};
+ const L=S.ing.filter(i=>(!q||`${i.name} ${i.sku} ${i.cat} ${supName(i.sup)}`.toLowerCase().includes(q))&&(!F.cat||i.cat===F.cat)&&(!F.st||stOf(i)===F.st));
+ if(F.sort==='status')L.sort((a,b)=>rank[stOf(a)]-rank[stOf(b)]||a.name.localeCompare(b.name));
+ else if(F.sort==='value')L.sort((a,b)=>b.qty*b.cost-a.qty*a.cost);
+ else L.sort((a,b)=>a.name.localeCompare(b.name));
+ return L}
+function renderTable(){
+ const cats=[...new Set(S.ing.map(i=>i.cat))].sort();if(F.cat&&!cats.includes(F.cat))F.cat='';
+ $('#fCat').innerHTML='<option value="">All categories</option>'+cats.map(c=>`<option ${c===F.cat?'selected':''}>${esc(c)}</option>`).join('');
+ $('#catList').innerHTML=cats.map(c=>`<option value="${esc(c)}">`).join('');
+ const L=filtered();
+ $('#tbody').innerHTML=L.length?L.map(i=>{const st=stOf(i),pct=Math.max(2,Math.min(100,i.qty/(Math.max(i.min,.0001)*2)*100));
+  return `<tr class="r-${st}"><td><div class="d-flex align-items-center gap-2">${thumb(i)}<b>${esc(i.name)}</b></div></td><td><code class="sku">${esc(i.sku)}</code></td><td>${esc(i.cat)}</td><td><b>${num(i.qty)}</b><div class="qbar" aria-hidden="true"><span class="${st}" style="width:${i.qty<=0?0:pct}%"></span></div></td><td>${esc(i.unit)}</td><td>${num(i.min)}</td><td>${esc(supName(i.sup))}</td><td>${egp(i.cost)}</td><td><span class="bdg ${ST[st][1]}">${ST[st][0]}</span></td>
+  <td class="text-end acts"><button class="rb" data-adj="${i.id}" data-mode="out" aria-label="Decrease stock of ${esc(i.name)}"><i class="fa-solid fa-minus"></i></button><button class="rb up" data-adj="${i.id}" data-mode="in" aria-label="Increase stock of ${esc(i.name)}"><i class="fa-solid fa-plus"></i></button><button class="rb" data-hist="${i.id}" aria-label="History of ${esc(i.name)}"><i class="fa-solid fa-clock-rotate-left"></i></button><button class="rb" data-edit="${i.id}" aria-label="Edit ${esc(i.name)}"><i class="fa-solid fa-pen"></i></button></td></tr>`}).join(''):'<tr><td colspan="10"><div class="empty"><i class="fa-solid fa-box-open fa-2x mb-2 d-block"></i>No ingredients match your filters.</div></td></tr>';
+ $('#tblInfo').textContent=`Showing ${L.length} of ${S.ing.length} ingredients · value of shown stock ${egp(L.reduce((t,i)=>t+i.qty*i.cost,0))}`;
+}
+function renderAlerts(){
+ const L=S.ing.filter(i=>stOf(i)!=='ok').sort((a,b)=>a.qty/Math.max(a.min,.0001)-b.qty/Math.max(b.min,.0001));
+ $('#alertList').innerHTML=L.length?L.map(i=>{const st=stOf(i),op=openQty(i.id),sg=sugg(i);
+  return `<div class="col-md-6 col-xl-4"><div class="al ${st}">${thumb(i)}<div class="flex-grow-1" style="min-width:0"><b>${esc(i.name)}</b> <span class="bdg ${ST[st][1]} ms-1">${ST[st][0]}</span><small>${num(i.qty)} ${esc(i.unit)} left · minimum ${num(i.min)}</small><small>${esc(supName(i.sup))}${op?` · <b>${num(op)} ${esc(i.unit)}</b> on open PO`:''}</small></div>${sg>0?`<button class="mb g" data-reorder="${i.id}">Reorder</button>`:'<span class="bdg st-info">Covered</span>'}</div></div>`}).join(''):'<div class="col-12"><div class="empty"><i class="fa-solid fa-circle-check fa-2x mb-2 d-block" style="color:var(--green)"></i>All stock levels are healthy.</div></div>';
+}
+function renderSup(){
+ $('#supList').innerHTML=S.sup.map(s=>{const n=S.ing.filter(i=>i.sup===s.id).length,o=S.po.filter(p=>p.sup===s.id&&(p.status==='Draft'||p.status==='Ordered')).length;
+  return `<div class="col-md-6 col-xl-4"><article class="supc"><div class="d-flex gap-3"><span class="sav">${esc(initials(s.name))}</span><div class="flex-grow-1" style="min-width:0"><b>${esc(s.name)}</b><div class="small text-muted">${esc(s.cat)} · ${esc(s.terms)}</div></div></div>
+  <div class="small mt-3"><div><i class="fa-regular fa-user"></i>${esc(s.contact)}</div><div><i class="fa-solid fa-phone"></i><a href="tel:${esc(s.phone.replace(/[^\d+]/g,''))}">${esc(s.phone)}</a></div><div><i class="fa-regular fa-envelope"></i><a href="mailto:${esc(s.email)}">${esc(s.email)}</a></div></div>
+  <div class="d-flex gap-2 mt-3 flex-wrap"><span class="bdg st-info">${n} ingredient${n===1?'':'s'}</span><span class="bdg ${o?'st-low':'st-none'}">${o} open PO</span></div>
+  <div class="d-flex gap-2 mt-3"><button class="mb g flex-grow-1" data-newpo="${s.id}"><i class="fa-solid fa-file-invoice me-1"></i>New PO</button><button class="mb" data-esup="${s.id}" aria-label="Edit ${esc(s.name)}"><i class="fa-solid fa-pen"></i></button><button class="mb r" data-dsup="${s.id}" aria-label="Delete ${esc(s.name)}"><i class="fa-regular fa-trash-can"></i></button></div></article></div>`}).join('')||'<div class="col-12"><div class="empty">No suppliers yet.</div></div>';
+}
+function renderPO(){
+ const T=['All','Draft','Ordered','Received','Cancelled'];
+ $('#poTabs').innerHTML=T.map(x=>`<button role="tab" class="${x===POF?'on':''}" data-potab="${x}">${x}<small>${x==='All'?S.po.length:S.po.filter(p=>p.status===x).length}</small></button>`).join('');
+ const L=S.po.filter(p=>POF==='All'||p.status===POF).sort((a,b)=>b.created-a.created);
+ $('#poBody').innerHTML=L.length?L.map(p=>{
+  const items=p.items.map(x=>`${ingName(x.ing)} ×${num(x.qty)} ${(ingOf(x.ing)||{}).unit||''}`).join(', ');
+  let a='<span class="text-muted">—</span>';
+  if(p.status==='Draft')a=`<button class="mb b" data-po="${p.id}" data-to="Ordered">Place order</button> <button class="mb r" data-po="${p.id}" data-to="Cancelled">Cancel</button>`;
+  if(p.status==='Ordered')a=`<button class="mb g" data-po="${p.id}" data-to="Received">Mark received</button> <button class="mb r" data-po="${p.id}" data-to="Cancelled">Cancel</button>`;
+  return `<tr><td><b>${esc(p.no)}</b>${p.note?`<br><small class="text-muted">${esc(p.note)}</small>`:''}</td><td>${esc(supName(p.sup))}</td><td class="clip" title="${esc(items)}">${esc(items)}</td><td><b>${egp(poTotal(p))}</b></td><td>${dt(p.created)}</td><td>${dd(p.expected)}</td><td><span class="bdg st-${p.status}">${p.status}</span></td><td class="text-end acts">${a}</td></tr>`}).join(''):'<tr><td colspan="8"><div class="empty">No purchase orders in this view.</div></td></tr>';
+}
+function renderMoves(){
+ const cur=MF.ing;$('#mvIng').innerHTML='<option value="">All ingredients</option>'+S.ing.slice().sort((a,b)=>a.name.localeCompare(b.name)).map(i=>`<option value="${i.id}" ${i.id===cur?'selected':''}>${esc(i.name)}</option>`).join('');
+ $('#mvType').innerHTML='<option value="">All movement types</option>'+Object.keys(MT).map(t=>`<option ${t===MF.type?'selected':''}>${t}</option>`).join('');
+ const all=S.mv.filter(m=>(!MF.ing||m.ing===MF.ing)&&(!MF.type||m.type===MF.type)),L=all.slice(0,MF.n);
+ $('#mvBody').innerHTML=L.length?L.map(m=>{const i=ingOf(m.ing),u=i?i.unit:'';return `<tr><td>${dt(m.ts)}</td><td><b>${esc(ingName(m.ing))}</b></td><td><span class="bdg ${MT[m.type]||'mt-n'}">${esc(m.type)}</span></td><td class="${m.delta>=0?'pos':'neg'}">${m.delta>=0?'+':''}${num(m.delta)} ${esc(u)}</td><td>${num(m.bal)} ${esc(u)}</td><td class="clip" title="${esc(m.note)}">${esc(m.note)||'—'}</td></tr>`}).join(''):'<tr><td colspan="6"><div class="empty">No movements found.</div></td></tr>';
+ $('#mvInfo').textContent=`${all.length} movement${all.length===1?'':'s'} · newest first`;
+ $('#mvMore').style.display=all.length>MF.n?'inline-block':'none';
+}
+const recCost=r=>r.lines.reduce((t,l)=>t+l.qty*((ingOf(l.ing)||{}).cost||0),0);
+const canMake=r=>{let n=Infinity;r.lines.forEach(l=>{const i=ingOf(l.ing);n=Math.min(n,i&&l.qty>0?Math.floor(i.qty/l.qty+1e-9):0)});return n===Infinity?0:n};
+function renderRecipes(){
+ $('#recList').innerHTML=S.rec.map(r=>{const n=canMake(r);
+  return `<div class="col-md-6"><article class="rc"><div class="d-flex justify-content-between align-items-start gap-2"><b>${esc(r.dish)}</b><span class="bdg ${n===0?'st-out':n<5?'st-low':'st-ok'}">${n} portion${n===1?'':'s'} possible</span></div>
+  <ul>${r.lines.map(l=>{const i=ingOf(l.ing),miss=!i||i.qty<l.qty;return `<li class="${miss?'miss':''}"><span>${esc(ingName(l.ing))}</span><span>${num(l.qty)} ${esc(i?i.unit:'')}</span></li>`}).join('')}</ul>
+  <div class="d-flex justify-content-between align-items-center"><small class="text-muted">Ingredient cost: <b>${egp(recCost(r))}</b></small><span><button class="mb" data-erec="${r.id}" aria-label="Edit ${esc(r.dish)}"><i class="fa-solid fa-pen"></i></button> <button class="mb r" data-drec="${r.id}" aria-label="Delete ${esc(r.dish)}"><i class="fa-regular fa-trash-can"></i></button></span></div></article></div>`}).join('')||'<div class="col-12"><div class="empty">No recipes defined.</div></div>';
+ const cur=$('#simDish').value;$('#simDish').innerHTML=S.rec.map(r=>`<option value="${r.id}" ${r.id===cur?'selected':''}>${esc(r.dish)}</option>`).join('');
+}
+function renderBell(){const n=S.ing.filter(i=>stOf(i)!=='ok').length,b=$('#bellN');b.textContent=n;b.style.display=n?'flex':'none'}
+function renderAll(){renderCards();renderTable();renderAlerts();renderSup();renderPO();renderMoves();renderRecipes();renderBell()}
+
+/* ---------- ingredient modal ---------- */
+function openIng(id){
+ const f=$('#fIng');clearBad(f);f.reset();f.dataset.id=id||'';const i=id?ingOf(id):null;
+ $('#mIngT').textContent=i?'Edit ingredient':'Add ingredient';
+ $('#iSup').innerHTML=S.sup.map(s=>`<option value="${s.id}">${esc(s.name)}</option>`).join('');
+ $('#iUnit').innerHTML=UNITS.map(u=>`<option>${u}</option>`).join('');
+ if(i){$('#iName').value=i.name;$('#iSku').value=i.sku;$('#iCat').value=i.cat;$('#iSup').value=i.sup;$('#iUnit').value=i.unit;$('#iQty').value=i.qty;$('#iQty').disabled=true;$('#iMin').value=i.min;$('#iCost').value=i.cost;$('#iImg').value=i.img||'';$('#qtyHint').textContent='Quantity is changed with the + / − buttons so every change is recorded in the movement history.'}
+ else{$('#iQty').disabled=false;$('#iQty').value='0';$('#iMin').value='0';$('#iCost').value='0';$('#qtyHint').textContent='A non-zero opening quantity is logged as an opening balance.'}
+ M.ing.show();
+}
+$('#fIng').addEventListener('submit',e=>{
+ e.preventDefault();const f=e.target;clearBad(f);const id=f.dataset.id;
+ const v={name:$('#iName').value.trim(),sku:$('#iSku').value.trim().toUpperCase(),cat:$('#iCat').value.trim(),unit:$('#iUnit').value,min:parseFloat($('#iMin').value),sup:$('#iSup').value,cost:parseFloat($('#iCost').value),img:$('#iImg').value.trim()};
+ const qty=id?null:parseFloat($('#iQty').value);let ok=true;const chk=(c,el,m)=>{if(!c){bad(el,m);ok=false}};
+ chk(v.name.length>=2,$('#iName'),'Enter a name (2–60 characters).');
+ chk(!S.ing.some(i=>i.id!==id&&i.name.toLowerCase()===v.name.toLowerCase()),$('#iName'),'An ingredient with this name already exists.');
+ chk(!v.sku||/^[A-Z0-9-]{3,16}$/.test(v.sku),$('#iSku'),'Use 3–16 letters, numbers or hyphens.');
+ chk(!v.sku||!S.ing.some(i=>i.id!==id&&i.sku===v.sku),$('#iSku'),'This SKU is already in use.');
+ chk(v.cat.length>=2,$('#iCat'),'Enter a category.');
+ chk(!!v.sup,$('#iSup'),'Choose a supplier (add one first if the list is empty).');
+ if(!id)chk(Number.isFinite(qty)&&qty>=0,$('#iQty'),'Enter 0 or more.');
+ chk(Number.isFinite(v.min)&&v.min>=0,$('#iMin'),'Enter 0 or more.');
+ chk(Number.isFinite(v.cost)&&v.cost>=0,$('#iCost'),'Enter 0 or more.');
+ chk(!v.img||/^https:\/\//i.test(v.img),$('#iImg'),'Use a secure https:// link.');
+ if(!ok)return;
+ const r=tx(s=>{
+  if(s.ing.some(i=>i.id!==id&&i.name.toLowerCase()===v.name.toLowerCase()))throw new Error('An ingredient with this name already exists');
+  if(v.sku&&s.ing.some(i=>i.id!==id&&i.sku===v.sku))throw new Error('This SKU is already in use');
+  if(!v.sku){const p=v.cat.replace(/[^A-Za-z]/g,'').slice(0,3).toUpperCase()||'ING';let n=s.ing.length+1,k;do{k=`${p}-${String(n++).padStart(3,'0')}`}while(s.ing.some(i=>i.sku===k));v.sku=k}
+  if(id){const i=s.ing.find(x=>x.id===id);if(!i)throw new Error('This ingredient no longer exists');Object.assign(i,v,{icon:i.icon&&i.cat===v.cat?i.icon:iconFor(v.cat)})}
+  else{const n=Object.assign({id:'i'+(++s.seq.ing),qty:0,icon:iconFor(v.cat)},v);s.ing.push(n);if(qty>0)mv(s,n,'Opening balance',qty,'Initial stock')}
+ });
+ if(r.ok){M.ing.hide();toast(id?'Ingredient updated':'Ingredient added')}
+});
+
+/* ---------- adjust stock ---------- */
+function setReasons(){const out=$('#aOut').checked;$('#aReason').innerHTML=(out?OUT_R:ADD_R).map(x=>`<option>${x}</option>`).join('')}
+function openAdj(id,mode){
+ const i=ingOf(id);if(!i)return;const f=$('#fAdj');clearBad(f);f.reset();f.dataset.id=id;
+ $('#mAdjT').textContent=`Adjust stock · ${i.name}`;$('#aInfo').innerHTML=`Current stock: <b>${num(i.qty)} ${esc(i.unit)}</b> (minimum ${num(i.min)})`;$('#aUnit').textContent=i.unit;
+ (mode==='out'?$('#aOut'):$('#aIn')).checked=true;setReasons();M.adj.show();setTimeout(()=>$('#aAmt').focus(),300);
+}
+document.querySelectorAll('input[name=aMode]').forEach(r=>r.addEventListener('change',setReasons));
+$('#fAdj').addEventListener('submit',e=>{
+ e.preventDefault();const f=e.target;clearBad(f);const id=f.dataset.id,i=ingOf(id);if(!i)return;
+ const out=$('#aOut').checked,amt=r4(parseFloat($('#aAmt').value));
+ if(!Number.isFinite(amt)||amt<=0)return bad($('#aAmt'),'Enter an amount greater than 0.');
+ if(out&&amt>i.qty)return bad($('#aAmt'),`Only ${num(i.qty)} ${i.unit} in stock. You cannot remove ${num(amt)}.`);
+ const reason=$('#aReason').value,note=$('#aNote').value.trim();
+ const r=tx(s=>{const g=s.ing.find(x=>x.id===id);if(!g)throw new Error('This ingredient no longer exists');if(out&&amt>g.qty)throw new Error(`Only ${num(g.qty)} ${g.unit} left: change not applied`);mv(s,g,reason,out?-amt:amt,note)});
+ if(r.ok){M.adj.hide();const g=ingOf(id);toast(`${g.name}: ${out?'−':'+'}${num(amt)} ${g.unit} (now ${num(g.qty)})`);if(stOf(g)!=='ok')toast(`${g.name} is ${ST[stOf(g)][0].toLowerCase()}`,'fa-triangle-exclamation')}
+});
+
+/* ---------- suppliers ---------- */
+function openSup(id){
+ const f=$('#fSup');clearBad(f);f.reset();f.dataset.id=id||'';const s=id?S.sup.find(x=>x.id===id):null;
+ $('#mSupT').textContent=s?'Edit supplier':'Add supplier';
+ if(s){$('#sName').value=s.name;$('#sContact').value=s.contact;$('#sPhone').value=s.phone;$('#sEmail').value=s.email;$('#sCat').value=s.cat;$('#sTerms').value=s.terms}
+ M.sup.show();
+}
+$('#fSup').addEventListener('submit',e=>{
+ e.preventDefault();const f=e.target;clearBad(f);const id=f.dataset.id;
+ const v={name:$('#sName').value.trim(),contact:$('#sContact').value.trim(),phone:$('#sPhone').value.trim(),email:$('#sEmail').value.trim(),cat:$('#sCat').value.trim(),terms:$('#sTerms').value};let ok=true;const chk=(c,el,m)=>{if(!c){bad(el,m);ok=false}};
+ chk(v.name.length>=2,$('#sName'),'Enter the company name.');
+ chk(!S.sup.some(s=>s.id!==id&&s.name.toLowerCase()===v.name.toLowerCase()),$('#sName'),'This supplier already exists.');
+ chk(v.contact.length>=2,$('#sContact'),'Enter a contact person.');
+ chk(/^\+?[0-9][0-9\s\-()]{6,18}$/.test(v.phone),$('#sPhone'),'Enter a valid phone number.');
+ chk(/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v.email),$('#sEmail'),'Enter a valid email address.');
+ chk(v.cat.length>=2,$('#sCat'),'Enter the supplier specialty.');
+ if(!ok)return;
+ const r=tx(s=>{if(s.sup.some(x=>x.id!==id&&x.name.toLowerCase()===v.name.toLowerCase()))throw new Error('This supplier already exists');
+  if(id){const x=s.sup.find(q=>q.id===id);if(!x)throw new Error('Supplier no longer exists');Object.assign(x,v)}else s.sup.push(Object.assign({id:'s'+(++s.seq.sup)},v))});
+ if(r.ok){M.sup.hide();toast(id?'Supplier updated':'Supplier added','fa-truck-field')}
+});
+
+/* ---------- purchase orders ---------- */
+let PL=[];
+const supIngs=sup=>{const l=S.ing.filter(i=>i.sup===sup);return l.length?l:S.ing};
+function openPO(pre){
+ const f=$('#fPO');clearBad(f);f.reset();
+ if(!S.sup.length){toast('Add a supplier first','fa-triangle-exclamation');return}
+ $('#pSup').innerHTML=S.sup.map(s=>`<option value="${s.id}">${esc(s.name)}</option>`).join('');
+ $('#pSup').value=(pre&&pre.sup)||S.sup[0].id;$('#pDate').min=localISO(0);$('#pDate').value=localISO(2);
+ PL=pre&&pre.lines?pre.lines.map(l=>({ing:l.ing,qty:l.qty,cost:(ingOf(l.ing)||{}).cost||''})):[{ing:'',qty:'',cost:''}];
+ drawPL();M.po.show();
+}
+function drawPL(){
+ const opts=supIngs($('#pSup').value);
+ $('#pLines').innerHTML=PL.map((l,k)=>{const g=ingOf(l.ing);
+  return `<div class="row g-2 align-items-start mb-2" data-k="${k}"><div class="col-12 col-md-5 fgrp"><select class="form-select" data-f="ing" aria-label="Ingredient"><option value="">Select ingredient…</option>${opts.map(i=>`<option value="${i.id}" ${i.id===l.ing?'selected':''}>${esc(i.name)}</option>`).join('')}</select><div class="invalid-feedback"></div></div>
+  <div class="col-6 col-md-2 fgrp"><div class="input-group"><input class="form-control" data-f="qty" type="number" min="0" step="any" value="${esc(l.qty)}" placeholder="Qty" aria-label="Quantity"><span class="input-group-text">${g?esc(g.unit):'—'}</span></div><div class="invalid-feedback"></div></div>
+  <div class="col-6 col-md-2 fgrp"><input class="form-control" data-f="cost" type="number" min="0" step="any" value="${esc(l.cost)}" placeholder="Unit cost" aria-label="Unit cost in EGP"><div class="invalid-feedback"></div></div>
+  <div class="col-8 col-md-2 d-flex align-items-center small" style="min-height:42px"><b data-lt="${k}"></b></div>
+  <div class="col-4 col-md-1 text-end"><button type="button" class="rb" data-prem="${k}" aria-label="Remove line"><i class="fa-solid fa-xmark"></i></button></div></div>`}).join('');
+ plTotal();
+}
+function plTotal(){
+ let t=0;PL.forEach((l,k)=>{const x=(parseFloat(l.qty)||0)*(parseFloat(l.cost)||0);t+=x;const el=document.querySelector(`[data-lt="${k}"]`);if(el)el.textContent=egp(x)});
+ $('#pTotal').textContent=egp(t);
+}
+$('#pSup').addEventListener('change',()=>{PL=[{ing:'',qty:'',cost:''}];drawPL()});
+$('#pAddLine').onclick=()=>{PL.push({ing:'',qty:'',cost:''});drawPL()};
+$('#pLines').addEventListener('input',e=>{const row=e.target.closest('[data-k]');if(!row)return;const f=e.target.dataset.f;if(f==='qty'||f==='cost'){PL[+row.dataset.k][f]=e.target.value;plTotal()}});
+$('#pLines').addEventListener('change',e=>{const row=e.target.closest('[data-k]');if(!row||e.target.dataset.f!=='ing')return;const k=+row.dataset.k;PL[k].ing=e.target.value;const g=ingOf(e.target.value);if(g)PL[k].cost=g.cost;drawPL()});
+function savePO(status){
+ const f=$('#fPO');clearBad(f);let ok=true;const sup=$('#pSup').value,date=$('#pDate').value;
+ if(!sup){bad($('#pSup'),'Choose a supplier.');ok=false}
+ if(!date||date<localISO(0)){bad($('#pDate'),'Pick today or a future date.');ok=false}
+ if(!PL.length){toast('Add at least one order line','fa-triangle-exclamation');return}
+ const rows=[...document.querySelectorAll('#pLines [data-k]')],seen=new Set();
+ PL.forEach((l,k)=>{const row=rows[k],q=parseFloat(l.qty),c=parseFloat(l.cost);
+  if(!l.ing){bad(row.querySelector('[data-f=ing]'),'Select an ingredient.');ok=false}else if(seen.has(l.ing)){bad(row.querySelector('[data-f=ing]'),'Already on this order.');ok=false}
+  seen.add(l.ing);
+  if(!(q>0)){bad(row.querySelector('[data-f=qty]'),'Qty must be > 0.');ok=false}
+  if(!(c>=0)){bad(row.querySelector('[data-f=cost]'),'Invalid cost.');ok=false}});
+ if(!ok)return;
+ const items=PL.map(l=>({ing:l.ing,qty:r4(parseFloat(l.qty)),cost:parseFloat(l.cost)})),note=$('#pNote').value.trim(),exp=new Date(date+'T12:00:00').getTime();
+ const r=tx(s=>{if(!s.sup.some(x=>x.id===sup))throw new Error('Supplier no longer exists');items.forEach(x=>{if(!s.ing.some(i=>i.id===x.ing))throw new Error('An ingredient on this order no longer exists')});
+  const no='PO-'+(++s.seq.po);s.po.push({id:no,no,sup,items,status,created:Date.now(),expected:exp,note});return no});
+ if(r.ok){M.po.hide();toast(`${r.out} ${status==='Draft'?'saved as draft':'placed with '+supName(sup)}`,'fa-file-invoice')}
+}
+$('#poDraft').onclick=()=>savePO('Draft');$('#poPlace').onclick=()=>savePO('Ordered');
+function poMove(id,to){
+ const r=tx(s=>{const p=s.po.find(x=>x.id===id);if(!p)throw new Error('Purchase order not found');
+  const okFrom={Ordered:['Draft'],Received:['Ordered'],Cancelled:['Draft','Ordered']}[to];
+  if(!okFrom.includes(p.status))throw new Error(`${p.no} is already ${p.status.toLowerCase()}: nothing changed`);
+  if(to==='Received'){const sn=(s.sup.find(x=>x.id===p.sup)||{}).name||'supplier';
+   p.items.forEach(x=>{const i=s.ing.find(g=>g.id===x.ing);if(!i)return;const tot=i.qty+x.qty;if(tot>0)i.cost=Math.round(((i.qty*i.cost+x.qty*x.cost)/tot)*100)/100;mv(s,i,'Purchase received',x.qty,`${p.no} from ${sn}`)});
+   p.receivedAt=Date.now()}
+  p.status=to;return p.no});
+ if(r.ok)toast(to==='Received'?`${r.out} received: stock updated`:to==='Ordered'?`${r.out} placed with supplier`:`${r.out} cancelled`,to==='Cancelled'?'fa-ban':'fa-circle-check');
+}
+
+/* ---------- recipes ---------- */
+let RL=[];
+function openRec(id){
+ const f=$('#fRec');clearBad(f);f.reset();f.dataset.id=id||'';const r=id?S.rec.find(x=>x.id===id):null;
+ $('#mRecT').textContent=r?'Edit recipe':'Add recipe';$('#rName').value=r?r.dish:'';
+ RL=r?r.lines.map(l=>({ing:l.ing,qty:l.qty})):[{ing:'',qty:''}];drawRL();M.rec.show();
+}
+function drawRL(){
+ $('#rLines').innerHTML=RL.map((l,k)=>{const g=ingOf(l.ing);
+  return `<div class="row g-2 align-items-start mb-2" data-k="${k}"><div class="col-12 col-md-7 fgrp"><select class="form-select" data-f="ing" aria-label="Ingredient"><option value="">Select ingredient…</option>${S.ing.slice().sort((a,b)=>a.name.localeCompare(b.name)).map(i=>`<option value="${i.id}" ${i.id===l.ing?'selected':''}>${esc(i.name)}</option>`).join('')}</select><div class="invalid-feedback"></div></div>
+  <div class="col-8 col-md-4 fgrp"><div class="input-group"><input class="form-control" data-f="qty" type="number" min="0" step="any" value="${esc(l.qty)}" placeholder="Per portion" aria-label="Quantity per portion"><span class="input-group-text">${g?esc(g.unit):'—'}</span></div><div class="invalid-feedback"></div></div>
+  <div class="col-4 col-md-1 text-end"><button type="button" class="rb" data-rrem="${k}" aria-label="Remove ingredient"><i class="fa-solid fa-xmark"></i></button></div></div>`}).join('');
+}
+$('#rAddLine').onclick=()=>{RL.push({ing:'',qty:''});drawRL()};
+$('#rLines').addEventListener('input',e=>{const row=e.target.closest('[data-k]');if(row&&e.target.dataset.f==='qty')RL[+row.dataset.k].qty=e.target.value});
+$('#rLines').addEventListener('change',e=>{const row=e.target.closest('[data-k]');if(row&&e.target.dataset.f==='ing'){RL[+row.dataset.k].ing=e.target.value;drawRL()}});
+$('#fRec').addEventListener('submit',e=>{
+ e.preventDefault();const f=e.target;clearBad(f);const id=f.dataset.id,dish=$('#rName').value.trim();let ok=true;
+ if(dish.length<2){bad($('#rName'),'Enter the dish name.');ok=false}
+ else if(S.rec.some(r=>r.id!==id&&r.dish.toLowerCase()===dish.toLowerCase())){bad($('#rName'),'A recipe for this dish already exists.');ok=false}
+ if(!RL.length){toast('Add at least one ingredient','fa-triangle-exclamation');return}
+ const rows=[...document.querySelectorAll('#rLines [data-k]')],seen=new Set();
+ RL.forEach((l,k)=>{const row=rows[k],q=parseFloat(l.qty);
+  if(!l.ing){bad(row.querySelector('[data-f=ing]'),'Select an ingredient.');ok=false}else if(seen.has(l.ing)){bad(row.querySelector('[data-f=ing]'),'Already in this recipe.');ok=false}
+  seen.add(l.ing);if(!(q>0)){bad(row.querySelector('[data-f=qty]'),'Qty must be > 0.');ok=false}});
+ if(!ok)return;
+ const lines=RL.map(l=>({ing:l.ing,qty:r4(parseFloat(l.qty))}));
+ const r=tx(s=>{if(s.rec.some(x=>x.id!==id&&x.dish.toLowerCase()===dish.toLowerCase()))throw new Error('A recipe for this dish already exists');
+  if(id){const x=s.rec.find(q=>q.id===id);if(!x)throw new Error('Recipe no longer exists');x.dish=dish;x.lines=lines}else s.rec.push({id:'r'+(++s.seq.rec),dish,lines})});
+ if(r.ok){M.rec.hide();toast(id?'Recipe updated':'Recipe added','fa-book')}
+});
+
+/* ---------- demo order: stock deduction ---------- */
+$('#simGo').onclick=()=>{
+ const id=$('#simDish').value,n=parseInt($('#simQty').value,10),box=$('#simMsg');
+ if(!id){box.innerHTML='<div class="msg err">Choose a dish first.</div>';return}
+ if(!Number.isInteger(n)||n<1||n>50){box.innerHTML='<div class="msg err">Enter a whole number of portions between 1 and 50.</div>';return}
+ const r=tx(s=>{
+  const rec=s.rec.find(x=>x.id===id);if(!rec)throw new Error('Recipe not found');
+  const short=[];rec.lines.forEach(l=>{const i=s.ing.find(g=>g.id===l.ing),need=r4(l.qty*n);if(!i||i.qty<need)short.push(`${i?i.name:'Missing ingredient'} (needs ${num(need)} ${i?i.unit:''}, have ${i?num(i.qty):0})`)});
+  if(short.length)throw new Error('Order blocked, not enough stock: '+short.join('; '));
+  const no='DEMO-'+(++s.seq.demo);rec.lines.forEach(l=>mv(s,s.ing.find(g=>g.id===l.ing),'Order deduction',-r4(l.qty*n),`${no}: ${n}× ${rec.dish}`));
+  return{no,dish:rec.dish,lines:rec.lines.map(l=>l.ing)};
+ });
+ if(r.ok){const low=r.out.lines.map(ingOf).filter(i=>i&&stOf(i)!=='ok').map(i=>`${i.name} (${ST[stOf(i)][0].toLowerCase()})`);
+  box.innerHTML=`<div class="msg ok"><i class="fa-solid fa-circle-check me-1"></i><b>${esc(r.out.no)}</b> confirmed: ${n}× ${esc(r.out.dish)}. Stock deducted.${low.length?`<br><i class="fa-solid fa-triangle-exclamation me-1"></i>Now low: ${esc(low.join(', '))}`:''}</div>`}
+ else box.innerHTML=`<div class="msg err"><i class="fa-solid fa-ban me-1"></i>${esc(r.err)}</div>`;
+};
+
+/* ---------- reorder ---------- */
+function reorderAll(){
+ const r=tx(s=>{
+  const open=id=>s.po.filter(p=>p.status==='Draft'||p.status==='Ordered').reduce((t,p)=>t+p.items.filter(x=>x.ing===id).reduce((a,x)=>a+x.qty,0),0);
+  const by={};s.ing.forEach(i=>{if(i.qty>i.min)return;const q=Math.ceil(Math.max(i.min*2-i.qty-open(i.id),0)*10)/10;if(q>0&&i.sup)(by[i.sup]=by[i.sup]||[]).push({ing:i.id,qty:q,cost:i.cost})});
+  const made=[];Object.keys(by).forEach(sup=>{const no='PO-'+(++s.seq.po);s.po.push({id:no,no,sup,items:by[sup],status:'Draft',created:Date.now(),expected:Date.now()+2*864e5,note:'Auto-drafted from low-stock alerts'});made.push(no)});
+  return made});
+ if(r.ok)toast(r.out.length?`Created ${r.out.length} draft PO${r.out.length>1?'s':''}: ${r.out.join(', ')}`:'Nothing to reorder: open orders already cover low items',r.out.length?'fa-cart-plus':'fa-circle-info');
+}
+
+/* ---------- CSV ---------- */
+function csv(){
+ const safe=v=>typeof v==='string'&&/^[=+\-@]/.test(v)?"'"+v:v;
+ const L=S.mv.filter(m=>(!MF.ing||m.ing===MF.ing)&&(!MF.type||m.type===MF.type));
+ const rows=[['Time','Ingredient','Type','Change','Balance','Note']].concat(L.map(m=>[new Date(m.ts).toISOString(),ingName(m.ing),m.type,m.delta,m.bal,m.note]));
+ const txt=rows.map(r=>r.map(v=>`"${String(safe(v)).replace(/"/g,'""')}"`).join(',')).join('\n');
+ const a=document.createElement('a');a.href=URL.createObjectURL(new Blob(['\ufeff'+txt],{type:'text/csv'}));a.download='foodhub-stock-movements.csv';document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(a.href),1500);
+}
+
+/* ---------- events ---------- */
+document.addEventListener('click',e=>{
+ const g=s=>e.target.closest(s);let b;
+ if(b=g('[data-adj]'))return openAdj(b.dataset.adj,b.dataset.mode);
+ if(b=g('[data-edit]'))return openIng(b.dataset.edit);
+ if(b=g('[data-hist]')){MF.ing=b.dataset.hist;MF.n=25;renderMoves();return $('#movements').scrollIntoView({behavior:'smooth'})}
+ if(b=g('[data-reorder]')){const i=ingOf(b.dataset.reorder);return i&&openPO({sup:i.sup,lines:[{ing:i.id,qty:sugg(i)}]})}
+ if(b=g('[data-card]')){const a=b.dataset.card;
+  if(a==='low'||a==='out'||a==='all'){F.st=a==='all'?'':a;F.q='';F.cat='';$('#fQ').value='';$('#fSt').value=F.st;renderTable();return $('#inventory').scrollIntoView({behavior:'smooth'})}
+  return $(a==='po'?'#orders':'#suppliers').scrollIntoView({behavior:'smooth'})}
+ if(b=g('[data-newpo]'))return openPO({sup:b.dataset.newpo});
+ if(b=g('[data-esup]'))return openSup(b.dataset.esup);
+ if(b=g('[data-dsup]')){const id=b.dataset.dsup,s=S.sup.find(x=>x.id===id);return s&&ask('Delete supplier?',`${s.name} will be removed from the directory.`,'Delete',()=>tx(st=>{
+  if(st.ing.some(i=>i.sup===id))throw new Error('Reassign this supplier\'s ingredients before deleting it');
+  if(st.po.some(p=>p.sup===id&&(p.status==='Draft'||p.status==='Ordered')))throw new Error('This supplier has open purchase orders');
+  st.sup=st.sup.filter(x=>x.id!==id)}))}
+ if(b=g('[data-potab]')){POF=b.dataset.potab;return renderPO()}
+ if(b=g('[data-po]')){const id=b.dataset.po,to=b.dataset.to;
+  if(to==='Cancelled')return ask('Cancel purchase order?',`${id} will be marked as cancelled. This cannot be undone.`,'Cancel order',()=>poMove(id,to));
+  return poMove(id,to)}
+ if(b=g('[data-prem]')){PL.splice(+b.dataset.prem,1);if(!PL.length)PL.push({ing:'',qty:'',cost:''});return drawPL()}
+ if(b=g('[data-rrem]')){RL.splice(+b.dataset.rrem,1);if(!RL.length)RL.push({ing:'',qty:''});return drawRL()}
+ if(b=g('[data-erec]'))return openRec(b.dataset.erec);
+ if(b=g('[data-drec]')){const id=b.dataset.drec,r=S.rec.find(x=>x.id===id);return r&&ask('Delete recipe?',`The recipe for ${r.dish} will be removed.`,'Delete',()=>tx(st=>{st.rec=st.rec.filter(x=>x.id!==id)}))}
+});
+$('#addIng').onclick=()=>openIng();$('#addSup').onclick=()=>openSup();$('#addPO').onclick=()=>openPO();$('#addRec').onclick=()=>openRec();
+$('#reorderAll').onclick=reorderAll;$('#mvCsv').onclick=csv;
+$('#mvMore').onclick=()=>{MF.n+=25;renderMoves()};
+$('#fQ').addEventListener('input',e=>{F.q=e.target.value;renderTable()});
+$('#fCat').addEventListener('change',e=>{F.cat=e.target.value;renderTable()});
+$('#fSt').addEventListener('change',e=>{F.st=e.target.value;renderTable()});
+$('#fSort').addEventListener('change',e=>{F.sort=e.target.value;renderTable()});
+$('#fReset').onclick=()=>{F.q=F.cat=F.st='';F.sort='name';$('#fQ').value='';$('#fSt').value='';$('#fSort').value='name';renderTable()};
+$('#mvIng').addEventListener('change',e=>{MF.ing=e.target.value;MF.n=25;renderMoves()});
+$('#mvType').addEventListener('change',e=>{MF.type=e.target.value;MF.n=25;renderMoves()});
+$('#mvReset').onclick=()=>{MF.ing=MF.type='';MF.n=25;renderMoves()};
+$('#bellBtn').onclick=()=>$('#alerts').scrollIntoView({behavior:'smooth'});
+$('#resetBtn').onclick=()=>ask('Reset demo data?','All inventory, suppliers, purchase orders, movements and recipes return to the sample data.','Reset',()=>{S=seed();save(S);F.q=F.cat=F.st='';F.sort='name';['#fQ','#fSt'].forEach(s=>$(s).value='');$('#fSort').value='name';POF='All';MF.ing=MF.type='';MF.n=25;$('#simMsg').innerHTML='';renderAll();toast('Demo data restored','fa-rotate-left')});
+/* sidebar (mobile) */
+$('#menuBtn').onclick=()=>document.body.classList.add('sbo');$('#ov').onclick=()=>document.body.classList.remove('sbo');
+document.querySelectorAll('.sb a').forEach(a=>a.addEventListener('click',()=>document.body.classList.remove('sbo')));
+/* other browser tabs */
+window.addEventListener('storage',e=>{if(e.key===LS){const o=readStore();if(o){S=o;renderAll();toast('Inventory updated from another tab','fa-rotate')}}});
+/* theme (shared with the other FoodHub pages) */
+const root=document.documentElement;
+function theme(t){root.setAttribute('data-theme',t);$('#themeBtn').innerHTML=t==='dark'?'<i class="fa-solid fa-sun"></i>':'<i class="fa-solid fa-moon"></i>';try{localStorage.setItem('fh_theme',t)}catch(e){}}
+let th='light';try{th=localStorage.getItem('fh_theme')||'light'}catch(e){}
+theme(th);$('#themeBtn').onclick=()=>theme(root.getAttribute('data-theme')==='dark'?'light':'dark');
+/* init */
+S=readStore()||seed();save(S);renderAll();
+</script>
+</body>
+</html>
